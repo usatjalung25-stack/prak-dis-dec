@@ -1,2 +1,1 @@
-# Proyek Pertamaku
-# proyek-kamu
+# sampel
