@@ -1,4 +1,4 @@
-# 📘 Praktikum Sistem Terdistribusi — Minggu 01
+#  Praktikum Sistem Terdistribusi — Minggu 01
 
 **Instalasi Software Pendukung (FFmpeg & Firefox) dan Konfigurasi Git pada macOS 13 menggunakan Homebrew**
 
