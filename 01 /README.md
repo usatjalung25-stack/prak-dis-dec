@@ -15,14 +15,14 @@
 ## 📚 TUJUAN PRAKTIKUM
 
 Praktikum ini bertujuan untuk:
-1. Memahami fungsi dasar Git dan GitHub.
-2. Melakukan instalasi Git pada komputer (macOS) menggunakan Homebrew.
-3. Melakukan konfigurasi identitas pengguna Git.
-4. Membuat dan mengelola repository.
-5. Menghubungkan repository lokal dengan GitHub.
-6. Melakukan commit dan mengunggah perubahan ke repository.
-7. Memahami dasar kolaborasi menggunakan Git dan GitHub.
-8. Melakukan instalasi software pendukung (FFmpeg dan Firefox).
+1. Memahami fungsi dasar Git dan GitHub
+2. Melakukan instalasi Git pada komputer (macOS) menggunakan Homebrew
+3. Melakukan konfigurasi identitas pengguna Git
+4. Membuat dan mengelola repository
+5. Menghubungkan repository lokal dengan GitHub
+6. Melakukan commit dan mengunggah perubahan ke repository
+7. Memahami dasar kolaborasi menggunakan Git dan GitHub
+8. Melakukan instalasi software pendukung (FFmpeg dan Firefox)
 
 ---
 
@@ -52,21 +52,25 @@ Tahap terakhir membahas penggunaan Git dan GitHub untuk bekerja secara bersama-s
 
 ## ⏩ PEMBAHASAN PRAKTIKUM
 
-### PRAKTIK 1: INSTALASI HOMEBREW DAN GIT
+### PRAKTIK 1: INSTALASI HOMEWAREW DAN GIT
 
 #### 1.1 Instalasi Homebrew (Package Manager untuk macOS)
+
 Homebrew adalah package manager untuk macOS yang memudahkan instalasi berbagai software termasuk Git.
+
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
 #### 1.2 Instalasi FFmpeg dan Firefox menggunakan Homebrew
+
 ```bash
 brew install ffmpeg firefox
 ```
 
 **Output dan Pembahasan:**
-```text
+
+```
 ==> Downloading Homebrew API data
 ✔︎ JSON API packages.ventura.jws.json                           Downloaded   15.0MB/ 15.0MB
 Warning: You are using macOS 13.
@@ -76,16 +80,18 @@ Homebrew no longer builds bottles for this configuration.
 Consider MacPorts, which provides binary packages for this macOS version:
   https://www.macports.org
 ```
+
 **Pembahasan:**  
 Sistem menggunakan macOS 13 yang sudah tidak didukung penuh oleh Homebrew. Homebrew menyarankan untuk menggunakan MacPorts sebagai alternatif.
 
-```text
+```
 Warning: The following taps are not trusted:
   jostasik/tap
 
 Homebrew is currently ignoring formulae, casks and commands
 from these taps because tap trust is required.
 ```
+
 **Pembahasan:**  
 Terdapat warning tentang tap yang tidak trusted (`jostasik/tap`). Homebrew mengabaikan formulae, casks, dan commands dari tap ini karena memerlukan trust.
 
@@ -99,7 +105,8 @@ brew trust jostasik/tap
 ```
 
 **Daftar Dependencies yang akan diinstal:**
-```text
+
+```
 ==> Would install 1 formula:
 ffmpeg 9.0.2
 ==> Would install 21 dependencies for ffmpeg:
@@ -109,20 +116,24 @@ sdl2-compat, svt-av1, x264, x265
 ==> Would upgrade 1 dependency for ffmpeg:
 cmake
 ```
+
 **Pembahasan:**  
 FFmpeg memerlukan 21 dependencies untuk berfungsi dengan baik. Dependencies ini termasuk library untuk encoding/decoding video dan audio.
 
 #### 1.3 Konfirmasi Instalasi
-```text
+
+```bash
 ==> Do you want to proceed with the installation? [y/n]
 y
 ```
+
 **Pembahasan:**  
 User mengkonfirmasi dengan mengetik `y` untuk melanjutkan instalasi.
 
 #### 1.4 Proses Download dan Verifikasi
+
 **Output:**
-```text
+```
 ==> Fetching downloads for: ffmpeg and firefox
 ✔︎ API Source ffmpeg.rb                                         Verified      3.7KB/  3.7KB
 ✔︎ API Source openssl@3.rb                                      Verified      7.2KB/  7.2KB
@@ -132,19 +143,22 @@ User mengkonfirmasi dengan mengetik `y` untuk melanjutkan instalasi.
 ✔︎ Formula openssl@3 (3.6.5)                                    Verified     55.1MB/ 55.1MB
 ✔︎ Cask firefox (157.0)                                         Downloaded  161.8MB/161.8MB
 ```
+
 **Pembahasan:**  
 Homebrew mendownload dan memverifikasi semua dependencies. Total ada puluhan package yang didownload termasuk Firefox versi 157.0.
 
 #### 1.5 Error yang Muncul dan Solusi
-```text
+
+```
 Error: ffmpeg: A `brew install ffmpeg firefox` process has already locked /usr/local/Cellar/pkgconf.
 Please wait for it to finish or terminate it to continue.
 
 Error: firefox: It seems there is already an App at '/Applications/Firefox.app'.
 ```
+
 **Pembahasan:**  
-- Error pertama menunjukkan ada proses instalasi yang sedang berjalan dan mengunci `/usr/local/Cellar/pkgconf`.
-- Error kedua menunjukkan Firefox sudah terinstal di `/Applications/Firefox.app`.
+- Error pertama menunjukkan ada proses instalasi yang sedang berjalan dan mengunci `/usr/local/Cellar/pkgconf`
+- Error kedua menunjukkan Firefox sudah terinstal di `/Applications/Firefox.app`
 
 **Solusi:**
 ```bash
@@ -153,11 +167,13 @@ brew install --cask firefox
 ```
 
 #### 1.6 Instalasi Firefox sebagai Cask
+
 ```bash
 brew install --cask firefox
 ```
+
 **Output:**
-```text
+```
 ==> Fetching downloads for: firefox
 ✔︎ Cask firefox (157.0)                                         Downloaded  161.8MB/161.8MB
 ==> Installing Cask firefox
@@ -167,6 +183,7 @@ This is a Tier 3 configuration:
   https://docs.brew.sh/Support-Tiers#tier-3
 You can report issues with Tier 3 configurations to Homebrew/* repositories!
 ```
+
 **Pembahasan:**  
 Firefox berhasil didownload dan diinstal sebagai cask (aplikasi GUI). Warning Tier 3 menunjukkan bahwa konfigurasi macOS 13 ini tidak didukung penuh.
 
@@ -175,24 +192,29 @@ Firefox berhasil didownload dan diinstal sebagai cask (aplikasi GUI). Warning Ti
 ### PRAKTIK 2: MENGECEK LOKASI INSTALASI
 
 #### 2.1 Mencari Lokasi FFmpeg
+
 ```bash
 find $(brew --cellar)/ffmpeg
 ```
+
 **Output:**
-```text
+```
 /opt/homebrew/Cellar/ffmpeg/8.1.1/bin/ffmpeg
 /opt/homebrew/Cellar/ffmpeg/8.1.1/share/man/man1/ffmpeg.1
 find: /usr/local/Cellar/ffmpeg: No such file or directory
 ```
+
 **Pembahasan:**  
 FFmpeg terinstal di `/opt/homebrew/Cellar/ffmpeg/8.1.1/`. Terdapat binary executable dan file dokumentasi manual.
 
 #### 2.2 Melihat Isi Direktori Homebrew
+
 ```bash
 ls -l $(brew --prefix)/bin
 ```
+
 **Output:**
-```text
+```
 total 1768
 lrwxr-xr-x  1 danel  admin      35 Oct  5 11:48 bomtool -> ../Cellar/pkgconf/3.0.7/bin/bomtool
 lrwxr-xr-x  1 danel  admin      20 Oct 28  2025 brew -> ../Homebrew/bin/brew
@@ -200,33 +222,40 @@ lrwxr-xr-x  1 danel  admin      32 Jul 10 00:19 ninja -> ../Cellar/ninja/1.13.2/
 lrwxr-xr-x  1 danel  admin      38 Oct  5 11:48 pkg-config -> ../Cellar/pkgconf/3.0.7/bin/pkg-config
 lrwxr-xr-x  1 danel  admin      35 Oct  5 11:48 pkgconf -> ../Cellar/pkgconf/3.0.7/bin/pkgconf
 ```
+
 **Pembahasan:**  
 Homebrew membuat symbolic links (symlinks) di `/opt/homebrew/bin/` yang mengarah ke lokasi instalasi sebenarnya di Cellar. Ini memungkinkan perintah dipanggil dari mana saja.
 
 #### 2.3 Mencari Lokasi Firefox
+
 ```bash
 find $(brew --caskroom)/firefox
 ```
+
 **Output:**
-```text
+```
 /opt/homebrew/Caskroom/firefox/151.0.3/Firefox.app
 find: /usr/local/Caskroom/firefox: No such file or directory
 ```
+
 **Pembahasan:**  
 Firefox sebagai cask terinstal di `/opt/homebrew/Caskroom/firefox/151.0.3/Firefox.app`.
 
 #### 2.4 Mengecek Aplikasi di /Applications
+
 ```bash
 ls /Applications
 ```
+
 **Output:**
-```text
+```
 Firefox.app
 Antigravity IDE.app	Google Drive.app	WhatsApp.app
 CapCut.app		Safari.app		XAMPP
 Claude.app		Utilities		wpsoffice.app
 Firefox.app		Visual Studio Code.app	zoom.us.app
 ```
+
 **Pembahasan:**  
 Firefox terlihat di folder Applications dan siap digunakan. Homebrew membuat symlink ke folder Applications untuk memudahkan akses.
 
@@ -235,34 +264,43 @@ Firefox terlihat di folder Applications dan siap digunakan. Homebrew membuat sym
 ### PRAKTIK 3: KONFIGURASI GIT
 
 #### 3.1 Mengecek Versi Git
+
 ```bash
 git --version
 ```
+
 **Output:**
-```text
+```
 git version 2.39.2 (Apple Git-143)
 ```
+
 **Pembahasan:**  
 Git versi 2.39.2 sudah terinstal. Ini adalah versi yang disediakan oleh Apple (Apple Git-143).
 
 #### 3.2 Konfigurasi Username Git
+
 ```bash
 git config --global user.name "usatjalung25"
 ```
+
 **Pembahasan:**  
 Mengatur nama pengguna yang akan tercatat pada setiap commit. Username ini akan muncul di GitHub sebagai author.
 
 #### 3.3 Konfigurasi Email Git
+
 ```bash
 git config --global user.email usat.jalung25@students.utdi.ac.id
 ```
+
 **Pembahasan:**  
 Email dikonfigurasi untuk mengidentifikasi pemilik commit. Email ini harus sesuai dengan yang terdaftar di GitHub.
 
 #### 3.4 Melihat File Konfigurasi Git
+
 ```bash
 cat ~/.gitconfig
 ```
+
 **Output:**
 ```ini
 [filter "lfs"]
@@ -279,19 +317,22 @@ cat ~/.gitconfig
 [init]
 	defaultBranch = main
 ```
+
 **Pembahasan:**  
 File `.gitconfig` berisi:
-- **Git LFS filter**: Untuk menangani file besar.
-- **User identity**: Name dan email.
-- **HTTP settings**: Optimasi untuk upload (`lowSpeedLimit` dan `postBuffer`).
-- **Default branch**: Diatur ke `main` (bukan `master`).
+- **Git LFS filter**: Untuk menangani file besar
+- **User identity**: Name dan email
+- **HTTP settings**: Optimasi untuk upload (`lowSpeedLimit` dan `postBuffer`)
+- **Default branch**: Diatur ke `main` (bukan `master`)
 
 #### 3.5 Melihat Semua Konfigurasi Git
+
 ```bash
 git config --list
 ```
+
 **Output:**
-```text
+```
 credential.helper=osxkeychain
 init.defaultbranch=main
 filter.lfs.clean=git-lfs clean -- %f
@@ -304,11 +345,12 @@ http.lowspeedlimit=1000
 http.postbuffer=157286400
 init.defaultbranch=main
 ```
+
 **Pembahasan:**  
 Semua konfigurasi ditampilkan dalam format `key=value`. Konfigurasi penting:
-- **credential.helper=osxkeychain**: Menggunakan keychain macOS untuk menyimpan credential.
-- **init.defaultbranch=main**: Branch default adalah `main`.
-- **http.postbuffer=157286400**: Buffer size 150MB untuk upload file besar.
+- **credential.helper=osxkeychain**: Menggunakan keychain macOS untuk menyimpan credential
+- **init.defaultbranch=main**: Branch default adalah `main`
+- **http.postbuffer=157286400**: Buffer size 150MB untuk upload file besar
 
 ---
 
@@ -332,10 +374,10 @@ Berdasarkan screenshot GitHub yang ditampilkan, berikut adalah file-file yang te
 | 12 | 10-Melihat Konfigurasi-2.png | Rename 09-Melihat Konfigurasi-2.png | now |
 
 **Pembahasan:**  
-- File-file ini merupakan dokumentasi screenshot dari setiap langkah praktikum.
-- Penamaan dengan nomor urut (01, 02, 03, dst) memudahkan pengurutan.
-- File-file di-rename dari nama default screenshot ("Jepretan Layar") menjadi nama yang lebih deskriptif.
-- Semua file berhasil di-commit ke repository GitHub.
+- File-file ini merupakan dokumentasi screenshot dari setiap langkah praktikum
+- Penamaan dengan nomor urut (01, 02, 03, dst) memudahkan pengurutan
+- File-file di-rename dari nama default screenshot ("Jepretan Layar") menjadi nama yang lebih deskriptif
+- Semua file berhasil di-commit ke repository GitHub
 
 ---
 
@@ -344,14 +386,28 @@ Berdasarkan screenshot GitHub yang ditampilkan, berikut adalah file-file yang te
 Praktikum Git dan GitHub memberikan pemahaman dasar mengenai pengelolaan project menggunakan version control. Kesimpulan yang dapat diambil:
 
 1. **Instalasi Git di macOS** dapat dilakukan menggunakan Homebrew. Git versi 2.39.2 (Apple Git-143) berhasil terinstal.
+
 2. **Homebrew** memudahkan instalasi software di macOS, termasuk Git, FFmpeg, dan Firefox. Namun, macOS 13 yang digunakan sudah tidak didukung penuh (Tier 3 configuration).
-3. **Konfigurasi Git** sangat penting untuk mengidentifikasi author setiap commit. Konfigurasi yang dilakukan meliputi: Username (`usatjalung25`), Email (`usat.jalung25@students.utdi.ac.id`), Default branch (`main`), Git LFS untuk file besar, dan HTTP buffer untuk upload file besar (150MB).
+
+3. **Konfigurasi Git** sangat penting untuk mengidentifikasi author setiap commit. Konfigurasi yang dilakukan meliputi:
+   - Username: `usatjalung25`
+   - Email: `usat.jalung25@students.utdi.ac.id`
+   - Default branch: `main`
+   - Git LFS untuk file besar
+   - HTTP buffer untuk upload file besar (150MB)
+
 4. **Git LFS** (Large File Storage) sudah terkonfigurasi untuk menangani file-file besar dalam repository.
+
 5. **Credential helper** menggunakan `osxkeychain` untuk menyimpan credential GitHub secara aman di macOS.
+
 6. **Repository management** meliputi pembuatan, konfigurasi, dan sinkronisasi antara repository lokal dan remote.
+
 7. **Dokumentasi** setiap langkah praktikum penting untuk referensi dan pembelajaran di masa mendatang. File screenshot berhasil di-commit dengan penamaan yang terstruktur.
-8. **Warning dan Error** yang muncul selama instalasi dapat diatasi dengan memahami pesan error dan mencari solusi yang tepat (seperti `install --cask` untuk aplikasi GUI).
+
+8. **Warning dan Error** yang muncul selama instalasi dapat diatasi dengan memahami pesan error dan mencari solusi yang tepat (seperti install --cask untuk aplikasi GUI).
+
 9. **Symbolic links** yang dibuat Homebrew di `/opt/homebrew/bin/` memungkinkan perintah dipanggil dari mana saja di terminal.
+
 10. **Tier 3 Configuration** menunjukkan bahwa macOS 13 sudah tidak mendapat dukungan penuh dari Homebrew, sehingga disarankan untuk upgrade ke versi macOS yang lebih baru.
 
 ---
@@ -380,5 +436,6 @@ Praktikum Git dan GitHub memberikan pemahaman dasar mengenai pengelolaan project
 **Homebrew Location:** /opt/homebrew
 
 ---
+
 **© 2026 - Praktikum Sistem Terdistribusi dan Terdesentralisasi**
 ```
