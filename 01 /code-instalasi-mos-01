@@ -1,0 +1,266 @@
+Mac OS X
+Git untuk Mac OS X juga sudah tersedia dan bisa diinstall menggunakan Homebrew (package manager di Mac OS X): 
+
+---------------------------------------------------------------------------------
+1.untuk melanjutkan instalasi yang diberikan adalah ffmpeg dan firefox
+$ brew install ffmpeg firefox. 
+---------------------------------------------------------------------------------
+
+
+Last login: Mon Oct  5 18:45:27 on ttys000
+danel@1111QD-rs ~ % brew install ffmpeg firefox
+==> Downloading Homebrew API data
+✔︎ JSON API packages.ventura.jws.json                           Downloaded   15.0MB/ 15.0MB
+Warning: You are using macOS 13.
+We (and Apple) do not provide support for this old version.
+
+Homebrew no longer builds bottles for this configuration.
+Consider MacPorts, which provides binary packages for this macOS version:
+  https://www.macports.org
+Warning: The following taps are not trusted:
+  jostasik/tap
+
+Homebrew is currently ignoring formulae, casks and commands
+from these taps because tap trust is required.
+Untap them with:
+  brew untap jostasik/tap
+Trust specific formulae, casks and commands with:
+  brew trust --formula <user>/<tap>/<formula>
+  brew trust --cask <user>/<tap>/<cask>
+  brew trust --command <user>/<tap>/<command>
+Whole-tap trust is broader and includes all current and future formulae,
+casks and commands from the listed taps. Trust whole taps with:
+  brew trust jostasik/tap
+For more information, see:
+  https://docs.brew.sh/Tap-Trust
+==> Would install 1 formula:
+ffmpeg 9.0.2
+==> Would install 21 dependencies for ffmpeg:
+openssl@3
+readline
+sqlite
+xz
+lz4
+zstd
+expat
+python@3.14
+meson
+nasm
+dav1d
+mpg123
+lame
+libvmaf
+libvpx
+opus
+sdl3
+sdl2-compat
+svt-av1
+x264
+x265
+==> Would upgrade 1 dependency for ffmpeg:
+cmake
+
+---------------------------------------------------------------------------------
+2. untuk melanjutkan instalasi yang diberikan adalah y
+---------------------------------------------------------------------------------
+==> Do you want to proceed with the installation? [y/n]
+
+y==> Fetching downloads for: ffmpeg and firefox
+✔︎ API Source ffmpeg.rb                                         Verified      3.7KB/  3.7KB
+✔︎ API Source openssl@3.rb                                      Verified      7.2KB/  7.2KB
+✔︎ API Source readline.rb                                       Verified      4.4KB/  4.4KB
+✔︎ Patch readline83-001                                         Verified      1.8KB/  1.8KB
+✔︎ Patch readline83-002                                         Verified      1.6KB/  1.6KB
+✔︎ Patch readline83-003                                         Verified      2.3KB/  2.3KB
+✔︎ Patch readline83-004                                         Verified      2.1KB/  2.1KB
+✔︎ Patch readline83-005                                         Verified      2.5KB/  2.5KB
+✔︎ Patch readline83-006                                         Verified      1.4KB/  1.4KB
+✔︎ Formula readline (8.3.6)                                     Verified      3.4MB/  3.4MB
+✔︎ API Source sqlite.rb                                         Verified      3.4KB/  3.4KB
+✔︎ Formula sqlite (3.53.4)                                      Verified      3.3MB/  3.3MB
+✔︎ API Source xz.rb                                             Verified      1.7KB/  1.7KB
+✔︎ Formula xz (5.8.4)                                           Verified      2.8MB/  2.8MB
+✔︎ API Source cmake.rb                                          Verified      2.9KB/  2.9KB
+✔︎ Formula cmake (4.4.4)                                        Verified     13.3MB/ 13.3MB
+✔︎ API Source lz4.rb                                            Verified      2.4KB/  2.4KB
+✔︎ Formula lz4 (1.10.0)                                         Verified    387.1KB/387.1KB
+✔︎ API Source zstd.rb                                           Verified      3.8KB/  3.8KB
+✔︎ Formula zstd (1.5.7)                                         Verified      2.5MB/  2.5MB
+✔︎ API Source expat.rb                                          Verified      2.6KB/  2.6KB
+✔︎ Formula expat (2.8.5)                                        Verified    528.4KB/528.4KB
+✔︎ API Source python@3.14.rb                                    Verified     24.1KB/ 24.1KB
+✔︎ Resource python@3.14--flit-core                              Verified     54.7KB/ 54.7KB
+✔︎ Resource python@3.14--packaging                              Verified    313.4KB/313.4KB
+✔︎ Resource python@3.14--pip                                    Verified      1.8MB/  1.8MB
+✔︎ Resource python@3.14--wheel                                  Verified     66.5KB/ 66.5KB
+✔︎ Formula python@3.14 (3.14.8)                                 Verified     31.5MB/ 31.5MB
+✔︎ API Source nasm.rb                                           Verified      2.1KB/  2.1KB
+✔︎ Formula nasm (3.02)                                          Verified      1.5MB/  1.5MB
+✔︎ API Source dav1d.rb                                          Verified      2.0KB/  2.0KB
+✔︎ Formula dav1d (1.5.4)                                        Verified      1.2MB/  1.2MB
+✔︎ API Source mpg123.rb                                         Verified      1.5KB/  1.5KB
+✔︎ Formula mpg123 (1.33.7)                                      Verified      1.1MB/  1.1MB
+✔︎ API Source lame.rb                                           Verified      1.8KB/  1.8KB
+✔︎ Formula lame (4.0)                                           Verified      1.5MB/  1.5MB
+✔︎ API Source libvmaf.rb                                        Verified      1.6KB/  1.6KB
+✔︎ API Source libvpx.rb                                         Verified      3.9KB/  3.9KB
+✔︎ Formula libvpx (1.17.0)                                      Verified      5.7MB/  5.7MB
+✔︎ API Source opus.rb                                           Verified      2.5KB/  2.5KB
+✔︎ Formula opus (1.6.1)                                         Verified     10.5MB/ 10.5MB
+✔︎ API Source sdl3.rb                                           Verified      2.8KB/  2.8KB
+✔︎ API Source sdl2-compat.rb                                    Verified      2.3KB/  2.3KB
+✔︎ Formula sdl2-compat (2.32.74)                                Verified      2.8MB/  2.8MB
+✔︎ API Source svt-av1.rb                                        Verified      2.3KB/  2.3KB
+✔︎ API Source x265.rb                                           Verified      3.5KB/  3.5KB
+✔︎ Formula openssl@3 (3.6.5)                                    Verified     55.1MB/ 55.1MB
+✔︎ Formula libvmaf (3.2.1)                                      Verified     18.6MB/ 18.6MB
+✔︎ Formula sdl3 (3.4.18)                                        Verified     15.7MB/ 15.7MB
+✔︎ Formula svt-av1 (4.2.0)                                      Verified     10.3MB/ 10.3MB
+✔︎ Formula x265 (4.3)                                           Verified      2.1MB/  2.1MB
+✔︎ Formula ffmpeg (9.0.2)                                       Verified     12.0MB/ 12.0MB
+✔︎ Bottle x264 (r3222)                                          Downloaded    2.3MB/  2.3MB
+✔︎ Bottle meson (1.12.1)                                        Downloaded  974.6KB/974.6KB
+✔︎ Cask firefox (157.0)                                         Downloaded  161.8MB/161.8MB
+Error: ffmpeg: A `brew install ffmpeg firefox` process has already locked /usr/local/Cellar/pkgconf.
+Please wait for it to finish or terminate it to continue.
+==> Installing Cask firefox
+==> Purging files for version 157.0 of Cask firefox
+Error: firefox: It seems there is already an App at '/Applications/Firefox.app'.
+
+This is a Tier 3 configuration:
+  https://docs.brew.sh/Support-Tiers#tier-3
+You can report issues with Tier 3 configurations to Homebrew/* repositories!
+  
+Read the above document before opening any issues or PRs.
+danel@1111QD-rs ~ % 
+
+----------------------------------------------------------------------------------
+3. masukan kode berikut untuk mencari file ffmpeg
+ $ ind $(brew --cellar)/ffmpeg
+/opt/homebrew/Cellar/ffmpeg/8.1.1/bin/ffmpeg
+/opt/homebrew/Cellar/ffmpeg/8.1.1/share/man/man1/ffmpeg.1
+----------------------------------------------------------------------------------
+
+danel@1111QD-rs ~ % find $(brew --cellar)/ffmpeg
+/opt/homebrew/Cellar/ffmpeg/8.1.1/bin/ffmpeg
+/opt/homebrew/Cellar/ffmpeg/8.1.1/share/man/man1/ffmpeg.1
+find: /usr/local/Cellar/ffmpeg: No such file or directory
+zsh: no such file or directory: /opt/homebrew/Cellar/ffmpeg/8.1.1/bin/ffmpeg
+zsh: no such file or directory: /opt/homebrew/Cellar/ffmpeg/8.1.1/share/man/man1/ffmpeg.1
+danel@1111QD-rs ~ % ls -l $(brew --prefix)/bin
+/opt/homebrew/bin/ffmpeg -> ../Cellar/ffmpeg/8.1.1/bin/ffmpeg
+total 1768
+lrwxr-xr-x  1 root   admin      47 May 13 12:49 R -> /Library/Frameworks/R.framework/Resources/bin/R
+lrwxr-xr-x  1 root   admin      53 May 13 12:49 Rscript -> /Library/Frameworks/R.framework/Resources/bin/Rscript
+-rwxr-xr-x  1 root   wheel      80 Jan 15  2026 VBoxAudioTest
+-rwxr-xr-x  1 root   wheel      80 Jan 15  2026 VBoxAutostart
+-rwxr-xr-x  1 root   wheel      82 Jan 15  2026 VBoxBalloonCtrl
+-rwxr-xr-x  1 root   wheel      80 Jan 15  2026 VBoxBugReport
+-rwxr-xr-x  1 root   wheel      77 Jan 15  2026 VBoxDTrace
+-rwxr-xr-x  1 root   wheel      79 Jan 15  2026 VBoxHeadless
+-rwxr-xr-x  1 root   wheel      77 Jan 15  2026 VBoxManage
+-rwxr-xr-x  1 root   wheel      79 Jan 15  2026 VBoxVRDP
+-rwxr-xr-x  1 root   wheel      77 Jan 15  2026 VirtualBox
+-rwxr-xr-x  1 root   wheel     115 Jan 15  2026 VirtualBoxVM
+lrwxr-xr-x  1 danel  admin      35 Oct  5 11:48 bomtool -> ../Cellar/pkgconf/3.0.7/bin/bomtool
+lrwxr-xr-x  1 danel  admin      20 Oct 28  2025 brew -> ../Homebrew/bin/brew
+lrwxr-xr-x  1 root   admin      68 Oct 28  2025 code -> /Applications/Visual Studio Code.app/Contents/Resources/app/bin/code
+lrwxr-xr-x  1 root   wheel      68 Dec  2  2025 idle3 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/idle3
+lrwxr-xr-x  1 root   wheel      71 Dec  2  2025 idle3.13 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/idle3.13
+-rwxr-xr-x  1 root   wheel  422288 Mar 30  2020 info
+-rwxr-xr-x  1 root   wheel  173744 Mar 30  2020 install-info
+lrwxr-xr-x  1 root   wheel       8 May 13 12:49 makeinfo -> texi2any
+lrwxr-xr-x  1 danel  admin      32 Jul 10 00:19 ninja -> ../Cellar/ninja/1.13.2/bin/ninja
+lrwxr-xr-x  1 danel  admin      36 Oct  5 11:48 pccritic -> ../Cellar/pkgconf/3.0.7/bin/pccritic
+-rwxr-xr-x@ 1 root   wheel    1246 Mar 28  2020 pdftexi2dvi
+lrwxrwxr-x  1 root   admin      67 Dec  2  2025 pip3 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/pip3
+lrwxrwxr-x  1 root   admin      70 Dec  2  2025 pip3.13 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/pip3.13
+lrwxr-xr-x  1 danel  admin      38 Oct  5 11:48 pkg-config -> ../Cellar/pkgconf/3.0.7/bin/pkg-config
+lrwxr-xr-x  1 danel  admin      35 Oct  5 11:48 pkgconf -> ../Cellar/pkgconf/3.0.7/bin/pkgconf
+-rwxr-xr-x@ 1 root   wheel   19846 Mar 28  2020 pod2texi
+lrwxr-xr-x  1 root   wheel      69 Dec  2  2025 pydoc3 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/pydoc3
+lrwxr-xr-x  1 root   wheel      72 Dec  2  2025 pydoc3.13 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/pydoc3.13
+lrwxr-xr-x  1 root   wheel      70 Dec  2  2025 python3 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/python3
+lrwxr-xr-x  1 root   wheel      77 Dec  2  2025 python3-config -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/python3-config
+lrwxr-xr-x  1 root   wheel      78 Dec  2  2025 python3-intel64 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/python3-intel64
+lrwxr-xr-x  1 root   wheel      73 Dec  2  2025 python3.13 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+lrwxr-xr-x  1 root   wheel      80 Dec  2  2025 python3.13-config -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13-config
+lrwxr-xr-x  1 root   wheel      81 Dec  2  2025 python3.13-intel64 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13-intel64
+lrwxr-xr-x  1 root   wheel      75 Dec  2  2025 python3.13t -> ../../../Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3.13t
+lrwxr-xr-x  1 root   wheel      82 Dec  2  2025 python3.13t-config -> ../../../Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3.13t-config
+lrwxr-xr-x  1 root   wheel      83 Dec  2  2025 python3.13t-intel64 -> ../../../Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3.13t-intel64
+lrwxr-xr-x  1 root   wheel      72 Dec  2  2025 python3t -> ../../../Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3t
+lrwxr-xr-x  1 root   wheel      79 Dec  2  2025 python3t-config -> ../../../Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3t-config
+lrwxr-xr-x  1 root   wheel      80 Dec  2  2025 python3t-intel64 -> ../../../Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3t-intel64
+lrwxr-xr-x  1 danel  admin      36 Oct  5 11:48 spdxtool -> ../Cellar/pkgconf/3.0.7/bin/spdxtool
+-rwxr-xr-x@ 1 root   wheel   27786 Mar 23  2017 sqlite3_analyzer
+-rwxr-xr-x  1 root   wheel   32160 Mar 30  2020 tclsh8.6
+-rwxr-xr-x@ 1 root   wheel   50192 Mar 28  2020 texi2any
+-rwxr-xr-x@ 1 root   wheel   59828 Mar 28  2020 texi2dvi
+-rwxr-xr-x@ 1 root   wheel    1246 Mar 28  2020 texi2pdf
+-rwxr-xr-x@ 1 root   wheel    4002 Mar 28  2020 texindex
+-rwxr-xr-x  1 root   wheel      75 Jan 15  2026 vbox-img
+-rwxr-xr-x  1 root   wheel      80 Jan 15  2026 vboximg-mount
+-rwxr-xr-x  1 root   wheel      77 Jan 15  2026 vboxwebsrv
+-rwxr-xr-x  1 root   wheel   40704 Mar 30  2020 wish8.6
+zsh: no such file or directory: ../Cellar/ffmpeg/8.1.1/bin/ffmpeg
+
+----------------------------------------------------------------------------------
+4. masukan kode berikut untuk mencari file firefox
+  $ find $(brew --caskroom)/firefox/opt/homebrew/Caskroom/firefox/151.0.3/Firefox.app
+----------------------------------------------------------------------------------
+danel@1111QD-rs ~ % find $(brew --caskroom)/firefox
+/opt/homebrew/Caskroom/firefox/151.0.3/Firefox.app
+find: /usr/local/Caskroom/firefox: No such file or directory
+zsh: no such file or directory: /opt/homebrew/Caskroom/firefox/151.0.3/Firefox.app
+danel@1111QD-rs ~ % ls /Applications
+Firefox.app
+Antigravity IDE.app	Google Drive.app	WhatsApp.app
+CapCut.app		Safari.app		XAMPP
+Claude.app		Utilities		wpsoffice.app
+Firefox.app		Visual Studio Code.app	zoom.us.app
+zsh: command not found: Firefox.app
+----------------------------------------------------------------------------------
+5. untuk melanjutkan instalasi yang diberikan adalah --cask firefox
+ $ brew install --cask firefox 
+----------------------------------------------------------------------------------
+danel@1111QD-rs ~ % brew install --cask firefox
+Warning: You are using macOS 13.
+We (and Apple) do not provide support for this old version.
+
+Homebrew no longer builds bottles for this configuration.
+Consider MacPorts, which provides binary packages for this macOS version:
+  https://www.macports.org
+Warning: The following taps are not trusted:
+  jostasik/tap
+
+Homebrew is currently ignoring formulae, casks and commands
+from these taps because tap trust is required.
+Untap them with:
+  brew untap jostasik/tap
+Trust specific formulae, casks and commands with:
+  brew trust --formula <user>/<tap>/<formula>
+  brew trust --cask <user>/<tap>/<cask>
+  brew trust --command <user>/<tap>/<command>
+Whole-tap trust is broader and includes all current and future formulae,
+casks and commands from the listed taps. Trust whole taps with:
+  brew trust jostasik/tap
+For more information, see:
+  https://docs.brew.sh/Tap-Trust
+==> Fetching downloads for: firefox
+✔︎ Cask firefox (157.0)                                         Downloaded  161.8MB/161.8MB
+==> Installing Cask firefox
+==> Purging files for version 157.0 of Cask firefox
+
+This is a Tier 3 configuration:
+  https://docs.brew.sh/Support-Tiers#tier-3
+You can report issues with Tier 3 configurations to Homebrew/* repositories!
+Read the above document before opening any issues or PRs.
+
+----------------------------------------------------------------------------------
+6. untuk memeriksa versi git yang terinstall 
+ $ git --version
+ ---------------------------------------------------------------------------------
+danel@1111QD-rs ~ % git --version
+git version 2.39.2 (Apple Git-143)
+danel@1111QD-rs ~ %  susun semua dan tambaakn cara  dan kode yang di pakai dan otput
