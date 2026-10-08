@@ -85,12 +85,6 @@ brew install ffmpeg firefox
 
 Homebrew menampilkan daftar paket yang akan dipasang, yaitu `ffmpeg 9.0.2` beserta 21 dependency (openssl@3, readline, sqlite, x264, x265, dan lainnya) serta 1 dependency yang di-upgrade (`cmake`).
 
-![brew install ffmpeg firefox](images/03-brew%20install%20ffmpeg%20firefox.png)
-
-> ⚠️ **Catatan:** Homebrew menampilkan peringatan bahwa macOS 13 sudah tidak didukung (*Tier 3 configuration*) dan tap `jostasik/tap` belum dipercaya (*not trusted*). Peringatan ini tidak menghalangi proses instalasi.
-
----
-
 ### Langkah 2: Konfirmasi Instalasi
 
 Ketika muncul pertanyaan berikut, ketik **`y`** lalu tekan Enter untuk melanjutkan:
@@ -196,10 +190,6 @@ Hasil:
 ```text
 git version 2.39.2 (Apple Git-143)
 ```
-
-![git --version](images/07-git%20--version.png)
-
----
 
 ### Langkah 7: Konfigurasi Identitas Git
 
