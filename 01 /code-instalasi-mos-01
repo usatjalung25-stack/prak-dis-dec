@@ -263,4 +263,35 @@ Read the above document before opening any issues or PRs.
  ---------------------------------------------------------------------------------
 danel@1111QD-rs ~ % git --version
 git version 2.39.2 (Apple Git-143)
-danel@1111QD-rs ~ %  susun semua dan tambaakn cara  dan kode yang di pakai dan otput
+danel@1111QD-rs ~ %  
+danel@1111QD-rs ~ % git --version
+git version 2.39.2 (Apple Git-143)
+danel@1111QD-rs ~ % git config --global user.name "usatjalung25"       
+danel@1111QD-rs ~ % git config --global user.email usat.jalung25@students.utdi.ac.id
+danel@1111QD-rs ~ % cat ~/.gitconfig
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[user]
+	name = usatjalung25
+	email = usat.jalung25@students.utdi.ac.id
+[http]
+	lowSpeedLimit = 1000
+	postBuffer = 157286400
+[init]
+	defaultBranch = main
+danel@1111QD-rs ~ % git config --list
+credential.helper=osxkeychain
+init.defaultbranch=main
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.process=git-lfs filter-process
+filter.lfs.required=true
+user.name=usatjalung25
+user.email=usat.jalung25@students.utdi.ac.id
+http.lowspeedlimit=1000
+http.postbuffer=157286400
+init.defaultbranch=main
+danel@1111QD-rs ~ % 
