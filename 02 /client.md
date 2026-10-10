@@ -1,15 +1,13 @@
 # GraphQL Book: Server & Client Python
 
-Proyek belajar GraphQL sederhana yang terdiri dari:
+Proyek belajar GraphQL sederhana: sebuah **server GraphQL** yang menyediakan data buku dan sebuah **client Python** yang mengambil data tersebut lewat query.
 
-- **Server GraphQL** (`run.py`) yang menyediakan data buku
-- **Client Python** (`client.py`) yang mengambil daftar buku dari server
-
-| Item | Nilai |
-|------|-------|
+| Item | Keterangan |
+|------|------------|
+| Server | `run.py` (Uvicorn, port `8000`) |
+| Client | `client.py` (Python + `requests`) |
 | Endpoint | `http://127.0.0.1:8000/graphql` |
-| Server | Uvicorn, port `8000` |
-| GraphiQL (uji coba lewat browser) | Buka alamat endpoint yang sama |
+| GraphiQL | Buka alamat endpoint di browser untuk uji coba query |
 
 ---
 
@@ -19,8 +17,8 @@ Proyek belajar GraphQL sederhana yang terdiri dari:
 2. [Prasyarat](#prasyarat)
 3. [Cara Menjalankan](#cara-menjalankan)
 4. [Schema Type `Book`](#schema-type-book)
-5. [Error yang Muncul dan Cara Mengatasinya](#error-yang-muncul-dan-cara-mengatasinya)
-6. [Kode Client yang Sudah Diperbaiki](#kode-client-yang-sudah-diperbaiki)
+5. [Error dan Cara Mengatasinya](#error-dan-cara-mengatasinya)
+6. [Kode Client](#kode-client)
 7. [Dokumentasi Screenshot](#dokumentasi-screenshot)
 8. [Troubleshooting](#troubleshooting)
 9. [Pelajaran](#pelajaran)
@@ -31,30 +29,29 @@ Proyek belajar GraphQL sederhana yang terdiri dari:
 
 ```
 .
-├── run.py          # Server GraphQL
-├── client.py       # Client Python
-├── README.md
-├── daftar-screenshot.png   # Gambar daftar file screenshot
-└── GraphQL Client-0X.png   # Screenshot hasil percobaan
+├── run.py            # Server GraphQL
+├── client.py         # Client Python
+├── README.md         # Dokumentasi ini
+└── images/           # Screenshot hasil percobaan
+    ├── GraphQL Client -01.png
+    ├── GraphQL Client-02.png
+    ├── GraphQL Client-03.png
+    └── GraphQL Client-04.png
 ```
 
 ---
 
 ## Prasyarat
 
-- Python 3
-- Pustaka `requests` (untuk client)
+- Python 3 (cek dengan `python3 --version`)
+- Pustaka `requests` untuk client
 - Dependensi server sesuai isi `run.py` (termasuk Uvicorn)
-
-Cek versi Python:
-
-```bash
-python3 --version
-```
 
 ---
 
 ## Cara Menjalankan
+
+Gunakan **dua terminal**: satu untuk server, satu untuk client.
 
 ### 1. Install dependensi client
 
@@ -68,6 +65,8 @@ pip install requests
 cd ~
 python3 run.py
 ```
+
+> Jalankan dari folder tempat `run.py` berada. Contoh di atas memakai folder home (`~`).
 
 Jika berhasil, muncul:
 
@@ -96,12 +95,12 @@ Tekan `CTRL+C` di Terminal 1.
 
 Hasil pengecekan schema (introspection) menunjukkan type `Book` hanya punya **dua field**:
 
-| Field    | Keterangan   |
-|----------|--------------|
-| `title`  | Judul buku   |
+| Field | Keterangan |
+|-------|------------|
+| `title` | Judul buku |
 | `author` | Penulis buku |
 
-Cek lewat GraphiQL:
+**Cek lewat GraphiQL:**
 
 ```graphql
 {
@@ -113,7 +112,7 @@ Cek lewat GraphiQL:
 }
 ```
 
-Atau lewat terminal:
+**Cek lewat terminal:**
 
 ```bash
 curl -s -X POST http://127.0.0.1:8000/graphql \
@@ -121,7 +120,7 @@ curl -s -X POST http://127.0.0.1:8000/graphql \
   -d '{"query": "{ __type(name: \"Book\") { fields { name } } }"}' | python3 -m json.tool
 ```
 
-Hasil:
+**Hasil:**
 
 ```json
 {
@@ -138,7 +137,7 @@ Hasil:
 
 ---
 
-## Error yang Muncul dan Cara Mengatasinya
+## Error dan Cara Mengatasinya
 
 ### Gejala
 
@@ -184,7 +183,7 @@ GraphQL request:3:5
 
 Field `isbn` **tidak ada** di type `Book` pada schema server. Di GraphQL, client hanya boleh meminta field yang sudah didefinisikan di schema. Jika ada satu field yang tidak dikenal, **seluruh query ditolak** dan `data` menjadi `null`.
 
-> Catatan: HTTP status tetap `200 OK` walaupun query salah. Error GraphQL dikirim di dalam body JSON pada key `errors`.
+> **Catatan:** HTTP status tetap `200 OK` walaupun query salah. Error GraphQL dikirim di dalam body JSON pada key `errors`.
 
 ### Solusi 1: Hapus `isbn` dari query (tercepat)
 
@@ -212,13 +211,13 @@ Jika data ISBN memang dibutuhkan, tambahkan field `isbn` pada definisi type `Boo
 1. Hentikan server dengan `CTRL+C`
 2. Jalankan lagi: `python3 run.py`
 
-Tanpa restart, server masih memakai schema lama dan error yang sama akan tetap muncul.
+> Tanpa restart, server masih memakai schema lama dan error yang sama akan tetap muncul.
 
 ---
 
-## Kode Client yang Sudah Diperbaiki
+## Kode Client
 
-File `client.py`:
+File `client.py` (sudah diperbaiki, hanya meminta field yang ada di schema):
 
 ```python
 import json
@@ -264,27 +263,21 @@ except Exception as e:
 
 ## Dokumentasi Screenshot
 
-Berikut daftar file screenshot yang ada di repository:
+### 1. Server dijalankan
 
-![Daftar file screenshot](daftar-screenshot.png)
+![GraphQL Client 01](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client%20-01.png?raw=true)
 
-> Sesuaikan keterangan di bawah dengan isi gambar masing-masing.
+### 2. Client mengirim query
 
-**1. Server berhasil dijalankan**
+![GraphQL Client 02](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client-02.png?raw=true)
 
-![GraphQL Client 01](GraphQL%20Client%20-01.png)
+### 3. Error dan pengecekan schema
 
-**2. Client mengirim query**
+![GraphQL Client 03](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client-03.png?raw=true)
 
-![GraphQL Client 02](GraphQL%20Client-02.png)
+### 4. Hasil akhir setelah diperbaiki
 
-**3. Error / pengecekan schema**
-
-![GraphQL Client 03](GraphQL%20Client-03.png)
-
-**4. Hasil akhir setelah diperbaiki**
-
-![GraphQL Client 04](GraphQL%20Client-04.png)
+![GraphQL Client 04](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client-04.png?raw=true)
 
 ---
 
