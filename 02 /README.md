@@ -1,407 +1,172 @@
-# 🚀 proyek-saya: Setup Proyek Python dengan `uv`
+# Menggunakan uv untuk Mengelola Environment dan Paket Python
 
-Dokumentasi langkah demi langkah penyiapan proyek Python menggunakan **[uv](https://docs.astral.sh/uv/)**, sebuah *package & project manager* Python yang sangat cepat, ditulis dengan Rust oleh Astral.
+Panduan praktis (bukan panduan lengkap) untuk membuat *workspace* proyek dengan versi Python tertentu dan paket khusus menggunakan [uv](https://docs.astral.sh/uv/).
 
-Seluruh perintah di bawah ini dijalankan di **macOS (Intel / `x86_64`)** menggunakan terminal **zsh**.
+- **Sistem operasi**: macOS (x86_64)
+- **uv**: 0.13.0
+- **Python**: 3.12.15 (CPython)
+- **Last update**: 10 Oktober 2026
 
----
+## Daftar Isi
 
-## 📑 Daftar Isi
+- [Instalasi](#instalasi)
+- [Update](#update)
+- [Membuat Workspace](#membuat-workspace)
+- [Membuat Environment](#membuat-environment)
+- [Mengelola Paket](#mengelola-paket)
+- [Menyimpan Daftar Paket](#menyimpan-daftar-paket)
+- [Troubleshooting](#troubleshooting)
 
-1. [Ringkasan](#-ringkasan)
-2. [Prasyarat](#-prasyarat)
-3. [Penjelasan Setiap Perintah](#-penjelasan-setiap-perintah)
-4. [Pembahasan](#-pembahasan)
-5. [Cara Cepat (Quick Start)](#-cara-cepat-quick-start)
-6. [Struktur Proyek Akhir](#-struktur-proyek-akhir)
-7. [Cheat Sheet](#-cheat-sheet)
-8. [Referensi](#-referensi)
+## Instalasi
 
----
-
-## 📌 Ringkasan
-
-| Item | Nilai |
-|------|-------|
-| Nama proyek | `proyek-saya` |
-| Package manager | `uv` v0.12.23 |
-| Versi Python | CPython 3.12.15 (di-*pin* ke `3.12`) |
-| Virtual environment | `.venv` |
-| Library terpasang | `pandas`, `numpy`, `python-dateutil`, `six` |
-| OS | macOS (Intel, `x86_64`) |
-
----
-
-## ✅ Prasyarat
-
-- macOS dengan terminal (zsh/bash)
-- Koneksi internet (untuk mengunduh `uv`, Python, dan paket)
-- `curl` (sudah tersedia bawaan macOS)
-
----
-
-## 📖 Penjelasan Setiap Perintah
-
-### 1. Instalasi `uv`
+Petunjuk lengkap: <https://docs.astral.sh/uv/getting-started/installation/>. Berikut contoh di macOS/Linux:
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
+$ curl -LsSf https://astral.sh/uv/install.sh | sh
+downloading uv 0.13.0 x86_64-apple-darwin
+skipping sha256 checksum verification (it requires the 'sha256sum' command)
+installing to /Users/danel/.local/bin
+  uv
+  uvx
+everything's installed!
 ```
 
-Mengunduh skrip instalasi resmi `uv` lalu langsung menjalankannya.
-
-| Bagian | Fungsi |
-|--------|--------|
-| `curl` | Alat untuk mengunduh konten dari URL |
-| `-L` | Mengikuti *redirect* jika URL dialihkan |
-| `-s` | *Silent*, menyembunyikan progress bar |
-| `-S` | Tetap menampilkan pesan error walaupun mode `-s` aktif |
-| `-f` | *Fail*, gagal dengan tenang jika server mengembalikan error HTTP |
-| `\| sh` | Menyalurkan (*pipe*) hasil unduhan ke shell untuk dieksekusi |
-
-**Hasil:** `uv` dan `uvx` terpasang di `/Users/danel/.local/bin`.
-
-> ⚠️ Pesan `skipping sha256 checksum verification` muncul karena perintah `sha256sum` tidak tersedia di macOS (macOS memakai `shasum`). Ini hanya peringatan, instalasi tetap berhasil.
-
----
-
-### 2. Instalasi `uv` versi Windows (❌ tidak berlaku di macOS)
+Pastikan `$PATH` berisi lokasi uv diinstal (`~/.local/bin`). Cek dengan:
 
 ```bash
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+$ uv --version
 ```
 
-Perintah ini adalah cara instalasi **khusus Windows** (via PowerShell). Karena dijalankan di macOS:
-
-```
-zsh: command not found: powershell
-```
-
-**Kesimpulan:** Error ini wajar dan **bisa diabaikan**, karena instalasi dari langkah 1 sudah berhasil.
-
----
-
-### 3. Memperbarui `uv`
+## Update
 
 ```bash
-uv self update
+$ uv self update
 ```
 
-Memeriksa dan memperbarui `uv` ke versi terbaru.
+## Membuat Workspace
 
-**Hasil:** `You're already on version v0.12.23 of uv (the latest version).` Artinya `uv` sudah versi terbaru.
-
----
-
-### 4. Membuat folder proyek
+Buat direktori yang akan menjadi workspace proyek:
 
 ```bash
-mkdir proyek-saya
-cd proyek-saya
+$ mkdir workspace-01
+$ cd workspace-01
 ```
 
-| Perintah | Fungsi |
-|----------|--------|
-| `mkdir proyek-saya` | *Make directory*, membuat folder baru bernama `proyek-saya` |
-| `cd proyek-saya` | *Change directory*, berpindah masuk ke folder tersebut |
-
----
-
-### 5. Melihat daftar versi Python
+Lihat daftar versi Python yang tersedia:
 
 ```bash
-uv python list
+$ uv python list
+cpython-3.15.0-macos-x86_64-none                  <download available>
+cpython-3.14.8-macos-x86_64-none                  <download available>
+cpython-3.14.4-macos-x86_64-none                  /Users/danel/.local/bin/python3.14 -> ...
+cpython-3.13.9-macos-x86_64-none                  /usr/local/bin/python3.13 -> ...
+cpython-3.12.15-macos-x86_64-none                 /Users/danel/.local/share/uv/python/cpython-3.12-macos-x86_64-none/bin/python3.12
+cpython-3.11.17-macos-x86_64-none                 <download available>
+...
 ```
 
-Menampilkan semua versi Python yang **sudah terpasang** maupun yang **bisa diunduh** oleh `uv`.
-
-Cara membaca outputnya:
-
-| Keterangan | Arti |
-|------------|------|
-| `<download available>` | Versi tersedia, tapi belum terpasang |
-| Path (mis. `/usr/local/bin/python3.13`) | Versi sudah terpasang di sistem |
-| `cpython` | Implementasi Python standar |
-| `+freethreaded` | Varian tanpa GIL (eksperimental) |
-| `pypy`, `graalpy` | Implementasi Python alternatif |
-
-Versi yang sudah terdeteksi di komputer ini:
-
-- `3.14.4` (terkelola `uv`)
-- `3.13.9` (instalasi python.org)
-- `3.9.6` (bawaan macOS, `/usr/bin/python3`)
-
----
-
-### 6. Mengunci versi Python proyek
+Pin versi Python untuk workspace ini. Cara paling sederhana adalah memakai nomor versi:
 
 ```bash
-uv python pin 3.12
+$ uv python pin 3.12
+Updated `.python-version` from `/home/bpdp/.local/bin/python3.14` -> `3.12`
 ```
 
-Membuat file **`.python-version`** berisi `3.12`. Setiap kali `uv` dijalankan di folder ini, versi Python 3.12 akan dipakai secara konsisten.
+> **Catatan**: `uv python pin` juga bisa menerima path executable (kolom kanan pada `uv python list`). Jika versi belum terpasang, uv akan mengunduhnya otomatis (hanya sekali).
 
-**Hasil:** `Pinned .python-version to 3.12`
+File `.python-version` akan dibuat di direktori tersebut.
 
----
-
-### 7. Membuat virtual environment
+## Membuat Environment
 
 ```bash
-uv venv
-```
-
-Membuat *virtual environment* di folder `.venv`. Karena Python 3.12 belum terpasang, `uv` **mengunduhnya otomatis** (CPython 3.12.15).
-
-**Hasil:**
-
-```
+$ uv venv
 Using CPython 3.12.15
 Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
 ```
 
-> 💡 Virtual environment memisahkan library tiap proyek agar tidak saling bentrok.
-
----
-
-### 8. Mengaktifkan virtual environment
+Aktifkan environment:
 
 ```bash
-source .venv/bin/activate
+$ source .venv/bin/activate
+(workspace-01) $ which python
+/Users/danel/workspace-01/.venv/bin/python
 ```
 
-Mengaktifkan environment. Tanda berhasil: prompt berubah menjadi `(proyek-saya)`.
-
----
-
-### 9. Perintah aktivasi Windows (❌ tidak berlaku di macOS)
+Prefix `(workspace-01)` menandakan environment yang sedang aktif. Untuk keluar, gunakan:
 
 ```bash
-.venv\Scripts\activate.bat
-venv\Scripts\Activate.ps1
+(workspace-01) $ deactivate
 ```
 
-Ini adalah cara aktivasi **khusus Windows** (CMD dan PowerShell). Di macOS menghasilkan error:
+## Mengelola Paket
 
-```
-zsh: command not found: .venvScriptsactivate.bat
-zsh: command not found: venvScriptsActivate.ps1
-```
-
-Perhatikan bahwa tanda `\` hilang pada pesan error. Di zsh, backslash dianggap karakter *escape*, sehingga path menjadi menyatu. Selain itu, pada perintah kedua nama foldernya `venv` (bukan `.venv`).
-
-**Kesimpulan:** Di macOS/Linux cukup gunakan `source .venv/bin/activate`.
-
-| Sistem Operasi | Perintah Aktivasi |
-|----------------|-------------------|
-| macOS / Linux | `source .venv/bin/activate` |
-| Windows (CMD) | `.venv\Scripts\activate.bat` |
-| Windows (PowerShell) | `.venv\Scripts\Activate.ps1` |
-
----
-
-### 10. Memasang library `pandas`
+Gunakan `uv pip`. Perintahnya kompatibel dengan `pip`, tetapi hanya berlaku untuk workspace ini.
 
 ```bash
-uv pip install pandas
-```
-
-Memasang `pandas` beserta dependensinya ke dalam `.venv`.
-
-**Hasil:**
-
-```
-Resolved 4 packages in 2.93s
-Prepared 4 packages in 3.29s
-Installed 4 packages in 76ms
+(workspace-01) $ uv pip install pandas
+Resolved 4 packages in 627ms
+Prepared 4 packages in 2.92s
+Installed 4 packages in 192ms
  + numpy==2.5.3
  + pandas==3.0.6
  + python-dateutil==2.9.0.post0
  + six==1.17.0
 ```
 
-| Paket | Peran |
-|-------|-------|
-| `pandas` | Library utama untuk analisis data |
-| `numpy` | Dependensi: komputasi numerik/array |
-| `python-dateutil` | Dependensi: pengolahan tanggal dan waktu |
-| `six` | Dependensi: kompatibilitas Python 2/3 |
-
----
-
-### 11. Melihat daftar paket terpasang
+Lihat paket yang terpasang:
 
 ```bash
-uv pip list
+(workspace-01) $ uv pip list
+Package         Version
+--------------- -----------
+numpy           2.5.3
+pandas          3.0.6
+python-dateutil 2.9.0.post0
+six             1.17.0
 ```
 
-Menampilkan tabel paket beserta versinya di environment aktif.
+## Menyimpan Daftar Paket
 
----
-
-### 12. Menyimpan daftar dependensi
+Simpan ke `requirements.txt` agar environment bisa direproduksi:
 
 ```bash
-uv pip freeze > requirements.txt
+(workspace-01) $ uv pip freeze > requirements.txt
 ```
 
-| Bagian | Fungsi |
-|--------|--------|
-| `uv pip freeze` | Mencetak semua paket terpasang dengan versi persis (`paket==versi`) |
-| `>` | Mengalihkan output ke dalam file, bukan ke layar |
-| `requirements.txt` | File tujuan penyimpanan |
-
----
-
-### 13. Memasang dependensi dari file
+Pasang ulang di mesin lain:
 
 ```bash
-uv pip install -r requirements.txt
+$ uv pip install -r requirements.txt
 ```
 
-Memasang semua paket yang tercantum di `requirements.txt` (flag `-r` = *requirement file*).
+## Troubleshooting
 
-**Hasil:** `Checked 4 packages in 12ms`. Tidak ada yang dipasang ulang karena semuanya sudah ada. Perintah ini berguna saat memindahkan proyek ke komputer lain atau saat *clone* dari GitHub.
+**`source: no such file or directory: /Users/danel/.local/bin/env`**
 
----
-
-### 14. Melihat isi file
+File `env` tidak selalu dibuat oleh installer. Tambahkan PATH secara manual ke `~/.zshrc`:
 
 ```bash
-cat requirements.txt
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 ```
 
-Menampilkan isi file di terminal:
+**`mkdir: workspace-01: File exists`**
+
+Direktori sudah ada, jadi cukup lanjutkan dengan `cd workspace-01`.
+
+## Struktur Akhir Workspace
 
 ```
-numpy==2.5.3
-pandas==3.0.6
-python-dateutil==2.9.0.post0
-six==1.17.0
+workspace-01/
+├── .python-version
+├── .venv/
+└── requirements.txt
 ```
 
----
+> Tambahkan `.venv/` ke `.gitignore` agar tidak ikut ter-commit.
 
-## 🧠 Pembahasan
+## Referensi
 
-### 1. Mengapa memakai `uv`?
-
-| Aspek | `pip` + `venv` klasik | `uv` |
-|-------|----------------------|------|
-| Kecepatan | Lambat | **10-100x lebih cepat** |
-| Kelola versi Python | Tidak bisa | **Bisa** (unduh otomatis) |
-| Buat virtual env | `python -m venv` | `uv venv` |
-| Instalasi paket | `pip install` | `uv pip install` |
-| Satu alat untuk semua | Tidak | **Ya** |
-
-Terlihat dari output: memasang 4 paket hanya butuh sekitar **76 ms** untuk tahap instalasi, dan pengecekan ulang hanya **12 ms**.
-
-### 2. Alur kerja yang terbentuk
-
-```
-Install uv → Buat folder → Pin Python → Buat venv → Aktifkan venv
-          → Install paket → Simpan requirements.txt → Verifikasi
-```
-
-### 3. Pelajaran dari error yang muncul
-
-Dua error yang terjadi (`powershell` dan `activate.bat`) disebabkan **mengikuti panduan untuk Windows di macOS**. Tidak ada yang rusak. Tips:
-
-- Perhatikan tab/label OS pada dokumentasi (macOS/Linux vs Windows).
-- `command not found` berarti perintah tersebut memang tidak ada di sistem Anda.
-
-### 4. Catatan penting tentang `uv pip` vs alur proyek `uv`
-
-Sesi ini memakai **antarmuka kompatibel pip** (`uv pip ...`). Cara ini bagus dan familiar, tetapi `uv` juga punya **alur kerja proyek modern** yang lebih ringkas:
-
-| Alur yang dipakai (gaya pip) | Alternatif modern (gaya proyek `uv`) |
-|------------------------------|--------------------------------------|
-| `uv venv` | `uv init` (membuat `pyproject.toml`) |
-| `uv pip install pandas` | `uv add pandas` |
-| `uv pip freeze > requirements.txt` | `uv lock` (membuat `uv.lock`) |
-| `uv pip install -r requirements.txt` | `uv sync` |
-| `source .venv/bin/activate` + `python` | `uv run python main.py` (tanpa aktivasi manual) |
-
-Keunggulan alur modern: dependensi tercatat di `pyproject.toml`, ada *lock file* yang menjamin hasil instalasi identik, dan tidak perlu mengaktifkan environment secara manual.
-
-### 5. Catatan tentang `requirements.txt`
-
-`uv pip freeze` mencatat **semua** paket, termasuk dependensi turunan (`numpy`, `six`, dll.), bukan hanya yang dipasang langsung (`pandas`). Kelebihannya hasil bisa direproduksi persis. Kekurangannya, sulit membedakan mana paket utama dan mana dependensi turunan.
-
-### 6. Rekomendasi `.gitignore`
-
-Jika proyek diunggah ke GitHub, **jangan** ikut mengunggah `.venv`. Buat file `.gitignore`:
-
-```gitignore
-.venv/
-__pycache__/
-*.pyc
-```
-
-File yang **sebaiknya di-commit:** `.python-version`, `requirements.txt` (atau `pyproject.toml` dan `uv.lock`).
-
----
-
-## ⚡ Cara Cepat (Quick Start)
-
-Bagi yang ingin menjalankan ulang proyek ini dari awal (macOS/Linux):
-
-```bash
-# 1. Pasang uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# 2. Clone repositori dan masuk ke folder
-git clone <url-repo-anda>
-cd proyek-saya
-
-# 3. Buat environment sesuai .python-version
-uv venv
-
-# 4. Aktifkan environment
-source .venv/bin/activate
-
-# 5. Pasang dependensi
-uv pip install -r requirements.txt
-
-# 6. Verifikasi
-uv pip list
-```
-
----
-
-## 🗂️ Struktur Proyek Akhir
-
-```
-proyek-saya/
-├── .venv/               # Virtual environment (jangan di-commit)
-├── .python-version      # Versi Python yang dikunci (3.12)
-└── requirements.txt     # Daftar dependensi
-```
-
----
-
-## 🧾 Cheat Sheet
-
-| Tujuan | Perintah |
-|--------|----------|
-| Pasang uv | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
-| Update uv | `uv self update` |
-| Lihat versi Python | `uv python list` |
-| Pasang versi Python | `uv python install 3.12` |
-| Kunci versi Python | `uv python pin 3.12` |
-| Buat venv | `uv venv` |
-| Aktifkan venv (macOS/Linux) | `source .venv/bin/activate` |
-| Nonaktifkan venv | `deactivate` |
-| Pasang paket | `uv pip install <paket>` |
-| Hapus paket | `uv pip uninstall <paket>` |
-| Daftar paket | `uv pip list` |
-| Ekspor dependensi | `uv pip freeze > requirements.txt` |
-| Pasang dari file | `uv pip install -r requirements.txt` |
-
----
-
-## 🔗 Referensi
-
-- [Dokumentasi resmi uv](https://docs.astral.sh/uv/)
-- [Repositori uv di GitHub](https://github.com/astral-sh/uv)
-- [Dokumentasi pandas](https://pandas.pydata.org/docs/)
+- Dokumentasi uv: <https://docs.astral.sh/uv/>
+- Panduan asli oleh Dr. Bambang Purnomosidi D. P. ([PT Neo Akselerasi Indonesia](https://neo-x.id))
