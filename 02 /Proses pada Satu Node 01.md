@@ -5,10 +5,9 @@ Universitas Teknologi Digital Indonesia - Prodi Informatika
 
 | | |
 |---|---|
-| **Nama** | _isi nama_ |
-| **NIM** | _isi NIM_ |
-| **Sistem Operasi** | Windows |
-| **Aplikasi yang diuji** | Google Chrome |
+| **Nama** | USAT JALUNG |
+| **NIM** | 255410017 |
+| **Sistem Operasi** | MOS |
 
 ---
 
