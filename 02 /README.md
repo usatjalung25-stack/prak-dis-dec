@@ -1,50 +1,43 @@
-# Menggunakan uv untuk Mengelola Environment dan Paket Python
+# Panduan uv: Environment dan Paket Python (Step by Step)
 
-Panduan praktis untuk membuat *workspace* proyek dengan versi Python tertentu dan paket khusus menggunakan [uv](https://docs.astral.sh/uv/), lengkap dengan cara mengatasi error yang sering muncul.
+Panduan ini disusun dari praktik langsung di terminal macOS. Setiap langkah berisi **perintah**, **output asli**, **penjelasan**, dan **cara mengatasi jika error**.
 
-- **Sistem operasi**: macOS (x86_64), langkah di Linux hampir sama
-- **uv**: 0.13.0
-- **Python**: 3.12.15 (CPython)
-- **Last update**: 10 Oktober 2026
+| Info | Nilai |
+|---|---|
+| Sistem operasi | macOS (x86_64) |
+| uv | 0.13.0 |
+| Python | CPython 3.12.15 |
+| Paket contoh | pandas 3.0.6 |
+| Last update | 10 Oktober 2026 |
 
-## Daftar Isi
+## Daftar Langkah
 
-- [Apa itu uv?](#apa-itu-uv)
-- [Ringkasan Cepat](#ringkasan-cepat)
-- [1. Instalasi](#1-instalasi)
-- [2. Update uv](#2-update-uv)
-- [3. Membuat Workspace](#3-membuat-workspace)
-- [4. Membuat Environment](#4-membuat-environment)
-- [5. Mengelola Paket](#5-mengelola-paket)
-- [6. Menyimpan dan Memasang Ulang Paket](#6-menyimpan-dan-memasang-ulang-paket)
-- [7. Menghapus Environment](#7-menghapus-environment)
-- [Alternatif: Workflow Proyek (uv init/add/sync)](#alternatif-workflow-proyek-uv-initaddsync)
-- [Troubleshooting](#troubleshooting)
-- [Struktur Akhir Workspace](#struktur-akhir-workspace)
-- [Referensi](#referensi)
+1. [Instal uv](#langkah-1-instal-uv)
+2. [Buat folder workspace](#langkah-2-buat-folder-workspace)
+3. [Lihat daftar versi Python](#langkah-3-lihat-daftar-versi-python)
+4. [Pin versi Python](#langkah-4-pin-versi-python)
+5. [Buat environment (.venv)](#langkah-5-buat-environment-venv)
+6. [Aktifkan environment](#langkah-6-aktifkan-environment)
+7. [Instal paket](#langkah-7-instal-paket)
+8. [Muat file env (opsional, bisa error)](#langkah-8-muat-file-env-opsional-bisa-error)
+9. [Cek paket terpasang](#langkah-9-cek-paket-terpasang)
+10. [Simpan daftar paket (opsional)](#langkah-10-simpan-daftar-paket-opsional)
 
-## Apa itu uv?
+Setelah itu: [Ringkasan Perintah](#ringkasan-perintah) | [Daftar Error dan Solusi](#daftar-error-dan-solusi) | [Struktur Akhir](#struktur-akhir-workspace)
 
-`uv` adalah peranti untuk mengelola instalasi Python, environment (venv), dan paket dalam satu perintah. Dokumen ini berisi petunjuk praktis, bukan petunjuk lengkap. Hasilnya adalah direktori (*workspace*) yang spesifik untuk satu proyek dengan versi Python dan paket sendiri.
+---
 
-## Ringkasan Cepat
+## Langkah 1: Instal uv
+
+**Perintah**
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh   # instal uv
-mkdir workspace-01 && cd workspace-01              # buat workspace
-uv python pin 3.12                                 # pin versi Python
-uv venv                                            # buat environment
-source .venv/bin/activate                          # aktifkan
-uv pip install pandas                              # pasang paket
-uv pip freeze > requirements.txt                   # simpan daftar paket
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-## 1. Instalasi
+**Output**
 
-Petunjuk lengkap: <https://docs.astral.sh/uv/getting-started/installation/>. Contoh di macOS/Linux:
-
-```bash
-$ curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 downloading uv 0.13.0 x86_64-apple-darwin
 skipping sha256 checksum verification (it requires the 'sha256sum' command)
 installing to /Users/danel/.local/bin
@@ -53,108 +46,212 @@ installing to /Users/danel/.local/bin
 everything's installed!
 ```
 
-Alternatif lain:
+**Penjelasan**
+
+- `uv` dan `uvx` dipasang ke `/Users/danel/.local/bin`.
+- Baris `skipping sha256 checksum verification` hanya peringatan, bukan error. Instalasi tetap berhasil.
+- Petunjuk resmi untuk sistem operasi lain: <https://docs.astral.sh/uv/getting-started/installation/>
+
+**Cek berhasil atau tidak**
 
 ```bash
-brew install uv          # Homebrew (macOS/Linux)
-pip install uv           # lewat pip
+uv --version
 ```
 
-Windows (PowerShell):
+**Jika error: `command not found: uv`**
 
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-Pastikan `$PATH` berisi lokasi uv (`~/.local/bin`), lalu cek:
+Folder `~/.local/bin` belum ada di PATH. Tambahkan:
 
 ```bash
-$ uv --version
-uv 0.13.0
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+uv --version
 ```
 
-Jika muncul `command not found: uv`, lihat [Troubleshooting](#error-command-not-found-uv).
+Atau tutup Terminal lalu buka lagi.
 
-## 2. Update uv
+---
+
+## Langkah 2: Buat folder workspace
+
+**Perintah**
 
 ```bash
-$ uv self update
+mkdir workspace-01
+cd workspace-01
 ```
 
-Jika sudah versi terbaru, uv akan menampilkan pesan bahwa kamu sudah di versi terakhir. Jika uv dipasang lewat Homebrew, update dengan `brew upgrade uv`.
+**Output**
 
-## 3. Membuat Workspace
-
-Buat direktori yang akan menjadi workspace proyek:
-
-```bash
-$ mkdir workspace-01
-$ cd workspace-01
+```
+mkdir: workspace-01: File exists
 ```
 
-Lihat daftar versi Python yang tersedia:
+**Penjelasan**
+
+- Pesan ini artinya folder `workspace-01` **sudah ada**. Ini bukan masalah serius.
+- Perintah `cd workspace-01` tetap berhasil, jadi lanjut saja.
+
+**Cara menghindari pesan ini**
 
 ```bash
-$ uv python list
+mkdir -p workspace-01
+cd workspace-01
+```
+
+Opsi `-p` membuat folder hanya jika belum ada, tanpa menampilkan error.
+
+---
+
+## Langkah 3: Lihat daftar versi Python
+
+**Perintah**
+
+```bash
+uv python list
+```
+
+**Output**
+
+```
 cpython-3.15.0-macos-x86_64-none                  <download available>
+cpython-3.15.0+freethreaded-macos-x86_64-none     <download available>
 cpython-3.14.8-macos-x86_64-none                  <download available>
-cpython-3.14.4-macos-x86_64-none                  /Users/danel/.local/bin/python3.14 -> ...
-cpython-3.13.9-macos-x86_64-none                  /usr/local/bin/python3.13 -> ...
+cpython-3.14.8+freethreaded-macos-x86_64-none     <download available>
+cpython-3.14.4-macos-x86_64-none                  /Users/danel/.local/bin/python3.14 -> /Users/danel/.local/share/uv/python/cpython-3.14-macos-x86_64-none/bin/python3.14
+cpython-3.14.4-macos-x86_64-none                  /Users/danel/.local/share/uv/python/cpython-3.14-macos-x86_64-none/bin/python3.14
+cpython-3.13.16-macos-x86_64-none                 <download available>
+cpython-3.13.16+freethreaded-macos-x86_64-none    <download available>
+cpython-3.13.9-macos-x86_64-none                  /usr/local/bin/python3.13 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+cpython-3.13.9-macos-x86_64-none                  /usr/local/bin/python3 -> ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/python3
 cpython-3.12.15-macos-x86_64-none                 /Users/danel/.local/share/uv/python/cpython-3.12-macos-x86_64-none/bin/python3.12
 cpython-3.11.17-macos-x86_64-none                 <download available>
-...
+cpython-3.10.22-macos-x86_64-none                 <download available>
+cpython-3.9.25-macos-x86_64-none                  <download available>
+cpython-3.9.6-macos-x86_64-none                   /usr/bin/python3
+cpython-3.8.20-macos-x86_64-none                  <download available>
+pypy-3.12.14-macos-x86_64-none                    <download available>
+pypy-3.11.16-macos-x86_64-none                    <download available>
+pypy-3.10.16-macos-x86_64-none                    <download available>
+pypy-3.9.19-macos-x86_64-none                     <download available>
+pypy-3.8.16-macos-x86_64-none                     <download available>
+graalpy-3.12.0-macos-x86_64-none                  <download available>
+graalpy-3.11.0-macos-x86_64-none                  <download available>
+graalpy-3.10.0-macos-x86_64-none                  <download available>
+graalpy-3.8.5-macos-x86_64-none                   <download available>
 ```
 
-Arti kolom kanan:
+**Cara membaca output**
 
-- Berisi path: versi **sudah terpasang** di komputer.
-- `<download available>`: **belum terpasang**, akan diunduh otomatis jika dipakai.
+| Kolom kanan | Artinya |
+|---|---|
+| `<download available>` | Belum terpasang. Akan diunduh otomatis jika dipilih. |
+| Berisi path (misal `/Users/danel/.local/share/uv/...`) | Sudah terpasang dan siap dipakai. |
 
-Pin versi Python untuk workspace ini:
+Dari output di atas, Python yang **sudah terpasang** antara lain:
+
+- 3.14.4 (dikelola uv)
+- 3.13.9 (dari python.org, di `/usr/local/bin`)
+- **3.12.15 (dikelola uv)**: versi yang dipilih pada langkah berikutnya
+- 3.9.6 (bawaan macOS, `/usr/bin/python3`)
+
+Tanda `+freethreaded` adalah varian eksperimental tanpa GIL. Untuk penggunaan umum, pilih versi tanpa tanda itu.
+
+---
+
+## Langkah 4: Pin versi Python
+
+**Perintah**
 
 ```bash
-$ uv python pin 3.12
+uv python pin 3.12
+```
+
+**Output**
+
+```
 Updated `.python-version` from `/home/bpdp/.local/bin/python3.14` -> `3.12`
 ```
 
-> **Catatan**: `uv python pin` bisa menerima nomor versi (`3.12`) atau path executable (`/Users/danel/.local/bin/python3.14`). Nomor versi lebih mudah dan portabel antar komputer. Path absolut hanya berlaku di komputer tersebut.
+**Penjelasan**
 
-Jika ingin memasang Python tanpa pin:
+- Perintah ini membuat atau memperbarui file `.python-version` di folder workspace.
+- Kata **Updated** (bukan *Pinned*) berarti file `.python-version` **sudah ada sebelumnya**. Isi lamanya adalah path `/home/bpdp/.local/bin/python3.14`, yaitu path dari komputer lain (kemungkinan terbawa dari contoh/dokumen sumber). Path itu tidak ada di komputermu, jadi harus diganti. Perintah ini sudah menggantinya menjadi `3.12`.
+- Memakai **nomor versi** (`3.12`) lebih aman daripada path absolut karena bisa dipakai di komputer mana pun.
+
+**Cek isinya**
 
 ```bash
-$ uv python install 3.12
+cat .python-version
 ```
 
-File `.python-version` akan dibuat/diperbarui di direktori tersebut.
+Hasil yang diharapkan: `3.12`
 
-## 4. Membuat Environment
+**Jika error: `No interpreter found`**
+
+Pasang dulu versinya, lalu pin ulang:
 
 ```bash
-$ uv venv
+uv python install 3.12
+uv python pin 3.12
+```
+
+---
+
+## Langkah 5: Buat environment (.venv)
+
+**Perintah**
+
+```bash
+uv venv
+```
+
+**Output**
+
+```
 Using CPython 3.12.15
 Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate
 ```
 
-uv otomatis membaca `.python-version`, jadi Python yang dipakai sesuai hasil `pin`.
+**Penjelasan**
 
-Aktifkan environment:
+- uv membaca `.python-version` sehingga memakai CPython **3.12.15**.
+- Folder `.venv` dibuat di dalam workspace. Isinya adalah Python dan paket khusus untuk proyek ini.
+
+**Jika error: `A virtual environment already exists at .venv`**
 
 ```bash
-$ source .venv/bin/activate
-(workspace-01) $ which python
+uv venv --clear
+```
+
+Opsi `--clear` membuat ulang environment dari nol.
+
+---
+
+## Langkah 6: Aktifkan environment
+
+**Perintah**
+
+```bash
+source .venv/bin/activate
+which python
+```
+
+**Output**
+
+```
+(workspace-01) danel@1111QD-rs workspace-01 % which python
 /Users/danel/workspace-01/.venv/bin/python
 ```
 
-Perhatikan prefix `(workspace-01)` di depan prompt. Itu menandakan environment yang sedang aktif, dan `which python` kini menunjuk ke `.venv`. Sebelum aktivasi, `which python` biasanya menunjuk ke Python bawaan sistem.
+**Penjelasan**
 
-Untuk keluar dari environment:
+- Prefix **`(workspace-01)`** di depan prompt menandakan environment sedang aktif.
+- `which python` kini menunjuk ke `.venv/bin/python`, artinya semua perintah `python` dan paket yang dipasang akan masuk ke environment ini, bukan ke Python sistem.
+- Untuk keluar dari environment: `deactivate`
 
-```bash
-(workspace-01) $ deactivate
-```
-
-Aktivasi untuk shell lain:
+**Aktivasi di shell lain**
 
 | Shell | Perintah |
 |---|---|
@@ -163,12 +260,24 @@ Aktivasi untuk shell lain:
 | Windows CMD | `.venv\Scripts\activate.bat` |
 | Windows PowerShell | `.venv\Scripts\Activate.ps1` |
 
-## 5. Mengelola Paket
+**Jika `which python` bukan menunjuk ke `.venv`**
 
-Gunakan `uv pip`. Perintahnya kompatibel dengan `pip`, tetapi hanya berlaku untuk workspace ini.
+- Pastikan kamu menjalankan `source .venv/bin/activate` dari **dalam folder workspace**.
+- Setiap membuka tab/terminal baru, aktivasi harus diulang.
+
+---
+
+## Langkah 7: Instal paket
+
+**Perintah**
 
 ```bash
-(workspace-01) $ uv pip install pandas
+uv pip install pandas
+```
+
+**Output**
+
+```
 Resolved 4 packages in 627ms
 Prepared 4 packages in 2.92s
 Installed 4 packages in 192ms
@@ -178,20 +287,98 @@ Installed 4 packages in 192ms
  + six==1.17.0
 ```
 
-Perintah yang sering dipakai:
+**Penjelasan**
+
+- Kamu hanya meminta `pandas`, tetapi uv memasang **4 paket** karena pandas membutuhkan 3 paket lain (dependency): `numpy`, `python-dateutil`, dan `six`.
+- Tanda `+` berarti paket baru ditambahkan.
+- `uv pip` sama seperti `pip` biasa, tetapi jauh lebih cepat dan hanya berlaku untuk environment yang aktif.
+
+**Perintah paket lain yang sering dipakai**
 
 ```bash
-uv pip list                      # daftar paket terpasang
-uv pip show pandas               # detail satu paket
 uv pip install "pandas==3.0.6"   # versi tertentu
-uv pip install -U pandas         # upgrade paket
+uv pip install -U pandas         # upgrade
+uv pip show pandas               # detail paket
 uv pip uninstall pandas          # hapus paket
 ```
 
-Contoh hasil `uv pip list`:
+**Jika error: `No virtual environment found`**
+
+Environment belum dibuat/diaktifkan:
 
 ```bash
-(workspace-01) $ uv pip list
+uv venv
+source .venv/bin/activate
+uv pip install pandas
+```
+
+**Jika error jaringan, timeout, atau SSL**
+
+```bash
+uv --system-certs pip install pandas
+export UV_HTTP_TIMEOUT=120
+```
+
+Jika memakai proxy: `export HTTPS_PROXY="http://proxy:port"`
+
+**Jika error `No solution found when resolving dependencies`**
+
+Ada konflik versi paket, atau paket belum mendukung versi Python yang dipakai. Gunakan Python yang lebih umum (3.12 atau 3.13) lalu buat ulang `.venv`.
+
+**Jika error `Failed to build ...`**
+
+Pasang alat compiler macOS, lalu coba lagi:
+
+```bash
+xcode-select --install
+```
+
+---
+
+## Langkah 8: Muat file env (opsional, bisa error)
+
+**Perintah**
+
+```bash
+source $HOME/.local/bin/env
+```
+
+**Output (error)**
+
+```
+source: no such file or directory: /Users/danel/.local/bin/env
+```
+
+**Penjelasan**
+
+- File `env` **tidak ada** di instalasi ini. Installer versi tertentu tidak membuatnya.
+- Ini **tidak mempengaruhi** uv. Buktinya, `uv pip install` dan `uv venv` tetap berjalan normal.
+- Langkah ini hanya dibutuhkan jika uv tidak dikenali di terminal (`command not found: uv`).
+
+**Solusi yang benar jika uv tidak dikenali**
+
+Tambahkan PATH secara manual (bukan lewat file `env`):
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Jika uv sudah berjalan normal, **langkah ini boleh dilewati**.
+
+---
+
+## Langkah 9: Cek paket terpasang
+
+**Perintah**
+
+```bash
+uv pip list
+```
+
+**Output**
+
+```
 Package         Version
 --------------- -----------
 numpy           2.5.3
@@ -200,213 +387,130 @@ python-dateutil 2.9.0.post0
 six             1.17.0
 ```
 
-Uji hasilnya:
+**Penjelasan**
+
+Daftar ini sama persis dengan hasil instalasi di Langkah 7, jadi instalasi **berhasil**. Hanya paket di dalam `.venv` ini yang ditampilkan, bukan paket Python sistem.
+
+**Uji pandas bisa dipakai**
 
 ```bash
-(workspace-01) $ python -c "import pandas; print(pandas.__version__)"
-3.0.6
+python -c "import pandas; print(pandas.__version__)"
 ```
 
-## 6. Menyimpan dan Memasang Ulang Paket
+Hasil yang diharapkan: `3.0.6`
 
-Simpan daftar paket:
+---
+
+## Langkah 10: Simpan daftar paket (opsional)
+
+Langkah ini belum dijalankan di sesi di atas, tetapi berguna agar environment bisa dibuat ulang di komputer lain.
+
+**Perintah**
 
 ```bash
-(workspace-01) $ uv pip freeze > requirements.txt
-(workspace-01) $ cat requirements.txt
+uv pip freeze > requirements.txt
+cat requirements.txt
+```
+
+**Hasil yang diharapkan**
+
+```
 numpy==2.5.3
 pandas==3.0.6
 python-dateutil==2.9.0.post0
 six==1.17.0
 ```
 
-Pasang ulang di mesin/folder lain:
-
-```bash
-$ uv venv
-$ source .venv/bin/activate
-(workspace-01) $ uv pip install -r requirements.txt
-```
-
-## 7. Menghapus Environment
-
-Environment hanyalah folder `.venv`, jadi aman dihapus lalu dibuat ulang kapan saja:
-
-```bash
-$ deactivate        # jika sedang aktif
-$ rm -rf .venv
-$ uv venv
-```
-
-## Alternatif: Workflow Proyek (uv init/add/sync)
-
-Selain `uv pip`, uv punya workflow berbasis proyek yang otomatis mengelola `pyproject.toml` dan `uv.lock`:
-
-```bash
-uv init                  # buat pyproject.toml
-uv add pandas            # tambah dependency + update lock
-uv remove pandas         # hapus dependency
-uv sync                  # samakan environment dengan lockfile
-uv run python main.py    # jalankan tanpa perlu activate manual
-```
-
-Cocok untuk proyek yang akan dibagikan atau di-deploy karena versi paket terkunci di `uv.lock`.
-
-## Troubleshooting
-
-### Error: `command not found: uv`
-
-**Penyebab**: folder instalasi uv belum ada di `$PATH`.
-
-**Solusi**:
-
-```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc    # zsh (default macOS)
-# untuk bash: ganti ~/.zshrc dengan ~/.bashrc
-source ~/.zshrc
-uv --version
-```
-
-Atau tutup lalu buka ulang Terminal.
-
-### Error: `source: no such file or directory: /Users/<nama>/.local/bin/env`
-
-**Penyebab**: installer versi tertentu tidak membuat file `env`. Ini tidak berbahaya.
-
-**Solusi**: abaikan dan gunakan cara PATH manual di atas. Selama `uv --version` berjalan, uv sudah siap dipakai.
-
-### Pesan: `mkdir: workspace-01: File exists`
-
-**Penyebab**: direktori sudah ada.
-
-**Solusi**: lanjutkan dengan `cd workspace-01`, atau pakai `mkdir -p workspace-01` agar tidak muncul pesan error.
-
-### Error: `No virtual environment found` saat `uv pip install`
-
-**Penyebab**: `.venv` belum dibuat di folder ini.
-
-**Solusi**:
+**Memasang ulang dari file tersebut**
 
 ```bash
 uv venv
 source .venv/bin/activate
-uv pip install pandas
+uv pip install -r requirements.txt
 ```
 
-### Paket terpasang di tempat yang salah / `which python` bukan `.venv`
+---
 
-**Penyebab**: environment belum diaktifkan, atau terminal baru dibuka.
+## Ringkasan Perintah
 
-**Solusi**: jalankan `source .venv/bin/activate` dari dalam folder workspace, lalu cek ulang `which python`. Setiap membuka terminal baru, aktivasi harus diulang.
-
-### Error: `A virtual environment already exists at .venv`
-
-**Penyebab**: `.venv` sudah ada.
-
-**Solusi**:
+Semua perintah yang dipakai, berurutan:
 
 ```bash
-uv venv --clear     # buat ulang dari nol
-```
+# 1. Instal uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-### Error: `No interpreter found for Python 3.x`
+# 2. Buat dan masuk ke workspace
+mkdir -p workspace-01
+cd workspace-01
 
-**Penyebab**: versi Python tidak ditemukan atau unduhan otomatis dinonaktifkan.
+# 3. Lihat versi Python
+uv python list
 
-**Solusi**:
-
-```bash
-uv python list              # cek versi yang tersedia
-uv python install 3.12      # pasang manual
-```
-
-Pastikan juga variabel `UV_PYTHON_DOWNLOADS=never` tidak aktif dan opsi `--no-python-downloads` tidak dipakai.
-
-### Versi Python tidak sesuai `.python-version`
-
-**Penyebab**: `.venv` dibuat sebelum `pin` diubah, atau file `.python-version` berisi path dari komputer lain (misalnya `/home/bpdp/...`).
-
-**Solusi**:
-
-```bash
+# 4. Pin versi Python
 uv python pin 3.12
-rm -rf .venv
+
+# 5. Buat environment
 uv venv
+
+# 6. Aktifkan environment
+source .venv/bin/activate
+which python
+
+# 7. Instal paket
+uv pip install pandas
+
+# 9. Cek paket
+uv pip list
+
+# 10. Simpan daftar paket (opsional)
+uv pip freeze > requirements.txt
+
+# Keluar dari environment
+deactivate
 ```
 
-### Gagal mengunduh (network, timeout, proxy, atau SSL error)
+---
 
-**Penyebab**: koneksi bermasalah, atau jaringan kantor/kampus memakai proxy atau sertifikat sendiri.
+## Daftar Error dan Solusi
 
-**Solusi**:
+| Error / Pesan | Penyebab | Solusi |
+|---|---|---|
+| `command not found: uv` | PATH belum berisi `~/.local/bin` | `echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc` |
+| `source: no such file or directory: .../.local/bin/env` | File `env` tidak dibuat installer | Abaikan. Pakai solusi PATH di atas jika uv tidak dikenali. |
+| `mkdir: workspace-01: File exists` | Folder sudah ada | Lanjut `cd workspace-01`, atau pakai `mkdir -p` |
+| `.python-version` berisi path `/home/bpdp/...` | File terbawa dari komputer lain | `uv python pin 3.12` |
+| `No interpreter found for Python 3.x` | Versi belum terpasang atau unduhan dimatikan | `uv python install 3.12` |
+| `A virtual environment already exists at .venv` | `.venv` sudah ada | `uv venv --clear` |
+| `No virtual environment found` | `.venv` belum dibuat/aktif | `uv venv` lalu `source .venv/bin/activate` |
+| `which python` bukan di `.venv` | Environment belum aktif | `source .venv/bin/activate` dari dalam folder workspace |
+| Error jaringan / timeout / SSL | Koneksi, proxy, atau sertifikat | `uv --system-certs pip install ...`, atur `UV_HTTP_TIMEOUT`, atau `HTTPS_PROXY` |
+| `No solution found when resolving dependencies` | Konflik versi atau Python terlalu baru | Pakai Python 3.12/3.13, longgarkan versi paket |
+| `Failed to build ...` | Compiler belum ada | `xcode-select --install` |
+| `Permission denied` | Menulis ke lokasi sistem | Jangan pakai `sudo`. Pasang paket di dalam `.venv`. |
+| Paket aneh setelah instal gagal | Cache rusak | `uv cache clean`, lalu `rm -rf .venv && uv venv` |
 
-```bash
-uv --system-certs pip install pandas        # pakai sertifikat bawaan sistem
-export HTTPS_PROXY="http://proxy:port"      # jika memakai proxy
-export UV_HTTP_TIMEOUT=120                  # perpanjang timeout (detik)
-```
-
-Jika paket sudah pernah diunduh, coba mode offline: `uv --offline pip install pandas`.
-
-### Error: `No solution found when resolving dependencies`
-
-**Penyebab**: ada paket yang versinya saling bertentangan, atau paket belum mendukung versi Python yang dipakai (misal Python 3.15 yang masih baru).
-
-**Solusi**:
-
-- Baca pesan error, biasanya menyebut paket yang konflik.
-- Turunkan versi Python (misal `uv python pin 3.12`) lalu buat ulang `.venv`.
-- Longgarkan batasan versi paket di `requirements.txt`.
-
-### Error saat build paket (`Failed to build ...`)
-
-**Penyebab**: paket perlu dikompilasi dan compiler/library sistem belum ada.
-
-**Solusi di macOS**:
-
-```bash
-xcode-select --install
-```
-
-Atau pilih versi Python yang lebih umum didukung (3.12 atau 3.13) agar tersedia wheel siap pakai.
-
-### Error: `Permission denied`
-
-**Penyebab**: mencoba menulis ke lokasi yang dilindungi sistem.
-
-**Solusi**: jangan pakai `sudo`. Pakai `uv venv` dan pasang paket di dalam `.venv`, bukan ke Python sistem.
-
-### Cache bermasalah / paket aneh setelah gagal instal
-
-**Solusi**:
-
-```bash
-uv cache clean
-rm -rf .venv && uv venv
-```
-
-### Masih bermasalah?
-
-Jalankan perintah dengan mode verbose untuk melihat detailnya:
+**Butuh detail lebih lanjut?** Jalankan dengan mode verbose:
 
 ```bash
 uv -v pip install pandas
 ```
 
+---
+
 ## Struktur Akhir Workspace
 
 ```
 workspace-01/
-├── .python-version
-├── .venv/
-└── requirements.txt
+├── .python-version     # berisi: 3.12
+├── .venv/              # environment (jangan di-commit)
+└── requirements.txt    # opsional
 ```
 
-> Tambahkan `.venv/` ke `.gitignore` agar tidak ikut ter-commit:
->
-> ```bash
-> echo ".venv/" >> .gitignore
-> ```
+Agar `.venv` tidak ikut ter-commit ke Git:
+
+```bash
+echo ".venv/" >> .gitignore
+```
 
 ## Referensi
 
