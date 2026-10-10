@@ -516,4 +516,5 @@ echo ".venv/" >> .gitignore
 
 - Dokumentasi uv: <https://docs.astral.sh/uv/>
 - Panduan instalasi: <https://docs.astral.sh/uv/getting-started/installation/>
-- Panduan asli oleh Dr. Bambang Purnomosidi D. P. ([PT Neo Akselerasi Indonesia](https://neo-x.id))
+- Panduan asli oleh Dr. Bambang Purnomosidi D. P. <https://github.com/bpdp>
+  
