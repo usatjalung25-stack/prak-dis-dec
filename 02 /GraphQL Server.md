@@ -224,7 +224,12 @@ Buka salah satu alamat berikut di browser:
 
 Tampilan **GraphiQL**: sisi kiri adalah editor query, sisi kanan adalah hasil (response).
 
-![Tampilan GraphiQL](GraphiQL-01.png)
+<p align="center">
+  <a href="images/GraphiQL-01.png" target="_blank">
+    <img src="images/GraphiQL-01.png" alt="Tampilan awal GraphiQL" width="800">
+  </a>
+  <br><em>Gambar 1: Tampilan awal GraphiQL (klik gambar untuk membuka ukuran penuh)</em>
+</p>
 
 Log server saat halaman dibuka:
 
@@ -257,7 +262,12 @@ Pada panel kiri GraphiQL, tulis query berikut:
 
 Klik tombol **Run (▶)**.
 
-![Menulis query di GraphiQL](GraphiQL-02.png)
+<p align="center">
+  <a href="images/GraphiQL-02.png" target="_blank">
+    <img src="images/GraphiQL-02.png" alt="Query di editor GraphiQL" width="800">
+  </a>
+  <br><em>Gambar 2: Query di editor GraphiQL (klik gambar untuk membuka ukuran penuh)</em>
+</p>
 
 ### Output yang diharapkan (panel kanan)
 
@@ -274,7 +284,12 @@ Klik tombol **Run (▶)**.
 }
 ```
 
-![Hasil query di GraphiQL](GraphiQL-03.png)
+<p align="center">
+  <a href="images/GraphiQL-03.png" target="_blank">
+    <img src="images/GraphiQL-03.png" alt="Hasil query di GraphiQL" width="800">
+  </a>
+  <br><em>Gambar 3: Hasil query di GraphiQL (klik gambar untuk membuka ukuran penuh)</em>
+</p>
 
 ### Log server saat query dijalankan
 
@@ -549,10 +564,23 @@ uvicorn.run("run:app", host="0.0.0.0", port=8000, reload=True)
 ├── README.md
 ├── schema.py          # Definisi schema GraphQL (Book, Query)
 ├── run.py             # Script menjalankan server (FastAPI + Uvicorn)
-├── GraphiQL-01.png    # Tangkapan layar: tampilan awal GraphiQL
-├── GraphiQL-02.png    # Tangkapan layar: query di editor
-└── GraphiQL-03.png    # Tangkapan layar: hasil query
+└── images/
+    ├── GraphiQL-01.png    # Tampilan awal GraphiQL
+    ├── GraphiQL-02.png    # Query di editor
+    └── GraphiQL-03.png    # Hasil query
 ```
+
+---
+
+## Galeri Gambar
+
+Klik tautan untuk membuka tiap gambar:
+
+| No | Gambar | Keterangan |
+|---|---|---|
+| 1 | [GraphiQL-01.png](images/GraphiQL-01.png) | Tampilan awal GraphiQL |
+| 2 | [GraphiQL-02.png](images/GraphiQL-02.png) | Query di editor |
+| 3 | [GraphiQL-03.png](images/GraphiQL-03.png) | Hasil query |
 
 ---
 
