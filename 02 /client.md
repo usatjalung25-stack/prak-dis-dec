@@ -1,6 +1,6 @@
 # GraphQL Book: Server & Client Python
 
-Proyek belajar GraphQL sederhana: sebuah **server GraphQL** yang menyediakan data buku dan sebuah **client Python** yang mengambil data tersebut lewat query.
+Proyek belajar GraphQL sederhana: sebuah **server GraphQL** yang menyediakan data buku dan sebuah **client Python** yang mengambil data tersebut lewat query. Dokumen ini membahas cara menjalankan proyek, hasil percobaan (lengkap dengan screenshot), error yang muncul, dan cara mengatasinya.
 
 | Item | Keterangan |
 |------|------------|
@@ -13,15 +13,34 @@ Proyek belajar GraphQL sederhana: sebuah **server GraphQL** yang menyediakan dat
 
 ## Daftar Isi
 
-1. [Struktur Proyek](#struktur-proyek)
-2. [Prasyarat](#prasyarat)
-3. [Cara Menjalankan](#cara-menjalankan)
-4. [Schema Type `Book`](#schema-type-book)
-5. [Error dan Cara Mengatasinya](#error-dan-cara-mengatasinya)
-6. [Kode Client](#kode-client)
-7. [Dokumentasi Screenshot](#dokumentasi-screenshot)
-8. [Troubleshooting](#troubleshooting)
-9. [Pelajaran](#pelajaran)
+1. [Konsep Singkat](#konsep-singkat)
+2. [Struktur Proyek](#struktur-proyek)
+3. [Prasyarat](#prasyarat)
+4. [Cara Menjalankan](#cara-menjalankan)
+5. [Pembahasan Hasil Percobaan](#pembahasan-hasil-percobaan)
+6. [Analisis Error](#analisis-error)
+7. [Cara Mengatasi Error](#cara-mengatasi-error)
+8. [Kode Client](#kode-client)
+9. [Troubleshooting](#troubleshooting)
+10. [Kesimpulan](#kesimpulan)
+
+---
+
+## Konsep Singkat
+
+| Istilah | Arti |
+|---------|------|
+| **Schema** | Daftar type dan field yang disediakan server. Ini adalah "kontrak" antara server dan client. |
+| **Query** | Permintaan data dari client. Client memilih sendiri field yang ingin diambil. |
+| **Introspection** | Fitur untuk bertanya ke server tentang schema-nya sendiri, misalnya lewat `__type`. |
+| **GraphiQL** | Antarmuka web untuk menulis dan menjalankan query langsung di browser. |
+
+Alur kerja proyek ini:
+
+```
+client.py / curl / GraphiQL  --(POST query)-->  Server GraphQL (run.py)
+                             <--(JSON data atau errors)--
+```
 
 ---
 
@@ -46,6 +65,7 @@ Proyek belajar GraphQL sederhana: sebuah **server GraphQL** yang menyediakan dat
 - Python 3 (cek dengan `python3 --version`)
 - Pustaka `requests` untuk client
 - Dependensi server sesuai isi `run.py` (termasuk Uvicorn)
+- `curl` (opsional, untuk uji cepat dari terminal)
 
 ---
 
@@ -89,71 +109,88 @@ python3 client.py
 
 Tekan `CTRL+C` di Terminal 1.
 
----
-
-## Schema Type `Book`
-
-Hasil pengecekan schema (introspection) menunjukkan type `Book` hanya punya **dua field**:
-
-| Field | Keterangan |
-|-------|------------|
-| `title` | Judul buku |
-| `author` | Penulis buku |
-
-**Cek lewat GraphiQL:**
-
-```graphql
-{
-  __type(name: "Book") {
-    fields {
-      name
-    }
-  }
-}
-```
-
-**Cek lewat terminal:**
+### 5. Cek cepat bahwa server hidup
 
 ```bash
 curl -s -X POST http://127.0.0.1:8000/graphql \
   -H "Content-Type: application/json" \
-  -d '{"query": "{ __type(name: \"Book\") { fields { name } } }"}' | python3 -m json.tool
+  -d '{"query": "{ __typename }"}'
 ```
 
-**Hasil:**
-
-```json
-{
-  "data": {
-    "__type": {
-      "fields": [
-        { "name": "title" },
-        { "name": "author" }
-      ]
-    }
-  }
-}
-```
+Jika server hidup, hasilnya berisi `"data"` (bukan pesan gagal terhubung).
 
 ---
 
-## Error dan Cara Mengatasinya
+## Pembahasan Hasil Percobaan
 
-### Gejala
+### 1. Server dijalankan dan menerima request
 
-Query awal meminta field `isbn`:
+![GraphQL Client 01](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client%20-01.png?raw=true)
 
-```graphql
-{
-  books {
-    isbn
-    title
-    author
+Yang terlihat pada gambar:
+
+- Perintah `cd ~` lalu `python3 run.py`.
+- Pesan `Server berhasil dijalankan!` dan alamat `http://127.0.0.1:8000/graphql`.
+- Uvicorn aktif (`Application startup complete`) di `0.0.0.0:8000`.
+- Setiap request tercatat sebagai `POST /graphql HTTP/1.1" 200 OK`.
+- Di sela-sela log, ada pesan `Cannot query field 'isbn' on type 'Book'.` beserta posisi kesalahan (`4:9`, `3:5`, `1:11`).
+
+Pembahasan: server berjalan normal. Status `200 OK` muncul di semua request, termasuk yang gagal, karena GraphQL mengirim error di dalam body JSON, bukan lewat status HTTP. Posisi `baris:kolom` menunjuk tepat ke field `isbn` yang bermasalah (tanda `^` pada log).
+
+### 2. Cek schema lewat curl dan jalankan client
+
+![GraphQL Client 02](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client-02.png?raw=true)
+
+Yang terlihat pada gambar:
+
+- Introspection lewat `curl` dengan query `__type(name: "Book")` menghasilkan dua field: `title` dan `author`.
+- `client.py` dibuat lewat `cat > client.py << 'EOF'` dan masih meminta field `isbn`.
+- Saat `python3 client.py` dijalankan, client mencetak `Berhasil. Berikut adalah data dari server:`, tetapi isinya `"data": null` dan `errors` berisi `Cannot query field 'isbn' on type 'Book'` (baris 4, kolom 9).
+- Query yang sama lewat `curl` juga gagal (baris 1, kolom 11).
+
+Pembahasan: ada dua temuan.
+
+1. Schema `Book` hanya punya `title` dan `author`, sehingga permintaan `isbn` pasti ditolak.
+2. Client versi awal **tidak memeriksa key `errors`**. Karena HTTP-nya `200`, client menganggap semuanya berhasil dan mencetak "Berhasil" padahal datanya `null`. Ini bug pada client dan sudah diperbaiki di bagian [Kode Client](#kode-client).
+
+### 3. Introspection di GraphiQL
+
+![GraphQL Client 03](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client-03.png?raw=true)
+
+Yang terlihat pada gambar:
+
+- Query di panel kiri:
+
+  ```graphql
+  {
+    __type(name: "Book") {
+      fields {
+        name
+      }
+    }
   }
-}
-```
+  ```
 
-Respons server:
+- Hasil di panel kanan: `data.__type.fields` berisi `title` dan `author`.
+
+Pembahasan: ini cara paling mudah untuk memastikan field apa saja yang boleh diminta. Hasilnya sama dengan pengecekan lewat `curl` pada gambar 2, jadi schema terkonfirmasi hanya punya dua field.
+
+### 4. Error `isbn` di GraphiQL
+
+![GraphQL Client 04](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client-04.png?raw=true)
+
+Yang terlihat pada gambar:
+
+- Query di panel kiri meminta `isbn`, `title`, dan `author` pada `books`. Kata `isbn` bergaris merah bergelombang.
+- Hasil di panel kanan: `"data": null` dan pesan `Cannot query field 'isbn' on type 'Book'.` pada `line: 3`, `column: 5`.
+
+Pembahasan: GraphiQL sudah menandai field yang tidak dikenal sebelum query dijalankan (garis merah). Ini petunjuk cepat bahwa query tidak sesuai schema. Lokasi error (3:5) cocok dengan posisi `isbn` pada editor.
+
+---
+
+## Analisis Error
+
+Pesan error:
 
 ```json
 {
@@ -167,25 +204,23 @@ Respons server:
 }
 ```
 
-Log di terminal server menampilkan error yang sama:
+| Pertanyaan | Jawaban |
+|------------|---------|
+| Apa penyebabnya? | Field `isbn` tidak ada di type `Book` pada schema server. |
+| Kenapa `data` jadi `null`? | GraphQL memvalidasi query sebelum dijalankan. Satu field tidak dikenal membuat **seluruh query ditolak**, termasuk `title` dan `author`. |
+| Kenapa HTTP tetap `200 OK`? | Error GraphQL dikirim di body JSON (key `errors`), bukan lewat status HTTP. |
+| Kenapa client lama bilang "Berhasil"? | Client hanya memeriksa status HTTP dan tidak membaca key `errors`. |
+| Di mana letak kesalahannya? | Pada `locations`: nomor baris dan kolom field yang bermasalah di dalam query. |
 
-```
-Cannot query field 'isbn' on type 'Book'.
+---
 
-GraphQL request:3:5
-2 |   books {
-3 |     isbn
-  |     ^
-4 |     title
-```
+## Cara Mengatasi Error
 
-### Penyebab
-
-Field `isbn` **tidak ada** di type `Book` pada schema server. Di GraphQL, client hanya boleh meminta field yang sudah didefinisikan di schema. Jika ada satu field yang tidak dikenal, **seluruh query ditolak** dan `data` menjadi `null`.
-
-> **Catatan:** HTTP status tetap `200 OK` walaupun query salah. Error GraphQL dikirim di dalam body JSON pada key `errors`.
+Pilih salah satu solusi, tergantung apakah data ISBN memang dibutuhkan.
 
 ### Solusi 1: Hapus `isbn` dari query (tercepat)
+
+Pakai hanya field yang ada di schema:
 
 ```graphql
 {
@@ -196,7 +231,7 @@ Field `isbn` **tidak ada** di type `Book` pada schema server. Di GraphQL, client
 }
 ```
 
-Lewat curl:
+Uji lewat curl:
 
 ```bash
 curl -s -X POST http://127.0.0.1:8000/graphql \
@@ -204,20 +239,41 @@ curl -s -X POST http://127.0.0.1:8000/graphql \
   -d '{"query": "{ books { title author } }"}' | python3 -m json.tool
 ```
 
+Atau ubah `client.py` seperti pada bagian [Kode Client](#kode-client), lalu jalankan `python3 client.py`.
+
 ### Solusi 2: Tambahkan field `isbn` di server
 
-Jika data ISBN memang dibutuhkan, tambahkan field `isbn` pada definisi type `Book` di `run.py` (beserta datanya), lalu **restart server**:
+Jika ISBN memang dibutuhkan, schema di `run.py` yang harus diubah.
 
-1. Hentikan server dengan `CTRL+C`
-2. Jalankan lagi: `python3 run.py`
+1. Buka `run.py` dan cari definisi type `Book`.
+2. Tambahkan field `isbn` bertipe string pada type tersebut.
+3. Tambahkan nilai `isbn` pada setiap data buku.
+4. Simpan file, lalu **restart server**:
+   - Tekan `CTRL+C` di Terminal 1
+   - Jalankan lagi: `python3 run.py`
+5. Cek ulang schema dengan query introspection. Hasilnya harus memuat `isbn`, `title`, dan `author`.
+6. Jalankan ulang query yang memakai `isbn`.
 
+> Cara menulis field mengikuti library GraphQL yang dipakai di `run.py`. Prinsipnya sama: field harus terdaftar di type `Book` **dan** datanya harus tersedia.
+>
 > Tanpa restart, server masih memakai schema lama dan error yang sama akan tetap muncul.
+
+### Checklist verifikasi
+
+- [ ] Server berjalan dan log menampilkan `Application startup complete`
+- [ ] Introspection `__type(name: "Book")` menampilkan field yang dibutuhkan
+- [ ] Query hanya memakai field yang ada di hasil introspection
+- [ ] Respons berisi `"data"` yang tidak `null` dan tidak ada key `errors`
+- [ ] `python3 client.py` mencetak data buku, bukan pesan `Server menolak query`
 
 ---
 
 ## Kode Client
 
-File `client.py` (sudah diperbaiki, hanya meminta field yang ada di schema):
+`client.py` versi perbaikan. Perbedaan dengan versi awal:
+
+- Hanya meminta field yang ada di schema (`title`, `author`).
+- Memeriksa key `errors` pada respons, sehingga pesan sukses tidak muncul saat query ditolak.
 
 ```python
 import json
@@ -259,44 +315,8 @@ except Exception as e:
     print(f"\nTerjadi kesalahan: {e}")
 ```
 
----
+Membuat file langsung dari terminal (seperti pada screenshot 2):
 
-## Dokumentasi Screenshot
-
-### 1. Server dijalankan
-
-![GraphQL Client 01](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client%20-01.png?raw=true)
-
-### 2. Client mengirim query
-
-![GraphQL Client 02](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client-02.png?raw=true)
-
-### 3. Error dan pengecekan schema
-
-![GraphQL Client 03](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client-03.png?raw=true)
-
-### 4. Hasil akhir setelah diperbaiki
-
-![GraphQL Client 04](https://github.com/usatjalung25-stack/prak-dis-dec/blob/f319014562c504b502cc9ca2285fdb81e4630304/02%20/images/GraphQL%20Client-04.png?raw=true)
-
----
-
-## Troubleshooting
-
-| Masalah | Penyebab | Solusi |
-|---------|----------|--------|
-| `Cannot query field 'isbn' on type 'Book'` | Field tidak ada di schema | Hapus field dari query, atau tambahkan di server lalu restart |
-| `"data": null` padahal HTTP 200 | Query tidak valid | Baca isi `errors` pada respons |
-| `Gagal terhubung ke server` | Server belum jalan | Jalankan `python3 run.py` di terminal lain |
-| Perubahan schema tidak terlihat | Server belum di-restart | `CTRL+C`, lalu `python3 run.py` lagi |
-| `ModuleNotFoundError: No module named 'requests'` | Dependensi belum terpasang | `pip install requests` |
-| `Address already in use` (port 8000) | Port dipakai proses lain | Hentikan proses lama (`CTRL+C`) atau ganti port di `run.py` |
-
----
-
-## Pelajaran
-
-1. Schema adalah kontrak antara server dan client.
-2. Gunakan introspection (`__type`) untuk melihat field yang tersedia sebelum menulis query.
-3. Di GraphQL, HTTP 200 tidak menjamin berhasil; selalu cek `errors`.
-4. Restart server setiap kali schema diubah.
+```bash
+cat > client.py << 'EOF'
+# tempel kode client di atas, lalu akhiri dengan baris EOF
