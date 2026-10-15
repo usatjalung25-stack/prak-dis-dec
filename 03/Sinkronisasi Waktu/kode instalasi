@@ -1,0 +1,401 @@
+Last login: Thu Oct 15 17:15:26 on ttys000
+danel@1111QD-rs ~ % ps aux | grep -i "[b]rew"        # lihat proses brew yang masih jalan
+grep: #: No such file or directory
+grep: lihat: No such file or directory
+grep: proses: No such file or directory
+grep: brew: No such file or directory
+grep: yang: No such file or directory
+grep: masih: No such file or directory
+grep: jalan: No such file or directory
+danel@1111QD-rs ~ % pkill -f "brew"
+danel@1111QD-rs ~ % rm -f ~/Library/Caches/Homebrew/downloads/*.incomplete
+brew install chrony
+zsh: no matches found: /Users/danel/Library/Caches/Homebrew/downloads/*.incomplete
+==> Downloading Homebrew API data
+✔︎ JSON API packages.ventura.jws.json                Downloaded   15.1MB/ 15.1MB
+Warning: You are using macOS 13.
+We (and Apple) do not provide support for this old version.
+
+Homebrew no longer builds bottles for this configuration.
+Consider MacPorts, which provides binary packages for this macOS version:
+  https://www.macports.org
+Warning: The following taps are not trusted:
+  jostasik/tap
+
+Homebrew is currently ignoring formulae, casks and commands
+from these taps because tap trust is required.
+Untap them with:
+  brew untap jostasik/tap
+Trust specific formulae, casks and commands with:
+  brew trust --formula <user>/<tap>/<formula>
+  brew trust --cask <user>/<tap>/<cask>
+  brew trust --command <user>/<tap>/<command>
+Whole-tap trust is broader and includes all current and future formulae,
+casks and commands from the listed taps. Trust whole taps with:
+  brew trust jostasik/tap
+For more information, see:
+  https://docs.brew.sh/Tap-Trust
+==> Would install 1 formula:
+chrony 4.9
+==> Would install 11 dependencies for chrony:
+libunistring  1.4.2
+json-c        0.19
+gettext       1.0
+libidn2       2.3.8
+libtasn1      4.21.0
+nettle        4.0
+python@3.15   3.15.0
+meson         1.12.1
+p11-kit       0.26.5
+texinfo       7.3_1
+gnutls        3.8.13_2
+==> Would upgrade 1 dependency for chrony:
+sqlite 3.53.4 -> 3.54.0
+==> Do you want to proceed with the installation? [y/n]
+==> Fetching downloads for: chrony
+✔︎ API Source chrony.rb                              Verified      1.6KB/  1.6KB
+✔︎ API Source libunistring.rb                        Verified      2.3KB/  2.3KB
+✔︎ Formula libunistring (1.4.2)                      Verified      5.0MB/  5.0MB
+✔︎ API Source json-c.rb                              Verified      2.1KB/  2.1KB
+✔︎ Formula json-c (0.19)                             Verified    462.2KB/462.2KB
+✔︎ API Source gettext.rb                             Verified      2.8KB/  2.8KB
+✔︎ API Source libtasn1.rb                            Verified      2.0KB/  2.0KB
+✔︎ Formula libtasn1 (4.21.0)                         Verified      1.8MB/  1.8MB
+✔︎ API Source nettle.rb                              Verified      2.1KB/  2.1KB
+✔︎ Formula nettle (4.0)                              Verified      2.6MB/  2.6MB
+✔︎ API Source sqlite.rb                              Verified      2.9KB/  2.9KB
+✔︎ Formula sqlite (3.54.0)                           Verified      3.3MB/  3.3MB
+✔︎ API Source python@3.15.rb                         Verified     22.9KB/ 22.9KB
+✔︎ Resource python@3.15--flit-core                   Verified     54.7KB/ 54.7KB
+✔︎ Resource python@3.15--pip                         Verified      1.8MB/  1.8MB
+✔︎ API Source p11-kit.rb                             Verified      2.2KB/  2.2KB
+✔︎ Formula p11-kit (0.26.5)                          Verified      1.1MB/  1.1MB
+✔︎ API Source texinfo.rb                             Verified      2.3KB/  2.3KB
+✔︎ API Source gnutls.rb                              Verified      4.1KB/  4.1KB
+✔︎ Patch 29c2027c963cf559817d0da37c1fc2efd0c1bd6a.di Verified    819.0 B/819.0 B
+✔︎ Formula chrony (4.9)                              Verified    663.8KB/663.8KB
+✔︎ Formula texinfo (7.3)                             Verified      6.9MB/  6.9MB
+✔︎ Formula gnutls (3.8.13)                           Verified      7.3MB/  7.3MB
+✔︎ Formula gettext (1.0)                             Verified     32.7MB/ 32.7MB
+✔︎ Formula python@3.15 (3.15.0)                      Verified     43.7MB/ 43.7MB
+✔︎ Bottle libidn2 (2.3.8)                            Downloaded  318.5KB/318.5KB
+✔︎ Bottle meson (1.12.1)                             Downloaded  974.6KB/974.6KB
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> Installing dependencies for chrony: libunistring, json-c, gettext, libidn2, libtasn1, nettle, sqlite ↑, python@3.15, meson, p11-kit, texinfo and gnutls
+==> Installing chrony dependency: libunistring (1.4.2)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> ./configure --disable-silent-rules
+==> make
+==> make check
+==> make install
+🍺  /usr/local/Cellar/libunistring/1.4.2: 59 files, 5.9MB, built in 29 minutes
+==> Installing chrony dependency: json-c (0.19)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> cmake -S . -B build -DBUILD_APPS=OFF
+==> cmake --build build
+==> cmake --install build
+🍺  /usr/local/Cellar/json-c/0.19: 34 files, 361.8KB, built in 49 seconds
+==> Installing chrony dependency: gettext (1.0)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> ./configure --with-libunistring-prefix=/usr/local/opt/libunistring --disable
+==> make
+==> make install
+🍺  /usr/local/Cellar/gettext/1.0: 2,499 files, 34.8MB, built in 28 minutes
+==> Installing chrony dependency: libidn2 (2.3.8)
+==> Pouring libidn2--2.3.8.ventura.bottle.tar.gz
+🍺  /usr/local/Cellar/libidn2/2.3.8: 80 files, 919.6KB
+==> Installing chrony dependency: libtasn1 (4.21.0)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> ./configure --disable-silent-rules
+==> make check
+==> make install
+🍺  /usr/local/Cellar/libtasn1/4.21.0: 64 files, 664.4KB, built in 14 minutes
+==> Installing chrony dependency: nettle (4.0)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> ./configure --enable-shared
+==> make
+==> make install
+==> make check
+🍺  /usr/local/Cellar/nettle/4.0: 93 files, 2.8MB, built in 5 minutes
+==> Upgrading chrony dependency: sqlite (3.53.4 -> 3.54.0)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> ./configure --enable-readline --disable-editline --enable-session --with-readline-cflags=-I/usr/local/opt/readline/include --with-readline-ldflags=-L/usr/local/opt/readline/lib -lreadline
+==> make install
+🍺  /usr/local/Cellar/sqlite/3.54.0: 13 files, 5.4MB, built in 1 minute 50 seconds
+==> Installing chrony dependency: python@3.15 (3.15.0)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> Patching
+==> Applying python/3.13-sysconfig.diff
+patching file 'Lib/sysconfig/__init__.py'
+==> ./configure --enable-ipv6 --datarootdir=/usr/local/Cellar/python@3.15/3.15.0/share --datadir=/usr/local/Cellar/python@3.15/3.15.0/share --without-ensurepip --enable-loadable-sqlite-extensions --with-openssl=/usr/local/opt/openssl@4 --
+==> make
+==> make install PYTHONAPPSDIR=/usr/local/Cellar/python@3.15/3.15.0
+==> make frameworkinstallextras PYTHONAPPSDIR=/usr/local/Cellar/python@3.15/3.15.0/share/python@3.15
+==> /usr/local/Cellar/python@3.15/3.15.0/bin/python3.15 -m venv /private/tmp/s-qjF5X2jk/pythonA3.15-20261015-15882-y9ic41/Python-3.15.0/whl_build
+==> /private/tmp/s-qjF5X2jk/pythonA3.15-20261015-15882-y9ic41/Python-3.15.0/whl_build/bin/pip3 install -v --no-binary :all: --no-index .
+==> /private/tmp/s-qjF5X2jk/pythonA3.15-20261015-15882-y9ic41/Python-3.15.0/whl_build/bin/pip3 wheel -v --no-binary :all: --no-index --wheel-dir=/usr/local/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15
+==> /usr/local/Cellar/python@3.15/3.15.0/bin/python3.15 -Im ensurepip
+==> /usr/local/Cellar/python@3.15/3.15.0/bin/python3.15 -Im pip install -v --no-index --upgrade --isolated --target=/usr/local/Cellar/python@3.15/3.15.0/lib/python3.15/site-packages /usr/local/Cellar/python@3.15/3.15.0/Frameworks/Python.f
+Error: The `brew link` step did not complete successfully
+The formula built, but is not symlinked into /usr/local
+Could not symlink bin/idle3
+Target /usr/local/bin/idle3
+already exists. You may want to remove it:
+  rm '/usr/local/bin/idle3'
+
+To force the link and overwrite all conflicting files:
+  brew link --overwrite python@3.15
+
+To list all files that would be deleted:
+  brew link --overwrite python@3.15 --dry-run
+
+Possible conflicting files are:
+/usr/local/bin/idle3 -> /Library/Frameworks/Python.framework/Versions/3.13/bin/idle3
+/usr/local/bin/pip3 -> /Library/Frameworks/Python.framework/Versions/3.13/bin/pip3
+/usr/local/bin/pydoc3 -> /Library/Frameworks/Python.framework/Versions/3.13/bin/pydoc3
+/usr/local/bin/python3 -> /Library/Frameworks/Python.framework/Versions/3.13/bin/python3
+/usr/local/bin/python3-config -> /Library/Frameworks/Python.framework/Versions/3.13/bin/python3-config
+==> Summary
+🍺  /usr/local/Cellar/python@3.15/3.15.0: 10,510 files, 259.2MB, built in 36 minutes
+==> Installing chrony dependency: meson (1.12.1)
+==> Pouring meson--1.12.1.all.bottle.1.tar.gz
+🍺  /usr/local/Cellar/meson/1.12.1: 269 files, 4.4MB
+==> Installing chrony dependency: p11-kit (0.26.5)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> meson setup _build -Dsystem_config=/usr/local/etc -Dmodule_config=/usr/local/etc/pkcs11/modules -Dtrust_paths=/usr/local/etc/ca-certificates/cert.pem -Dsystemd=disabled
+==> meson compile -C _build --verbose
+==> meson test -C _build --timeout-multiplier=2
+ ==> meson install -C _build
+🍺  /usr/local/Cellar/p11-kit/0.26.5: 31 files, 4.5MB, built in 5 minutes
+==> Installing chrony dependency: texinfo (7.3_1)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> ./configure --disable-install-warnings
+==> make install
+Error: The `brew link` step did not complete successfully
+The formula built, but is not symlinked into /usr/local
+Could not symlink bin/info
+Target /usr/local/bin/info
+already exists. You may want to remove it:
+  rm '/usr/local/bin/info'
+
+To force the link and overwrite all conflicting files:
+  brew link --overwrite texinfo
+
+To list all files that would be deleted:
+  brew link --overwrite texinfo --dry-run
+
+Possible conflicting files are:
+/usr/local/bin/info
+/usr/local/bin/install-info
+/usr/local/bin/makeinfo -> /usr/local/bin/texi2any
+/usr/local/bin/pdftexi2dvi
+/usr/local/bin/pod2texi
+/usr/local/bin/texi2any
+/usr/local/bin/texi2dvi
+/usr/local/bin/texi2pdf
+/usr/local/bin/texindex
+/usr/local/share/info/info-stnd.info
+/usr/local/share/info/texinfo.info
+/usr/local/share/info/texinfo.info-1
+/usr/local/share/info/texinfo.info-2
+/usr/local/share/info/texinfo.info-3
+/usr/local/share/man/man1/info.1
+/usr/local/share/man/man1/install-info.1
+/usr/local/share/man/man1/makeinfo.1
+/usr/local/share/man/man1/pdftexi2dvi.1
+/usr/local/share/man/man1/pod2texi.1
+/usr/local/share/man/man1/texi2any.1
+/usr/local/share/man/man1/texi2dvi.1
+/usr/local/share/man/man1/texi2pdf.1
+/usr/local/share/man/man1/texindex.1
+/usr/local/share/man/man5/info.5
+/usr/local/share/man/man5/texinfo.5
+/usr/local/share/texinfo/texindex.awk
+/usr/local/share/texinfo/texinfo.dtd
+==> Summary
+🍺  /usr/local/Cellar/texinfo/7.3_1: 530 files, 11.2MB, built in 7 minutes
+==> Installing chrony dependency: gnutls (3.8.13_2)
+Warning: A newer Command Line Tools release is available.
+Update them from Software Update in System Settings.
+
+If that doesn't show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 15.1.
+==> Patching
+==> Applying 29c2027c963cf559817d0da37c1fc2efd0c1bd6a.diff
+patching file 'lib/crau/crau.h'
+==> ./configure --disable-libdane --disable-silent-rules --disable-static --sysconfdir=/usr/local/etc --with-default-trust-store-file=/usr/local/etc/gnutls/cert.pem --disable-heartbeat-support --with-p11-kit
+==> make install
+🍺  /usr/local/Cellar/gnutls/3.8.13_2: 1,289 files, 10.9MB, built in 7 minutes
+==> Installing chrony
+==> ./configure --localstatedir=/usr/local/var
+==> make install
+🍺  /usr/local/Cellar/chrony/4.9: 11 files, 821.5KB, built in 22 seconds
+
+This is a Tier 3 configuration:
+  https://docs.brew.sh/Support-Tiers#tier-3
+You can report issues with Tier 3 configurations to Homebrew/* repositories!
+  
+Read the above document before opening any issues or PRs.
+danel@1111QD-rs ~ % ls /usr/local/sbin/chronyd /usr/local/bin/chronyc
+/usr/local/bin/chronyc	/usr/local/sbin/chronyd
+danel@1111QD-rs ~ % sudo /usr/local/sbin/chronyd -f /usr/local/etc/chrony.conf
+Password:
+Could not open /var/run/chrony/chronyd.pid : No such file or directory
+danel@1111QD-rs ~ % sleep 10
+danel@1111QD-rs ~ % chronyc sources -v
+506 Cannot talk to daemon
+danel@1111QD-rs ~ % chronyc tracking
+506 Cannot talk to daemon
+danel@1111QD-rs ~ % sudo chronyc makestep
+506 Cannot talk to daemon
+danel@1111QD-rs ~ % sudo mkdir -p /var/run/chrony /usr/local/var/run /usr/local/var/lib/chrony
+sudo chmod 755 /var/run/chrony
+danel@1111QD-rs ~ % sudo /usr/local/sbin/chronyd -n -f /usr/local/etc/chrony.conf
+Last login: Thu Oct 15 17:23:31 on ttys000
+danel@1111QD-rs ~ % sudo /usr/local/sbin/chronyd -f /usr/local/etc/chrony.conf
+Password:
+Another chronyd may already be running (pid=95047), check /var/run/chrony/chronyd.pid
+danel@1111QD-rs ~ % sleep 10
+chronyc sources -v
+chronyc tracking
+sudo chronyc makestep
+chronyc tracking
+
+  .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
+ / .- Source state '*' = current best, '+' = combined, '-' = not combined,
+| /             'x' = may be in error, '~' = too variable, '?' = unusable.
+||                                                 .- xxxx [ yyyy ] +/- zzzz
+||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+||                                \     |          |  zzzz = estimated error.
+||                                 |    |           \
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+^- waktos2.unpak.ac.id           2   6    37    35    +27ms[  +27ms] +/-  565ms
+^- time.citra.net.id             2   6    37    35    -12ms[  -12ms] +/-   41ms
+^* 172-235-254-88.ip.linode>     2   6    37    36   -436us[  +20ms] +/-   42ms
+^- jkt-tmd.caliph.dev            2   6    37    35   -779ms[ -779ms] +/-  859ms
+Reference ID    : ACEBFE58 (172-235-254-88.ip.linodeusercontent.com)
+Stratum         : 3
+Ref time (UTC)  : Thu Oct 15 12:45:05 2026
+System time     : 0.013657703 seconds fast of NTP time
+Last offset     : +0.020098928 seconds
+RMS offset      : 0.020098928 seconds
+Frequency       : 321.424 ppm fast
+Residual freq   : +0.000 ppm
+Skew            : 836.632 ppm
+Root delay      : 0.080809571 seconds
+Root dispersion : 0.036665339 seconds
+Update interval : 64.4 seconds
+Leap status     : Normal
+200 OK
+Reference ID    : ACEBFE58 (172-235-254-88.ip.linodeusercontent.com)
+Stratum         : 3
+Ref time (UTC)  : Thu Oct 15 12:45:05 2026
+System time     : 0.000000000 seconds slow of NTP time
+Last offset     : +0.020098928 seconds
+RMS offset      : 0.020098928 seconds
+Frequency       : 321.424 ppm fast
+Residual freq   : +0.000 ppm
+Skew            : 836.632 ppm
+Root delay      : 0.080809571 seconds
+Root dispersion : 0.036732569 seconds
+Update interval : 64.4 seconds
+Leap status     : Normal
+danel@1111QD-rs ~ % 
+
