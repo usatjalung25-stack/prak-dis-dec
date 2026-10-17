@@ -1,7 +1,6 @@
 # Modul 3 — Sinkronisasi pada Sistem Terdistribusi
 
-**Mata Kuliah:** Praktikum Sistem Terdistribusi dan Terdesentralisasi
-
+**Mata Kuliah:** Praktikum Sistem Terdistribusi dan Terdesentralisasi                     
 **Prodi:** Informatika — Universitas Teknologi Digital Indonesia
 **Penulis modul:** Dr. Bambang Purnomosidi D. P.
 
