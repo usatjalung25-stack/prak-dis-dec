@@ -56,7 +56,7 @@ chronyc tracking
 ```
 
 ### Screenshot
-![Chrony sources dan tracking](00-chrony.png)
+![Chrony sources dan tracking](image/00-chrony.png)
 
 ### Penjelasan proses
 | Langkah | Proses |
@@ -136,7 +136,7 @@ print(a, b, "-> concurrent:", a.is_concurrent(b))
 </details>
 
 ### Screenshot keluaran
-![Keluaran vclocks](01-vclocks.py.png)
+![Keluaran vclocks](image/01-vclocks.py.png)
 
 ### Keluaran
 ```
@@ -210,7 +210,7 @@ print("All tasks completed.")
 
 **Screenshot keluaran**
 
-![Keluaran multithread](02-multithreads-example.py.png)
+![Keluaran multithread](image/02-multithreads-example.py.png)
 
 **Keluaran**
 ```
@@ -252,7 +252,7 @@ t1.start(); t2.start(); t1.join(); t2.join()
 
 **Screenshot keluaran**
 
-![Keluaran race condition 01](03-race-conditions-01.py.png)
+![Keluaran race condition 01](image/03-race-conditions-01.py.png)
 
 **Keluaran**
 ```
@@ -262,7 +262,7 @@ Mengambil sejumlah Rp 80. Saldo: Rp -60
 
 **Gambar tangan**
 
-![Gambar race condition](gambar%20race-conditions.jpg)
+![Gambar race condition](image/gambar%20race-conditions.jpg)
 
 **Pembahasan**
 | Waktu | Thread 1 | Thread 2 | `balance` |
@@ -298,7 +298,7 @@ t1.start(); t2.start(); t1.join(); t2.join()
 
 **Screenshot keluaran**
 
-![Keluaran race condition 02](04-race-conditions-02.py.png)
+![Keluaran race condition 02](image/04-race-conditions-02.py.png)
 
 **Keluaran**
 ```
@@ -338,7 +338,7 @@ t1.start(); t2.start(); t1.join(); t2.join()
 
 **Screenshot keluaran**
 
-![Keluaran deadlock 01](05-deadlock-01.py.png)
+![Keluaran deadlock 01](image/05-deadlock-01.py.png)
 
 **Keluaran**
 ```
@@ -349,7 +349,7 @@ Thread 2: Locked B, waiting for A...
 
 **Gambar tangan**
 
-![Gambar deadlock](gambar%20deadlock-01.jpg)
+![Gambar deadlock](image/gambar%20deadlock-01.jpg)
 
 **Pembahasan**
 | Thread | Memegang | Menunggu |
@@ -395,7 +395,7 @@ print("Execution Finished")
 
 **Screenshot keluaran**
 
-![Keluaran deadlock 02](06-deadlock-02.py.png)
+![Keluaran deadlock 02](image/06-deadlock-02.py.png)
 
 **Keluaran**
 ```
@@ -512,8 +512,8 @@ if __name__ == "__main__":
 </details>
 
 ### Screenshot keluaran
-![Raft 01](07-raft.py-01.png)
-![Raft 02](07-raft.py-02.png)
+![Raft 01](image/07-raft.py-01.png)
+![Raft 02](image/07-raft.py-02.png)
 
 ### Contoh keluaran (acak, berbeda tiap eksekusi)
 ```
@@ -534,7 +534,7 @@ Node 3: LEADER | Term 1 | Log len 3
 ```
 
 ### Gambar tangan alur pemilihan Leader
-![Gambar algoritma Raft](gambar%20Algoritma%20Raft.jpg)
+![Gambar algoritma Raft](image/gambar%20Algoritma%20Raft.jpg)
 
 ### Penjelasan algoritma
 | Tahap | State | Yang terjadi |
