@@ -1,6 +1,6 @@
 # Praktikum Sistem Terdistribusi: Sinkronisasi Waktu dengan Chrony
-**Mata Kuliah:** Praktikum Sistem Terdistribusi dan Terdesentralisasi
-**Prodi:** Informatika — Universitas Teknologi Digital Indonesia
+**Mata Kuliah:** Praktikum Sistem Terdistribusi dan Terdesentralisasi                     
+**Prodi:** Informatika — Universitas Teknologi Digital Indonesia                  
 **Penulis modul:** Dr. Bambang Purnomosidi D. P.
 
 Dokumentasi praktikum **Sinkronisasi Waktu** menggunakan **chrony** (implementasi NTP) di **macOS 13 Ventura**.
