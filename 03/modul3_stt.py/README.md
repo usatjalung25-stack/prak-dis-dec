@@ -1,36 +1,52 @@
-# Modul 3 – Sinkronisasi pada Sistem Terdistribusi
+# Modul 3 — Sinkronisasi pada Sistem Terdistribusi
 
-Praktikum Sistem Terdistribusi dan Terdesentralisasi – Prodi Informatika, Universitas Teknologi Digital Indonesia.
+**Mata kuliah:** Praktikum Sistem Terdistribusi dan Terdesentralisasi
+**Prodi:** Informatika — Universitas Teknologi Digital Indonesia
 
-> **Nama / NIM / Kelas:** _isi di sini_
-
-## Daftar Isi
-1. [Struktur Repositori](#struktur-repositori)
-2. [3.1 Sinkronisasi Waktu (NTP)](#31-sinkronisasi-waktu-ntp)
-3. [3.2 Vector Clock](#32-vector-clock)
-4. [3.3 Problem Tanpa Sinkronisasi](#33-problem-tanpa-sinkronisasi)
-5. [3.4 Algoritma Raft](#34-algoritma-raft)
-6. [Kesimpulan](#kesimpulan)
-
-## Struktur Repositori
-| Berkas | Keterangan |
+| | |
 |---|---|
-| `01-vclocks.py` / `01-vclocks.py.png` | Vector clock + screenshot keluaran |
-| `02-multithreads-example.py` / `.png` | Contoh multithread |
-| `03-race-conditions-01.py` / `.png` | Race condition (tanpa Lock) |
-| `04-race-conditions-02.py` / `.png` | Race condition (dengan Lock) |
-| `05-deadlock-01.py` / `.png` | Deadlock |
-| `06-deadlock-02.py` / `.png` | Deadlock dicegah |
-| `07-raft.py` / `07-raft.py-01.png`, `07-raft.py-02.png` | Simulasi Raft |
-| `modul/` | Hasil Tugas: class `VectorClock` dan Raft dalam bentuk modul + contoh pemakaian |
-| `gambar race-conditions…`, `gambar deadlock-01…`, `gambar Algoritma Raft…` | Gambar tangan (pensil/ballpoint) |
+| **Nama** | _isi di sini_ |
+| **NIM** | _isi di sini_ |
+| **Kelas** | _isi di sini_ |
 
 ---
 
-## 3.1 Sinkronisasi Waktu (NTP)
+## Daftar Isi
 
-Perintah yang digunakan (Chrony):
+1. [Struktur Repositori](#1-struktur-repositori)
+2. [3.1 Sinkronisasi Waktu (NTP)](#2-31-sinkronisasi-waktu-ntp)
+3. [3.2 Vector Clock](#3-32-vector-clock)
+4. [3.3 Problem Tanpa Sinkronisasi](#4-33-problem-tanpa-sinkronisasi)
+   - [3.3.0 Contoh Multithread](#330-contoh-multithread)
+   - [3.3.1 Race Condition](#331-race-condition)
+   - [3.3.2 Deadlock](#332-deadlock)
+5. [3.4 Algoritma Raft](#5-34-algoritma-raft)
+6. [Kesimpulan](#6-kesimpulan)
 
+---
+
+## 1. Struktur Repositori
+
+| No | Program | Screenshot keluaran | Topik |
+|:-:|---|---|---|
+| 01 | [`01-vclocks.py`](01-vclocks.py) | `01-vclocks.py.png` | Vector clock |
+| 02 | [`02-multithreads-example.py`](02-multithreads-example.py) | `02-multithreads-example.py.png` | Multithread |
+| 03 | [`03-race-conditions-01.py`](03-race-conditions-01.py) | `03-race-conditions-01.py.png` | Race condition (tanpa Lock) |
+| 04 | [`04-race-conditions-02.py`](04-race-conditions-02.py) | `04-race-conditions-02.py.png` | Race condition (dengan Lock) |
+| 05 | [`05-deadlock-01.py`](05-deadlock-01.py) | `05-deadlock-01.py.png` | Deadlock terjadi |
+| 06 | [`06-deadlock-02.py`](06-deadlock-02.py) | `06-deadlock-02.py.png` | Deadlock dicegah |
+| 07 | [`07-raft.py`](07-raft.py) | `07-raft.py-01.png`, `07-raft.py-02.png` | Simulasi Raft |
+
+Berkas lain: folder [`modul/`](modul/) (tugas modul Python), serta gambar tangan `gambar race-conditions…`, `gambar deadlock-01…`, `gambar Algoritma Raft…`.
+
+---
+
+## 2. 3.1 Sinkronisasi Waktu (NTP)
+
+### Tujuan
+Menyinkronkan jam komputer ke server NTP menggunakan Chrony dan memahami prosesnya.
+
+### Perintah
 ```bash
 sudo apt install chrony
 sudo chronyc add server pool.ntp.org iburst
@@ -39,26 +55,32 @@ chronyc sources -v
 chronyc tracking
 ```
 
-**Screenshot keluaran:**
-
+### Screenshot
 ![Chrony sources dan tracking](00-chrony.png)
 
-**Penjelasan proses sinkronisasi:**
-1. Klien mengirim paket request ke server NTP dan mencatat waktu kirim **T1**.
-2. Server mencatat waktu terima **T2** dan waktu kirim balasan **T3**.
-3. Klien menerima balasan pada **T4**.
-4. Dihitung `delay = (T4 − T1) − (T3 − T2)` dan `offset = ((T2 − T1) + (T3 − T4)) / 2`.
-5. Chrony mengulang proses ke beberapa server, memilih sumber terbaik (tanda `*` pada `chronyc sources`), lalu mengoreksi jam. Selisih besar dilompatkan (`makestep`), selisih kecil dikoreksi bertahap (slew) agar waktu tidak mundur.
+### Penjelasan proses
+| Langkah | Proses |
+|:-:|---|
+| 1 | Klien mengirim request ke server NTP dan mencatat waktu kirim **T1** |
+| 2 | Server mencatat waktu terima **T2** dan waktu kirim balasan **T3** |
+| 3 | Klien menerima balasan pada **T4** |
+| 4 | `delay = (T4 − T1) − (T3 − T2)` dan `offset = ((T2 − T1) + (T3 − T4)) / 2` |
+| 5 | Chrony mengulang ke beberapa server, memilih sumber terbaik (tanda `*`), lalu mengoreksi jam |
 
-**Pembahasan:** nilai `Last offset` dan `System time` pada `chronyc tracking` menunjukkan seberapa jauh jam lokal dari server. Semakin kecil offset dan delay, semakin akurat sinkronisasi.
+### Pembahasan
+Selisih besar dikoreksi langsung (`makestep`), selisih kecil dikoreksi bertahap (*slew*) agar waktu tidak mundur. Nilai `Last offset` dan `System time` pada `chronyc tracking` menunjukkan seberapa jauh jam lokal dari server; semakin kecil offset dan delay, semakin akurat sinkronisasinya.
 
 ---
 
-## 3.2 Vector Clock
+## 3. 3.2 Vector Clock
 
-Berkas: [`01-vclocks.py`](01-vclocks.py)
+### Tujuan
+Mengurutkan event pada sistem terdistribusi tanpa jam fisik yang sama.
 
-**Kode `01-vclocks.py`:**
+### Program
+<details open>
+<summary><b>Kode:</b> <code>01-vclocks.py</code></summary>
+
 ```python
 """Modul VectorClock untuk pengurutan event di sistem terdistribusi."""
 class VectorClock:
@@ -111,11 +133,12 @@ a.increment(); b.increment()
 print(a, b, "-> concurrent:", a.is_concurrent(b))
 ```
 
-**Screenshot keluaran:**
+</details>
 
+### Screenshot keluaran
 ![Keluaran vclocks](01-vclocks.py.png)
 
-**Keluaran:**
+### Keluaran
 ```
 P0: [0, 0, 0]
 P1: [0, 0, 0]
@@ -131,26 +154,31 @@ VC1 happens before VC0: False
 VC0 is concurrent with VC2: False
 ```
 
-**Perbandingan dengan perhitungan manual:**
-
-| Langkah | Aturan manual | Hasil |
+### Perbandingan dengan perhitungan manual
+| Langkah | Aturan manual | Hasil program |
 |---|---|---|
 | Awal | Semua [0,0,0] | P0, P1, P2 = [0,0,0] |
 | P0 event lokal | +1 pada slot sendiri | [1,0,0] |
 | P0 kirim ke P1 | +1, vektor ikut dikirim | P0 = [2,0,0] |
-| P1 terima | max per elemen lalu +1 slot sendiri: max([0,0,0],[2,0,0]) = [2,0,0] → [2,1,0] | P1 = [2,1,0] |
+| P1 terima | max per elemen, lalu +1 slot sendiri: max([0,0,0],[2,0,0]) = [2,0,0] → [2,1,0] | P1 = [2,1,0] |
 | P2 event lokal | +1 slot sendiri | [0,0,1] |
 | P1 kirim ke P2 | +1 | P1 = [2,2,0] |
 | P2 terima | max([0,0,1],[2,2,0]) = [2,2,1] → +1 | P2 = [2,2,2] |
 
-**Pembahasan:**
-- `VC0 [2,0,0]` vs `VC1 [2,2,0]`: semua elemen ≤ dan ada yang <, sehingga VC0 *happens before* VC1 (**True**). Sebaliknya **False**.
-- `VC0 [2,0,0]` vs `VC2 [2,2,2]`: VC0 mendahului VC2 (sebab-akibat lewat P0 → P1 → P2), maka keduanya **tidak concurrent** (False). Event concurrent baru terjadi jika tidak ada yang mendahului, misalnya `[1,0,0]` dan `[0,0,1]` (contoh tambahan di modul memberi `True`).
-- Hasil program identik dengan perhitungan manual.
+### Pembahasan
+| Perbandingan | Hasil | Alasan |
+|---|:-:|---|
+| VC0 `[2,0,0]` happens-before VC1 `[2,2,0]` | **True** | Semua elemen ≤ dan ada yang < |
+| VC1 `[2,2,0]` happens-before VC0 `[2,0,0]` | **False** | Elemen kedua 2 > 0 |
+| VC0 `[2,0,0]` concurrent dengan VC2 `[2,2,2]` | **False** | VC0 mendahului VC2 (sebab-akibat P0 → P1 → P2) |
 
-**Modul Python:** [`modul/vclock.py`](modul/vclock.py), contoh pemakaian [`modul/contoh_vclock.py`](modul/contoh_vclock.py):
+Hasil program identik dengan perhitungan manual. Event baru *concurrent* jika tidak ada yang mendahului, misalnya `[1,0,0]` dan `[0,0,1]` (contoh tambahan di modul menghasilkan `True`).
+
+### Modul Python
+Class `VectorClock` dipisah menjadi [`modul/vclock.py`](modul/vclock.py); contoh pemakaian di [`modul/contoh_vclock.py`](modul/contoh_vclock.py).
 ```python
 from vclock import VectorClock
+
 a, b = VectorClock(3, 0), VectorClock(3, 1)
 b.receive_message(a.send_message())
 print(a.happens_before(b))   # True
@@ -158,11 +186,14 @@ print(a.happens_before(b))   # True
 
 ---
 
-## 3.3 Problem Tanpa Sinkronisasi
+## 4. 3.3 Problem Tanpa Sinkronisasi
 
-### Contoh multithread — [`02-multithreads-example.py`](02-multithreads-example.py)
+Tanpa sinkronisasi, program multithread dapat mengalami **race condition** dan **deadlock** karena urutan penyelesaian task tidak dapat diprediksi.
 
-**Kode `02-multithreads-example.py`:**
+### 3.3.0 Contoh Multithread
+<details open>
+<summary><b>Kode:</b> <code>02-multithreads-example.py</code></summary>
+
 ```python
 import threading, time
 def task(name, delay):
@@ -175,8 +206,13 @@ for t in ts: t.join()
 print("All tasks completed.")
 ```
 
+</details>
+
+**Screenshot keluaran**
+
 ![Keluaran multithread](02-multithreads-example.py.png)
 
+**Keluaran**
 ```
 Task A starting...
 Task B starting...
@@ -188,13 +224,16 @@ Task A finished after 5s.
 All tasks completed.
 ```
 
-**Pembahasan:** penjadwalan thread dilakukan OS/interpreter dan tidak deterministik. Urutan "starting" dan "finished" dapat berbeda pada tiap eksekusi (jalankan berulang dan capture ketika urutannya berbeda). Pencetakan dari beberapa thread juga bisa bercampur dalam satu baris. Hanya "All tasks completed." yang pasti terakhir karena `join()`.
+**Pembahasan:** penjadwalan thread dilakukan OS/interpreter dan tidak deterministik, sehingga urutan "starting" dan "finished" bisa berbeda pada tiap eksekusi (jalankan berulang dan capture saat urutannya berbeda). Hanya "All tasks completed." yang pasti terakhir karena `join()`.
+
+---
 
 ### 3.3.1 Race Condition
 
-**Tanpa Lock** — [`03-race-conditions-01.py`](03-race-conditions-01.py)
+#### a. Tanpa Lock
+<details open>
+<summary><b>Kode:</b> <code>03-race-conditions-01.py</code></summary>
 
-**Kode `03-race-conditions-01.py`:**
 ```python
 import time
 from threading import Thread
@@ -209,22 +248,36 @@ t1 = Thread(target=withdraw, args=(80,)); t2 = Thread(target=withdraw, args=(80,
 t1.start(); t2.start(); t1.join(); t2.join()
 ```
 
+</details>
+
+**Screenshot keluaran**
+
 ![Keluaran race condition 01](03-race-conditions-01.py.png)
 
+**Keluaran**
 ```
 Mengambil sejumlah Rp 80. Saldo: Rp 20
 Mengambil sejumlah Rp 80. Saldo: Rp -60
 ```
 
-**Gambar tangan:**
+**Gambar tangan**
 
 ![Gambar race condition](gambar%20race-conditions.jpg)
 
-**Pembahasan:** saldo awal 100. Thread 1 dan Thread 2 sama-sama mengecek `balance >= 80` saat saldo masih 100 (keduanya lolos karena yang pertama masih tidur di `sleep(0.01)`). Setelah itu keduanya mengurangi 80, sehingga saldo menjadi **−60**. Operasi *check-then-act* tidak atomik, hasil bergantung pada urutan eksekusi — inilah *race condition*.
+**Pembahasan**
+| Waktu | Thread 1 | Thread 2 | `balance` |
+|:-:|---|---|:-:|
+| t1 | cek `100 >= 80` → True | | 100 |
+| t2 | `sleep(0.01)` | cek `100 >= 80` → True | 100 |
+| t3 | `balance -= 80` | `sleep(0.01)` | 20 |
+| t4 | | `balance -= 80` | **−60** |
 
-**Dengan Lock** — [`04-race-conditions-02.py`](04-race-conditions-02.py)
+Kedua thread lolos pengecekan karena saldo belum dikurangi. Operasi *check-then-act* tidak atomik, sehingga hasil bergantung pada urutan eksekusi — inilah *race condition*.
 
-**Kode `04-race-conditions-02.py`:**
+#### b. Dengan Lock
+<details open>
+<summary><b>Kode:</b> <code>04-race-conditions-02.py</code></summary>
+
 ```python
 import time, threading
 from threading import Thread
@@ -241,19 +294,27 @@ t1 = Thread(target=withdraw, args=(80,)); t2 = Thread(target=withdraw, args=(80,
 t1.start(); t2.start(); t1.join(); t2.join()
 ```
 
+</details>
+
+**Screenshot keluaran**
+
 ![Keluaran race condition 02](04-race-conditions-02.py.png)
 
+**Keluaran**
 ```
 Mengambil sejumlah Rp 80. Saldo: Rp 20
 ```
 
-**Pembahasan:** `with counter_lock` menjadikan blok cek-tidur-kurangi sebagai *critical section* yang eksklusif. Thread kedua menunggu hingga thread pertama selesai; saat masuk, saldo sudah 20 sehingga kondisi `if` False dan tidak ada penarikan kedua. Saldo tidak pernah negatif.
+**Pembahasan:** `with counter_lock` menjadikan blok cek-tidur-kurangi sebagai *critical section* yang eksklusif. Thread kedua menunggu sampai thread pertama selesai; saat masuk, saldo sudah 20 sehingga kondisi `if` False dan tidak ada penarikan kedua. Saldo tidak pernah negatif.
+
+---
 
 ### 3.3.2 Deadlock
 
-**Deadlock terjadi** — [`05-deadlock-01.py`](05-deadlock-01.py)
+#### a. Deadlock terjadi
+<details open>
+<summary><b>Kode:</b> <code>05-deadlock-01.py</code></summary>
 
-**Kode `05-deadlock-01.py`:**
 ```python
 import threading, time
 lock_a = threading.Lock(); lock_b = threading.Lock()
@@ -273,23 +334,35 @@ t1 = threading.Thread(target=thread_task1); t2 = threading.Thread(target=thread_
 t1.start(); t2.start(); t1.join(); t2.join()
 ```
 
+</details>
+
+**Screenshot keluaran**
+
 ![Keluaran deadlock 01](05-deadlock-01.py.png)
 
+**Keluaran**
 ```
 Thread 1: Locked A, waiting for B...
 Thread 2: Locked B, waiting for A...
 (program menggantung, dihentikan dengan Ctrl+C)
 ```
 
-**Gambar tangan:**
+**Gambar tangan**
 
 ![Gambar deadlock](gambar%20deadlock-01.jpg)
 
-**Pembahasan:** Thread 1 memegang Lock A dan menunggu Lock B, sedangkan Thread 2 memegang Lock B dan menunggu Lock A. Terbentuk siklus tunggu sehingga tidak ada yang maju. Keempat syarat Coffman terpenuhi: *mutual exclusion*, *hold and wait*, *no preemption*, dan *circular wait*. `sleep(1)` memastikan kedua thread sudah mengunci lock pertamanya sebelum meminta yang kedua.
+**Pembahasan**
+| Thread | Memegang | Menunggu |
+|:-:|:-:|:-:|
+| Thread 1 | Lock A | Lock B |
+| Thread 2 | Lock B | Lock A |
 
-**Deadlock dicegah** — [`06-deadlock-02.py`](06-deadlock-02.py)
+Terbentuk siklus tunggu sehingga tidak ada thread yang maju. Keempat syarat Coffman terpenuhi: *mutual exclusion*, *hold and wait*, *no preemption*, dan *circular wait*. `sleep(1)` memastikan kedua thread sudah mengunci lock pertamanya sebelum meminta lock kedua.
 
-**Kode `06-deadlock-02.py`:**
+#### b. Deadlock dicegah
+<details open>
+<summary><b>Kode:</b> <code>06-deadlock-02.py</code></summary>
+
 ```python
 import threading, time
 lock_a = threading.Lock(); lock_b = threading.Lock()
@@ -318,8 +391,13 @@ t1.start(); t2.start(); t1.join(); t2.join()
 print("Execution Finished")
 ```
 
+</details>
+
+**Screenshot keluaran**
+
 ![Keluaran deadlock 02](06-deadlock-02.py.png)
 
+**Keluaran**
 ```
 Thread 1: Acquired Lock A
 Thread 2: Acquired Lock B
@@ -330,15 +408,19 @@ Thread 2: Acquired Lock A
 Execution Finished
 ```
 
-**Pembahasan:** deadlock tidak terjadi karena (1) setiap `acquire` memakai `timeout=5` sehingga thread tidak menunggu selamanya, dan (2) lock pertama dilepas (`finally: release()`) *sebelum* meminta lock kedua, sehingga kondisi *hold and wait* hilang. Cara lain yang umum adalah mengunci dengan urutan yang sama (A lalu B) di semua thread.
+**Pembahasan:** deadlock tidak terjadi karena (1) setiap `acquire` memakai `timeout=5` sehingga thread tidak menunggu selamanya, dan (2) lock pertama dilepas (`finally: release()`) *sebelum* meminta lock kedua sehingga kondisi *hold and wait* hilang. Alternatif umum: mengunci dengan urutan yang sama (A lalu B) di semua thread.
 
 ---
 
-## 3.4 Algoritma Raft
+## 5. 3.4 Algoritma Raft
 
-Berkas: [`07-raft.py`](07-raft.py)
+### Tujuan
+Memahami pemilihan koordinator (**LEADER**) pada algoritma konsensus Raft.
 
-**Kode `07-raft.py`:**
+### Program
+<details open>
+<summary><b>Kode:</b> <code>07-raft.py</code></summary>
+
 ```python
 """Modul simulasi Raft (disederhanakan)."""
 import random, time
@@ -427,12 +509,13 @@ if __name__ == "__main__":
     simulate_raft()
 ```
 
-**Screenshot keluaran:**
+</details>
 
+### Screenshot keluaran
 ![Raft 01](07-raft.py-01.png)
 ![Raft 02](07-raft.py-02.png)
 
-**Contoh keluaran (acak, berbeda tiap eksekusi):**
+### Contoh keluaran (acak, berbeda tiap eksekusi)
 ```
 --- Step 3 ---
 Node 1 elected leader in term 1
@@ -450,30 +533,40 @@ Leader 3 appended: command-5
 Node 3: LEADER | Term 1 | Log len 3
 ```
 
-**Gambar tangan alur pemilihan leader:**
-
+### Gambar tangan alur pemilihan Leader
 ![Gambar algoritma Raft](gambar%20Algoritma%20Raft.jpg)
 
-**Penjelasan algoritma pemilihan Leader:**
-1. Semua node mulai sebagai **FOLLOWER** (term 0) dengan *election timeout* acak 1–2 detik. Keacakan mencegah semua node menjadi kandidat bersamaan.
-2. Node yang timeout lebih dulu (tidak menerima heartbeat) menjadi **CANDIDATE**: term naik (0→1), memilih dirinya sendiri, lalu meminta suara dari node lain.
-3. Jika suara > N/2 (3 node → minimal 2), kandidat menjadi **LEADER** (`Node X elected leader in term 1`).
-4. Leader mengirim heartbeat; follower menyamakan term dan mereset timeout sehingga tidak ada pemilihan baru.
-5. Tiap 5 langkah leader menambah log (`command-5`, `command-10`, `command-15` → Log len 3). Log follower tetap 0 karena replikasi tidak disimulasikan.
-6. Jika leader mati, heartbeat berhenti, timeout habis, dan pemilihan baru dengan term lebih tinggi dimulai.
+### Penjelasan algoritma
+| Tahap | State | Yang terjadi |
+|:-:|:-:|---|
+| 1 | FOLLOWER | Semua node mulai di term 0 dengan *election timeout* acak 1–2 detik |
+| 2 | CANDIDATE | Node yang timeout lebih dulu menaikkan term (0→1), memilih dirinya sendiri, dan meminta suara |
+| 3 | LEADER | Jika suara > N/2 (3 node → minimal 2), node menjadi leader |
+| 4 | LEADER | Leader mengirim heartbeat; follower menyamakan term dan mereset timeout |
+| 5 | LEADER | Tiap 5 langkah leader menambah log (`command-5`, `-10`, `-15` → Log len 3) |
+| 6 | FOLLOWER → CANDIDATE | Jika leader mati, heartbeat berhenti dan pemilihan baru dengan term lebih tinggi dimulai |
 
-**Pembahasan:** pada Step 3 dua node (1 dan 3) menjadi leader pada term yang sama karena simulasi menganggap semua node selalu memberi suara. Pada Raft asli, tiap node hanya memberi satu suara per term sehingga hal ini tidak terjadi. Pada Step 4 simulasi memilih satu leader acak (Node 3) yang mengirim heartbeat, sehingga Node 1 kembali menjadi follower.
+### Pembahasan
+- Pada **Step 3** dua node (1 dan 3) menjadi leader di term yang sama karena simulasi menganggap semua node selalu memberi suara. Pada Raft asli setiap node hanya memberi satu suara per term, sehingga hal ini tidak terjadi.
+- Pada **Step 4** simulasi memilih satu leader acak (Node 3) untuk mengirim heartbeat, sehingga Node 1 kembali menjadi follower.
+- Log follower tetap 0 karena replikasi log tidak disimulasikan.
 
-**Modul Python:** [`modul/raft_module.py`](modul/raft_module.py), contoh simulasi [`modul/simulasi_raft.py`](modul/simulasi_raft.py):
+### Modul Python
+Kode dipisah menjadi [`modul/raft_module.py`](modul/raft_module.py); contoh simulasi di [`modul/simulasi_raft.py`](modul/simulasi_raft.py).
 ```python
 from raft_module import simulate_raft
+
 simulate_raft(n_nodes=3, steps=20)
 ```
 
 ---
 
-## Kesimpulan
-- **Sinkronisasi waktu (NTP)** menyamakan jam antar mesin lewat perhitungan offset dan delay.
-- **Vector clock** menentukan urutan kausal antar event tanpa jam fisik yang sama.
-- **Race condition** diatasi dengan *mutual exclusion* (Lock); **deadlock** dicegah dengan timeout, melepas lock sebelum meminta lock lain, atau urutan penguncian yang konsisten.
-- **Raft** mencapai konsensus dengan pemilihan leader berbasis term, timeout acak, dan suara mayoritas.
+## 6. Kesimpulan
+
+| Topik | Kesimpulan |
+|---|---|
+| NTP | Sinkronisasi waktu dilakukan dengan menghitung offset dan delay terhadap server NTP |
+| Vector clock | Menentukan urutan kausal antar event tanpa jam fisik yang sama |
+| Race condition | Diatasi dengan *mutual exclusion* (Lock) pada critical section |
+| Deadlock | Dicegah dengan timeout, melepas lock sebelum meminta lock lain, atau urutan penguncian konsisten |
+| Raft | Konsensus dicapai lewat pemilihan leader berbasis term, timeout acak, dan suara mayoritas |
