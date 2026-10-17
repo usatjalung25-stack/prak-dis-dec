@@ -37,7 +37,7 @@
 | 06 | [`06-deadlock-02.py`](06-deadlock-02.py) | `06-deadlock-02.py.png` | Deadlock dicegah |
 | 07 | [`07-raft.py`](07-raft.py) | `07-raft.py-01.png`, `07-raft.py-02.png` | Simulasi Raft |
 
-Berkas lain: folder [`modul/`](modul/) (tugas modul Python), serta gambar tangan `gambar race-conditions…`, `gambar deadlock-01…`, `gambar Algoritma Raft…`.
+Berkas lain: folder [`modul/`](modul/) (tugas modul Python), serta gambar tangan di folder `image/`: `gambar race-conditions-01.py.png`, `gambar deadlock-01.py.png`, dan `gambar Algoritma Raft.png`.
 
 ---
 
@@ -262,7 +262,7 @@ Mengambil sejumlah Rp 80. Saldo: Rp -60
 
 **Gambar tangan**
 
-![Gambar race condition](image/gambar%20race-conditions.jpg)
+![Gambar race condition](image/gambar%20race-conditions-01.py.png)
 
 **Pembahasan**
 | Waktu | Thread 1 | Thread 2 | `balance` |
@@ -349,7 +349,7 @@ Thread 2: Locked B, waiting for A...
 
 **Gambar tangan**
 
-![Gambar deadlock](image/gambar%20deadlock-01.jpg)
+![Gambar deadlock](image/gambar%20deadlock-01.py.png)
 
 **Pembahasan**
 | Thread | Memegang | Menunggu |
@@ -534,7 +534,7 @@ Node 3: LEADER | Term 1 | Log len 3
 ```
 
 ### Gambar tangan alur pemilihan Leader
-![Gambar algoritma Raft](image/gambar%20Algoritma%20Raft.jpg)
+![Gambar algoritma Raft](image/gambar%20Algoritma%20Raft.png)
 
 ### Penjelasan algoritma
 | Tahap | State | Yang terjadi |
