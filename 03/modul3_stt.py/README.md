@@ -54,11 +54,11 @@
 |:-:|---|---|---|
 | 01 | [`01-vclocks.py`](01-vclocks.py) | `image/01-vclocks.py.png` | Vector clock |
 | 02 | [`02-multithreads-example.py`](02-multithreads-example.py) | `image/02-multithreads-example.py.png` | Multithread tanpa sinkronisasi |
-| 03 | [`03-race-conditions-01.py`](03-race-conditions-01.py) | `image/03-race-conditions-01.py.png`, `image/gambar-race-conditions-01.jpg` | Race condition terjadi |
+| 03 | [`03-race-conditions-01.py`](03-race-conditions-01.py) | `image/03-race-conditions-01.py.png`, `image/03-race-conditions-1.py.png` | Race condition terjadi |
 | 04 | [`04-race-conditions-02.py`](04-race-conditions-02.py) | `image/04-race-conditions-02.py.png` | Race condition dicegah (Lock) |
-| 05 | [`05-deadlock-01.py`](05-deadlock-01.py) | `image/05-deadlock-01.py.png`, `image/gambar-deadlock-01.jpg` | Deadlock terjadi |
+| 05 | [`05-deadlock-01.py`](05-deadlock-01.py) | `image/05-deadlock-01.py.png`, `image/05-deadlock-1.py.png` | Deadlock terjadi |
 | 06 | [`06-deadlock-02.py`](06-deadlock-02.py) | `image/06-deadlock-02.py.png` | Deadlock dicegah |
-| 07 | [`07-raft.py`](07-raft.py) | `image/07-raft.py-01.png`, `image/07-raft.py-02.png`, `image/gambar-raft.jpg` | Simulasi Raft |
+| 07 | [`07-raft.py`](07-raft.py) | `image/07-raft.py-01.png`, `image/07-raft.py-02.png`, `image/07-raft.py-03.png` | Simulasi Raft |
 
 ---
 
@@ -448,7 +448,7 @@ Mengambil sejumlah Rp 80. Saldo: Rp -60
 
 **Visualisasi (gambar tangan)**
 
-![Gambar tangan race condition](image/gambar-race-conditions-01.jpg)
+![Gambar tangan race condition](image/03-race-conditions-1.py.png)
 
 **Penjelasan:**
 
@@ -547,7 +547,7 @@ Program berhenti di titik ini dan tidak pernah selesai (menggantung) sampai dihe
 
 **Visualisasi (gambar tangan)**
 
-![Gambar tangan deadlock](image/gambar-deadlock-01.jpg)
+![Gambar tangan deadlock](image/05-deadlock-1.py.png)
 
 **Penjelasan:**
 
@@ -862,7 +862,7 @@ Node 3: FOLLOWER | Term 1 | Log len 0
 
 **Visualisasi (gambar tangan)**
 
-![Gambar tangan alur pemilihan leader Raft](image/gambar-raft.jpg)
+![Gambar tangan alur pemilihan leader Raft](image/07-raft.py-03.png)
 
 **Penjelasan berdasarkan keluaran:**
 
