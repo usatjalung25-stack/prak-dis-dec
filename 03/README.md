@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🕒 Modul 03 — Sinkronisasi pada Sistem Terdistribusi
+#  Modul 03 — Sinkronisasi pada Sistem Terdistribusi
 
 **Praktikum Sistem Terdistribusi dan Terdesentralisasi**
 Informatika — Universitas Teknologi Digital Indonesia
