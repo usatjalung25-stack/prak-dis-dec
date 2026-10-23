@@ -1,3 +1,20 @@
+Last login: Fri Oct 23 13:15:09 on ttys000
+/Users/danel/.zshrc:27: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:28: no such file or directory: /opt/homebrew/bin/brew
+danel@1111QD-rs ~ % colima start
+
+INFO[0001] starting colima                              
+INFO[0001] runtime: docker                              
+INFO[0002] starting ...                                  context=vm
+INFO[0031] provisioning ...                              context=docker
+INFO[0037] starting ...                                  context=docker
+INFO[0040] done                                         
+danel@1111QD-rs ~ % dcu
+zsh: command not found: dcu
+danel@1111QD-rs ~ % dps
+zsh: command not found: dps
+danel@1111QD-rs ~ % 
+
 Last login: Fri Oct 23 13:13:32 on ttys001
 /Users/danel/.zshrc:27: no such file or directory: /opt/homebrew/bin/brew
 /Users/danel/.zshrc:28: no such file or directory: /opt/homebrew/bin/brew
