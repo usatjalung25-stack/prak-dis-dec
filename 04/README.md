@@ -6,11 +6,24 @@ Prodi Informatika - Universitas Teknologi Digital Indonesia
 | | |
 |---|---|
 | Nama | USAT JALUNG |
-| NIM | 255410017|
+| NIM |255410017 |
 | Kelas | INFORMATIKA - 1 |
 | Tanggal pengerjaan | 23 Oktober 2026 |
 | Lingkungan | macOS (Apple Silicon) + Colima (Docker runtime) |
 | Docker / Compose | Docker 29.9.2 / Docker Compose 5.6.1 |
+
+## Sumber Praktikum
+
+| | |
+|---|---|
+| Modul | *Modul 4 - Konsistensi dan Replikasi pada Sistem Terdistribusi* (22 halaman), Praktikum Sistem Terdistribusi dan Terdesentralisasi |
+| Penulis modul | Dr. Bambang Purnomosidi D. P. (Prodi Informatika, Universitas Teknologi Digital Indonesia) |
+| GitHub penulis | https://github.com/bpdp (profil: *Bambang Purnomosidi D. P.*, 30 repositori publik) |
+| Materi 4.1 | Berdasarkan artikel Eremeykin, *How to Setup Single Primary PostgreSQL Replication with Docker Compose* (Medium) |
+| Materi 4.2 | Berdasarkan dokumentasi resmi Apache Ignite 3 (versi 3.1.0) |
+| Repositori praktikum ini | https://github.com/usatjalung25-stack/prak-dis-dec (folder `04/`) |
+
+Dokumen ini memuat: (a) seluruh kode dan penjelasan, (b) output hasil praktikum sendiri, (c) **output pembanding dari modul** (Lampiran B), (d) **kode asli modul** dibandingkan dengan versi yang dipakai (Lampiran C), (e) **skrip bantu** untuk mengulang percobaan (Lampiran D), dan (f) daftar referensi.
 
 ---
 
@@ -26,8 +39,11 @@ Prodi Informatika - Universitas Teknologi Digital Indonesia
 8. [Perintah Lanjutan dan Berguna](#8-perintah-lanjutan-dan-berguna)
 9. [Kesimpulan](#9-kesimpulan)
 10. [Struktur Repositori](#10-struktur-repositori)
-11. [Referensi](#11-referensi)
-12. [Lampiran A - Log Terminal Lengkap](#12-lampiran-a---log-terminal-lengkap)
+11. [Lampiran A - Log Terminal Lengkap](#11-lampiran-a---log-terminal-lengkap)
+12. [Lampiran B - Output Pembanding dari Modul](#12-lampiran-b---output-pembanding-dari-modul)
+13. [Lampiran C - Kode Asli Modul vs Versi Praktikum](#13-lampiran-c---kode-asli-modul-vs-versi-praktikum)
+14. [Lampiran D - Skrip Bantu dan Cara Pakai](#14-lampiran-d---skrip-bantu-dan-cara-pakai)
+15. [Referensi dan Sumber](#15-referensi-dan-sumber)
 
 ---
 
@@ -131,6 +147,16 @@ INFO[0031] provisioning ... context=docker
 INFO[0037] starting ... context=docker
 INFO[0040] done
 ```
+
+> **Penting - memori VM:** compose Ignite memberi tiap node `JVM_MAX_MEM: "4g"` (3 node = sampai 12 GB). Bila Colima memakai ukuran bawaan (sekitar 2 GB RAM), node bisa mati karena kehabisan memori (`OOMKilled`, container `Exited (137)`). Untuk bagian 4.2 jalankan Colima dengan sumber daya lebih besar:
+>
+> ```bash
+> colima stop
+> colima start --cpu 4 --memory 12 --disk 60
+> colima status
+> ```
+>
+> Bila RAM laptop terbatas, turunkan `JVM_MAX_MEM` dan `JVM_MIN_MEM` di `docker-compose.yml` ke `1g` atau `2g` untuk percobaan ini.
 
 ### 3.3 Windows
 
@@ -676,7 +702,69 @@ Penjelasan perintah:
 
 > **Catatan:** pada modul, `unzip sql.zip` langsung menghasilkan direktori `sql/`. Pada arsip yang diunduh kali ini file berada di `sql/` di dalam arsip, sehingga dipakai direktori sementara agar struktur akhir tetap rata dan mudah di-*mount*.
 
-Isi `docker-compose.yml` dari Apache Ignite mendefinisikan 3 node (`node1`, `node2`, `node3`) dengan pemetaan port seperti pada tabel berikut (terbukti dari output `docker ps` di bawah).
+#### `docker-compose.yml` Ignite
+
+File ini diunduh dari Apache Ignite pada langkah di atas. Isinya sama dengan contoh pada panduan resmi *How to Start an Ignite 3 Cluster in Docker* [R14]. Bila hasil unduhan Anda sedikit berbeda, pakai hasil unduhan.
+
+```yaml
+name: ignite3
+
+x-ignite-def: &ignite-def
+  image: apacheignite/ignite:3.1.0
+  environment:
+    JVM_MAX_MEM: "4g"
+    JVM_MIN_MEM: "4g"
+  configs:
+    - source: node_config
+      target: /opt/ignite/etc/ignite-config.conf
+      mode: 0644
+
+services:
+  node1:
+    <<: *ignite-def
+    command: --node-name node1
+    ports:
+      - "10300:10300"
+      - "10800:10800"
+  node2:
+    <<: *ignite-def
+    command: --node-name node2
+    ports:
+      - "10301:10300"
+      - "10801:10800"
+  node3:
+    <<: *ignite-def
+    command: --node-name node3
+    ports:
+      - "10302:10300"
+      - "10802:10800"
+
+configs:
+  node_config:
+    content: |
+      ignite {
+        network {
+          port: 3344
+          nodeFinder.netClusterNodes = ["node1:3344", "node2:3344", "node3:3344"]
+        }
+      }
+```
+
+Pembahasan:
+
+| Bagian | Penjelasan |
+|---|---|
+| `name: ignite3` | Nama project Compose, sehingga container bernama `ignite3-node1-1`, dan network `ignite3_default`. |
+| `x-ignite-def: &ignite-def` | Template bersama untuk ketiga node (DRY). |
+| `image: apacheignite/ignite:3.1.0` | Image Apache Ignite 3.1.0. |
+| `JVM_MAX_MEM`/`JVM_MIN_MEM: "4g"` | Heap JVM tiap node 4 GB. Perhatikan total memori VM (lihat catatan Colima di bagian 3.2). |
+| `configs` + `node_config` | Membuat berkas konfigurasi node `/opt/ignite/etc/ignite-config.conf` dari isi inline. |
+| `command: --node-name nodeN` | Memberi nama node (`node1`, `node2`, `node3`) yang nanti dipakai pada `--metastorage-group`. |
+| `ports` | Memetakan REST API (10300) dan port client (10800) tiap node ke port host berbeda. |
+| `network.port: 3344` | Port komunikasi antar-node (internal, tidak dipublikasikan ke host). |
+| `nodeFinder.netClusterNodes` | Daftar alamat node untuk saling menemukan memakai nama service Compose. |
+
+Pemetaan port (terbukti dari output `docker ps` di bawah):
 
 | Node | REST API (admin/CLI) | Port aplikasi/client |
 |---|---|---|
@@ -750,6 +838,9 @@ Perbedaan dengan modul dan alasannya:
 | `-v ./sql:/opt/ignite/sql` | `-v "$PWD/sql:/opt/ignite/sql"` | Path absolut lebih andal untuk bind mount. |
 | `sudo` | tanpa `sudo` | Tidak diperlukan pada Colima/Docker Desktop. |
 | image `3.0.0` (pada beberapa bagian teks modul) | `3.1.0` | Modul mencampur 3.0.0 dan 3.1.0; yang digunakan adalah 3.1.0 sesuai judul bagian dan output CLI. |
+
+
+> **Dukungan dari sumber resmi:** panduan resmi Apache Ignite memakai `--network=host` pada contoh Linux, sedangkan README repositori `apache/ignite-3` memakai `--net ignite3_default` lalu `connect http://node1:10300` untuk menjalankan CLI di dalam Docker. Pendekatan pada README ini mengikuti cara kedua karena lebih sesuai untuk macOS/Windows (lihat [R14] dan [R16]).
 
 ### 5.4 Menjalankan Cluster
 
@@ -1403,7 +1494,7 @@ FROM pg_stat_replication;
 SELECT slot_name, active, restart_lsn, wal_status FROM pg_replication_slots;
 
 -- Di replica: status penerimaan WAL
-SELECT status, received_lsn, sender_host, slot_name FROM pg_stat_wal_receiver;
+SELECT status, receive_start_lsn, written_lsn, flushed_lsn, sender_host, slot_name FROM pg_stat_wal_receiver;
 
 -- Di replica: posisi replay dan waktu transaksi terakhir
 SELECT pg_last_wal_receive_lsn(), pg_last_wal_replay_lsn(), pg_last_xact_replay_timestamp();
@@ -1492,46 +1583,54 @@ docker compose start node3
 
 ## 10. Struktur Repositori
 
+Struktur repositori `prak-dis-dec` setelah semua berkas ditambahkan:
+
 ```text
 prak-dis-dec/
+├── README.md                          <- indeks repositori + cara unggah
+├── .gitignore
 └── 04/
-    ├── README.md                                   <- dokumen ini
-    ├── 01-Docker terinstal                         <- bukti instalasi Docker/Colima
-    ├── 02-Streaming Replication Menggunakan PostgreSQL.sql   <- log sesi terminal praktikum
+    ├── README.md                      <- dokumen ini
+    ├── 01-Docker terinstal            <- bukti instalasi Docker (milik Anda)
+    ├── 02-Streaming Replication Menggunakan PostgreSQL.sql   <- log sesi terminal asli (milik Anda)
     ├── streaming-replication/
     │   ├── 00_init.sql
-    │   ├── docker-compose.yaml
-    │   └── env.sh
-    └── ignite3/
-        ├── docker-compose.yml
-        ├── env.sh
-        └── sql/
-            ├── schema.sql
-            ├── current_catalog.sql
-            ├── media_and_genre.sql
-            ├── tracks.sql
-            ├── ee_and_cust.sql
-            └── invoices.sql
+    │   ├── docker-compose.yaml        <- versi yang dipakai (compose v2, healthcheck)
+    │   ├── docker-compose.module.yaml <- versi asli modul
+    │   ├── env.sh                     <- alias versi yang dipakai
+    │   ├── env.module.sh              <- alias asli modul (sudo, docker-compose)
+    │   └── scripts/
+    │       ├── 00-up.sh
+    │       ├── 01-status.sh
+    │       ├── 02-test-replication.sh
+    │       ├── 03-failover.sh
+    │       ├── 04-lag-test.sh
+    │       ├── 99-cleanup.sh
+    │       └── run-all.sh             <- jalankan semua + simpan log
+    ├── ignite3/
+    │   ├── docker-compose.yml
+    │   ├── env.sh
+    │   ├── env.module.sh
+    │   ├── sql/                       <- isi diunduh dengan scripts/get-sql.sh
+    │   │   └── README.md
+    │   └── scripts/
+    │       ├── get-sql.sh
+    │       ├── 01-up.sh
+    │       ├── cli-commands.txt
+    │       └── 99-cleanup.sh
+    └── outputs/
+        ├── modul/                     <- output pembanding dari modul
+        │   ├── postgres-modul-output.txt
+        │   └── ignite-modul-output.txt
+        └── praktikum/                 <- output hasil praktikum sendiri
+            └── README.md
 ```
 
-> Sesuaikan struktur ini dengan isi repositori Anda yang sebenarnya.
+> Pada repositori Anda saat ini, berkas PostgreSQL berada di `04/utdi/modul4/streaming-replication`. Boleh dipertahankan; yang penting jalur relatif di dalam setiap folder (`scripts/`, `env.sh`, `docker-compose.yaml`) tetap sama.
 
 ---
 
-## 11. Referensi
-
-1. Modul 4 - Praktikum Sistem Terdistribusi dan Terdesentralisasi, Dr. Bambang Purnomosidi D. P., Universitas Teknologi Digital Indonesia.
-2. How to Setup Single Primary PostgreSQL Replication with Docker Compose - https://medium.com/@eremeykin/how-to-setup-single-primary-postgresql-replication-with-docker-compose-98c48f233bbf
-3. PostgreSQL Documentation - High Availability, Load Balancing, and Replication - https://www.postgresql.org/docs/current/high-availability.html
-4. Docker Engine - https://docs.docker.com/engine/install/
-5. Docker Compose - https://docs.docker.com/compose/install/
-6. Apache Ignite 3 Documentation - https://ignite.apache.org/docs/ignite3/latest/index
-7. Apache Ignite 3 Quick Start (Explore SQL) - https://ignite.apache.org/docs/ignite3/latest/quick-start/explore-sql
-8. Colima - https://github.com/abiosoft/colima
-
----
-
-## 12. Lampiran A - Log Terminal Lengkap
+## 11. Lampiran A - Log Terminal Lengkap
 
 Berikut isi log sesi terminal asli (berkas `02-Streaming Replication Menggunakan PostgreSQL.sql` di repositori), sebanyak tiga sesi. Baris kosong dihilangkan dan indentasi YAML dirapikan agar terbaca; isi perintah dan keluarannya tidak diubah.
 
@@ -2155,3 +2254,764 @@ sql-cli> SELECT
 ```
 
 > Pada log asli, tabel `system.tables` (A.3) ditampilkan lengkap dengan 15 kolom; versi lengkapnya ada pada bagian 5.6. Catatan: dalam log, baris `exit` / `connect http://node2:10300` yang ditempel berderet tertelan sebagai argumen perintah `exit` (lihat error 7.13), sehingga query analytics terakhir tercatat tanpa penanda node yang jelas. Ulangi langkah 5.8 satu per satu untuk node2 dan node3 bila ingin bukti per node.
+
+---
+
+## 12. Lampiran B - Output Pembanding dari Modul
+
+Bagian ini memuat output yang ditampilkan **pada modul** (dijalankan oleh penulis modul di Linux). Gunakan sebagai pembanding terhadap hasil praktikum Anda. Nilai seperti ID container, IP, PID, dan LSN akan berbeda pada setiap eksekusi; yang harus sama adalah **pola dan statusnya** (`healthy`, `streaming`, `async`, `t`/`f`, `Updated N rows`, `status: active`).
+
+Berkas yang sama tersimpan di repositori: `04/outputs/modul/postgres-modul-output.txt` dan `04/outputs/modul/ignite-modul-output.txt`.
+
+### 12.1 Output Modul - PostgreSQL (4.1)
+
+```text
+# OUTPUT DARI MODUL 4 - Bagian 4.1 (PostgreSQL Streaming Replication)
+# Sumber: modul-04.pdf (Dr. Bambang Purnomosidi D. P.), dijalankan di Linux (host NEO-X),
+# direktori kerja "src", sehingga nama container berawalan "src-".
+# Transkripsi dari tangkapan layar modul; bagian yang terpotong di tangkapan layar ditandai (terpotong).
+
+############ Halaman 4 - ls -la, dcu ############
+$ ls -la
+total 12
+drwxr-xr-x 2 bpdp bpdp   66 Apr 12 16:31 .
+drwxr-xr-x 3 bpdp bpdp  112 Apr 12 16:25 ..
+-rw-r--r-- 1 bpdp bpdp  146 Oct 25 15:14 00_init.sql
+-rw-r--r-- 1 bpdp bpdp 1424 Apr 12 16:31 docker-compose.yaml
+-rw-r--r-- 1 bpdp bpdp  330 Oct 25 21:19 env.sh
+$ dcu
+bash: dcu: command not found
+$ source env.sh
+$ dcu
+[sudo] password for bpdp:
+[+] up 15/15
+ v Image postgres:18.3-alpine3.23   Pulled
+ v Network src_default              Created
+ v Container src-postgres_primary-1 Started
+ v Container src-postgres_replica-1 Started
+
+############ Halaman 4 - dps ############
+$ dps
+[sudo] password for bpdp:
+CONTAINER ID   IMAGE                      COMMAND                  CREATED         STATUS                   PORTS                                         NAMES
+225df898488e   postgres:18.3-alpine3.23   "docker-entrypoint.s..."   4 minutes ago   Up 4 minutes (healthy)   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp   src-postgres_replica-1
+492a2b3bc3db   postgres:18.3-alpine3.23   "docker-entrypoint.s..."   4 minutes ago   Up 4 minutes (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   src-postgres_primary-1
+
+############ Halaman 5 - dlr (log replica) ############
+$ dlr
+pg_basebackup: error: connection to server at "postgres_primary" (172.18.0.2), port 5432 failed: Conne... (terpotong)
+        Is the server running on that host and accepting TCP/IP connections?
+pg_basebackup failed. Retrying in 5 seconds ...
+Backup done, starting replica...
+2026-04-12 09:39:53.916 UTC [1] LOG:  starting PostgreSQL 18.3 on x86_64-pc-linux-musl, compiled by gc... (terpotong)
+2026-04-12 09:39:53.916 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-04-12 09:39:53.916 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-04-12 09:39:53.920 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-04-12 09:39:53.926 UTC [17] LOG:  database system was interrupted; last known up at 2026-04-12 09... (terpotong)
+2026-04-12 09:39:54.512 UTC [17] LOG:  starting backup recovery with redo LSN 0/2000028, checkpoint LS... (terpotong)
+2026-04-12 09:39:54.512 UTC [17] LOG:  entering standby mode
+2026-04-12 09:39:54.521 UTC [17] LOG:  redo starts at 0/2000028
+2026-04-12 09:39:54.523 UTC [17] LOG:  completed backup recovery with redo LSN 0/2000028 and end LSN 0... (terpotong)
+2026-04-12 09:39:54.524 UTC [17] LOG:  consistent recovery state reached at 0/2000120
+2026-04-12 09:39:54.524 UTC [1] LOG:  database system is ready to accept read-only connections
+2026-04-12 09:39:54.558 UTC [18] LOG:  started streaming WAL from primary at 0/3000000 on timeline 1
+2026-04-12 09:45:09.048 UTC [15] LOG:  restartpoint starting: time
+2026-04-12 09:45:13.336 UTC [15] LOG:  restartpoint complete: wrote 42 buffers (0.3%), wrote 2 SLRU bu... (terpotong)
+c=0.012 s, total=4.288 s; sync files=10, longest=0.006 s, average=0.002 s; distance=16701 kB, estimate... (terpotong)
+2026-04-12 09:45:13.336 UTC [15] LOG:  recovery restart point at 0/304F530
+2026-04-12 09:45:13.336 UTC [15] DETAIL:  Last completed transaction was at log time 2026-04-12 09:40:... (terpotong)
+
+############ Halaman 6 - pg_stat_replication (primary) ############
+$ dep
+492a2b3bc3db:/$ psql -U zuser -d zdb
+psql (18.3)
+Type "help" for help.
+
+zdb=# \x
+Expanded display is on.
+zdb=# SELECT * FROM pg_stat_replication;
+-[ RECORD 1 ]----+------------------------------
+pid              | 59
+usesysid         | 16385
+usename          | replicator
+application_name | walreceiver
+client_addr      | 172.18.0.3
+client_hostname  |
+client_port      | 41068
+backend_start    | 2026-04-12 09:39:54.538716+00
+backend_xmin     |
+state            | streaming
+sent_lsn         | 0/304F670
+write_lsn        | 0/304F670
+flush_lsn        | 0/304F670
+replay_lsn       | 0/304F670
+write_lag        |
+flush_lag        |
+replay_lag       |
+sync_priority    | 0
+sync_state       | async
+reply_time       | 2026-04-12 10:01:05.746394+00
+
+############ Halaman 7 - pg_replication_slots (primary) ############
+zdb=# SELECT * FROM pg_replication_slots;
+-[ RECORD 1 ]-------+-----------------
+slot_name           | replication_slot
+plugin              |
+slot_type           | physical
+datoid              |
+database            |
+temporary           | f
+active              | t
+active_pid          | 59
+xmin                |
+catalog_xmin        |
+restart_lsn         | 0/304F670
+confirmed_flush_lsn |
+wal_status          | reserved
+safe_wal_size       |
+two_phase           | f
+two_phase_at        |
+inactive_since      |
+conflicting         |
+invalidation_reason |
+failover            | f
+synced              | f
+
+############ Halaman 8 - status di replica ############
+$ der
+[sudo] password for bpdp:
+225df898488e:/$ psql -U zuser -d zdb
+psql (18.3)
+Type "help" for help.
+
+zdb=# SELECT pg_is_in_recovery();
+ pg_is_in_recovery
+-------------------
+ t
+(1 row)
+
+############ Halaman 8-9 - sebelum pembuatan tabel ############
+-- primary
+zdb=# \dt
+Did not find any tables.
+-- replica
+zdb=# \dt
+Did not find any tables.
+
+############ Halaman 9 - manipulasi data pada primary ############
+zdb=# CREATE TABLE testrep (first INT, second VARCHAR(15));
+CREATE TABLE
+zdb=# SELECT * FROM testrep;
+ first | second
+-------+--------
+(0 rows)
+
+zdb=# INSERT INTO testrep (first, second) VALUES (21, 'Test pertama');
+INSERT 0 1
+zdb=# INSERT INTO testrep (first, second) VALUES (23, 'Test ke dua');
+INSERT 0 1
+zdb=# SELECT * FROM testrep;
+ first |    second
+-------+--------------
+    21 | Test pertama
+    23 | Test ke dua
+(2 rows)
+
+############ Halaman 10 - hasil di replica ############
+zdb=# \dt
+Did not find any tables.
+zdb=# \dt
+        List of tables
+ Schema |  Name   | Type  | Owner
+--------+---------+-------+-------
+ public | testrep | table | zuser
+(1 row)
+
+zdb=# SELECT * FROM testrep;
+ first |    second
+-------+--------------
+    21 | Test pertama
+    23 | Test ke dua
+(2 rows)
+
+############ Halaman 11 - High Availability ############
+$ sudo docker-compose stop postgres_primary
+[+] stop 1/1
+ v Container src-postgres_primary-1 Stopped
+
+zdb=# SELECT pg_is_in_recovery();
+ pg_is_in_recovery
+-------------------
+ t
+(1 row)
+
+zdb=# SELECT pg_promote();
+ pg_promote
+------------
+ t
+(1 row)
+
+zdb=# SELECT pg_is_in_recovery();
+ pg_is_in_recovery
+-------------------
+ f
+(1 row)
+
+############ Halaman 12 - mematikan semua ############
+$ dcd
+[sudo] password for bpdp:
+[+] down 3/3
+ v Container src-postgres_replica-1 Removed
+ v Container src-postgres_primary-1 Removed
+ v Network src_default              Removed
+$ dps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+```
+
+### 12.2 Output Modul - Apache Ignite (4.2)
+
+```text
+# OUTPUT DARI MODUL 4 - Bagian 4.2 (Replikasi Master-Master Apache Ignite 3.1.0)
+# Sumber: modul-04.pdf (Dr. Bambang Purnomosidi D. P.), Linux (host NEO-X).
+# Transkripsi dari tangkapan layar modul.
+
+############ Halaman 13 - dcu ############
+$ dcu
+[+] up 4/4
+ v Network ignite3_default   Created
+ v Container ignite3-node3-1 Started
+ v Container ignite3-node2-1 Started
+ v Container ignite3-node1-1 Started
+
+############ Halaman 13 - dps (setelah up) ############
+$ dps
+CONTAINER ID   IMAGE                       COMMAND                  CREATED            STATUS            PORTS                                                                                      NAMES
+b919e7f7a5f1   apacheignite/ignite:3.1.0   "docker-entrypoint.s..."   35 seconds ago   Up 35 seconds   3344/tcp, 0.0.0.0:10302->10300/tcp, [::]:10302->10300/tcp, 0.0.0.0:10802->10800/tcp, [::]:10802->10800/tcp   ignite3-node3-1
+89a4b38d084a   apacheignite/ignite:3.1.0   "docker-entrypoint.s..."   35 seconds ago   Up 35 seconds   3344/tcp, 0.0.0.0:10301->10300/tcp, [::]:10301->10300/tcp, 0.0.0.0:10801->10800/tcp, [::]:10801->10800/tcp   ignite3-node2-1
+d42c1d0eb1e7   apacheignite/ignite:3.1.0   "docker-entrypoint.s..."   35 seconds ago   Up 35 seconds   0.0.0.0:10300->10300/tcp, [::]:10300->10300/tcp, 3344/tcp, 0.0.0.0:10800->10800/tcp, [::]:10800->10800/tcp   ignite3-node1-1
+
+############ Halaman 14 - IP tiap node dan ping ############
+$ sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' b919e7f7a5f1
+172.18.0.4
+$ sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 89a4b38d084a
+172.18.0.3
+$ sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' d42c1d0eb1e7
+172.18.0.2
+
+$ ping 172.18.0.2
+PING 172.18.0.2 (172.18.0.2) 56(84) bytes of data.
+64 bytes from 172.18.0.2: icmp_seq=1 ttl=64 time=0.106 ms
+64 bytes from 172.18.0.2: icmp_seq=2 ttl=64 time=0.123 ms
+^C
+--- 172.18.0.2 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1005ms
+rtt min/avg/max/mdev = 0.106/0.114/0.123/0.008 ms
+
+$ ping 172.18.0.3
+PING 172.18.0.3 (172.18.0.3) 56(84) bytes of data.
+64 bytes from 172.18.0.3: icmp_seq=1 ttl=64 time=0.061 ms
+64 bytes from 172.18.0.3: icmp_seq=2 ttl=64 time=0.206 ms
+^C
+--- 172.18.0.3 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1025ms
+rtt min/avg/max/mdev = 0.061/0.133/0.206/0.072 ms
+
+$ ping 172.18.0.4
+PING 172.18.0.4 (172.18.0.4) 56(84) bytes of data.
+64 bytes from 172.18.0.4: icmp_seq=1 ttl=64 time=0.139 ms
+64 bytes from 172.18.0.4: icmp_seq=2 ttl=64 time=0.148 ms
+^C
+--- 172.18.0.4 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.139/0.143/0.148/0.004 ms
+
+############ Halaman 15 - inisialisasi cluster ############
+$ dcli
+Apache Ignite CLI version 3.1.0
+
+You appear to have not connected to any node yet. Do you want to connect to the default node http://localhost:10300? [Y/n] Y
+Connected to http://localhost:10300
+The cluster is not initialized. Run cluster init command to initialize it.
+[node1]> cluster init --name=ignite3 --metastorage-group=node1,node2,node3
+Cluster was initialized successfully
+[node1]> cluster status
+[name: ignite3, nodes: 3, status: active, cmgNodes: [node1, node2, node3], msNodes: [node1, node2, node3]]
+
+# Masuk lagi ke CLI setelah Ctrl-D: tidak perlu init ulang
+$ dcli
+Apache Ignite CLI version 3.1.0
+
+You appear to have not connected to any node yet. Do you want to connect to the default node http://localhost:10300? [Y/n] Y
+Connected to http://localhost:10300
+[node1]>
+
+############ Halaman 17 - schema.sql ############
+[node1]> sql --file=/opt/ignite/sql/schema.sql
+Updated 0 rows.   (diulang 20 kali)
+
+############ Halaman 18 - system.tables ############
+[node1]> sql
+sql-cli> SELECT * FROM system.tables WHERE schema = 'PUBLIC';
+(11 baris: ALBUM, PLAYLISTTRACK, TRACK, CUSTOMER, MEDIATYPE, PLAYLIST, ARTIST, INVOICELINE, EMPLOYEE, GENRE, INVOICE)
+(MEDIATYPE dan GENRE berada di zone CHINOOKREPLICATED, sisanya di CHINOOK)
+
+############ Halaman 19 - memuat data ############
+[node1]> sql --file=/opt/ignite/sql/current_catalog.sql
+Updated 275 rows.
+Updated 347 rows.
+[node1]> sql --file=/opt/ignite/sql/media_and_genre.sql
+Updated 25 rows.
+Updated 5 rows.
+[node1]> sql --file=/opt/ignite/sql/tracks.sql
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 503 rows.
+[node1]> sql --file=/opt/ignite/sql/ee_and_cust.sql
+Updated 8 rows.
+Updated 59 rows.
+[node1]> sql --file=/opt/ignite/sql/invoices.sql
+Updated 412 rows.
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 240 rows.
+Updated 18 rows.
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 1000 rows.
+Updated 715 rows.
+
+############ Halaman 20 - node2 (http://localhost:10301) ############
+[node1]> connect http://localhost:10301
+You are already connected to the http://localhost:10300, do you want to connect to the http://localhost:10301? [Y/n] Y
+Connected to http://localhost:10301
+[node2]> sql
+sql-cli> SELECT * FROM system.tables WHERE schema = 'PUBLIC';
+(hasil identik dengan node1: 11 tabel)
+
+############ Halaman 21 - query analytics di node2 (12 baris pertama pada tangkapan layar) ############
+ YEARMONTH | INVOICECOUNT | CUSTOMERCOUNT | MONTHLYREVENUE | AVERAGEORDERVALUE
+ 2024-12   | 7 | 7 | 38.62 | 5.5171428571428571
+ 2024-11   | 7 | 7 | 49.62 | 7.0885714285714285
+ 2024-10   | 7 | 7 | 37.62 | 5.3742857142857142
+ 2024-09   | 7 | 7 | 37.62 | 5.3742857142857142
+ 2024-08   | 7 | 7 | 37.62 | 5.3742857142857142
+ 2024-07   | 7 | 7 | 37.62 | 5.3742857142857142
+ 2024-06   | 7 | 7 | 37.62 | 5.3742857142857142
+ 2024-05   | 7 | 7 | 37.62 | 5.3742857142857142
+ 2024-04   | 5 | 5 | 33.66 | 6.7320000000000000
+ 2024-03   | 7 | 7 | 37.62 | 5.3742857142857142
+ 2024-02   | 5 | 5 | 27.72 | 5.5440000000000000
+ 2024-01   | 7 | 7 | 37.62 | 5.3742857142857142
+ 2023-12   | 7 | 7 | 37.62 | 5.3742857142857142
+
+############ Halaman 22 - node3 (http://localhost:10302) ############
+[node1]> connect http://localhost:10302
+You are already connected to the http://localhost:10300, do you want to connect to the http://localhost:10302? [Y/n] Y
+Connected to http://localhost:10302
+[node3]> sql
+sql-cli> (query analytics yang sama)
+ 2024-12 | 7 | 7 | 38.62 | 5.5171428571428571
+ 2024-11 | 7 | 7 | 49.62 | 7.0885714285714285
+ 2024-10 .. 2024-05 | 7 | 7 | 37.62 | 5.3742857142857142
+ 2024-04 | 5 | 5 | 33.66 | 6.7320000000000000
+Node ini ternyata juga telah berisi data -> replikasi Master-Master terbukti.
+
+############ Halaman 22 - mematikan semua node ############
+$ dcd
+[+] down 4/4
+ v Container ignite3-node2-1 Removed
+ v Container ignite3-node1-1 Removed
+ v Container ignite3-node3-1 Removed
+ v Network ignite3_default   Removed
+```
+
+### 12.3 Perbandingan Output Modul vs Praktikum Sendiri
+
+| Aspek | Modul (Linux) | Praktikum ini (macOS + Colima) | Keterangan |
+|---|---|---|---|
+| Nama direktori kerja | `src` | `streaming-replication` / `ignite3` | Nama container mengikuti nama project |
+| Nama container PostgreSQL | `src-postgres_primary-1`, `src-postgres_replica-1` | `streaming-replication-postgres_primary-1`, `...-replica-1` | Compose `name:` pada praktikum ini |
+| Nama network | `src_default` | `streaming-replication_default` | |
+| Status container | `Up 4 minutes (healthy)` | `Up 29 seconds (healthy)` | Sama-sama `healthy` |
+| Subnet Docker (PostgreSQL) | `172.18.0.x` (replica `172.18.0.3`) | `172.19.0.x` (replica `172.19.0.3`) | Dipilih otomatis oleh Docker |
+| `pg_stat_replication.pid` | 59 | 67 | Berbeda tiap eksekusi |
+| `application_name` | `walreceiver` | `walreceiver` | Sama |
+| `state` | `streaming` | `streaming` | Sama |
+| `sync_state` | `async` | `async` | Sama |
+| `sent_lsn` = `replay_lsn` | `0/304F670` | `0/3000060` | Posisi WAL berbeda, tetapi keempat nilai sama |
+| `restart_lsn` slot | `0/304F670` | `0/301E030` | |
+| Slot `active`/`slot_type` | `t` / `physical` | `t` / `physical` | Sama |
+| `pg_is_in_recovery()` di replica | `t` | `t` | Sama |
+| Hasil `pg_promote()` | `t` | `t` | Sama |
+| `pg_is_in_recovery()` setelah promote | `f` | `f` | Sama |
+| Sebelum tabel dibuat | `Did not find any tables.` | `Did not find any tables.` | Sama |
+| Data `testrep` di replica | 2 baris (21, 23) | 2 baris (21, 23) | Sama |
+| Penulisan di replica | (tidak ditunjukkan modul) | `ERROR: cannot execute INSERT in a read-only transaction` | Uji tambahan pada praktikum ini |
+| Container Ignite | `ignite3-node1-1` ... `ignite3-node3-1` | sama | Sama |
+| IP node Ignite | `172.18.0.2` - `172.18.0.4` | `172.19.0.2` - `172.19.0.4` | |
+| Cara CLI terhubung | `--network=host`, `http://localhost:10300` | network Compose, `http://node1:10300` | Perbedaan karena macOS |
+| `cluster status` | `nodes: 3, status: active` | `nodes: 3, status: active` | Sama |
+| `schema.sql` | 20 baris `Updated 0 rows.` | 20 baris `Updated 0 rows.` | Sama |
+| Jumlah baris data | 275, 347, 25, 5, 1000x3, 503, 8, 59, 412, ... 715 | identik | Sama persis |
+| Query analytics | `2024-12 ... 38.62` | identik | Sama persis |
+
+Kesimpulan perbandingan: semua hasil fungsional (status replikasi, peran node, data, hasil query) **identik** dengan modul. Perbedaan hanya pada nilai yang memang berubah tiap eksekusi (ID, IP, PID, LSN, waktu) dan pada nama container/network.
+
+---
+
+## 13. Lampiran C - Kode Asli Modul vs Versi Praktikum
+
+Berikut kode **persis seperti pada modul**. Versi yang dipakai pada praktikum ini (bagian 4 dan 5) adalah modifikasi dari kode ini; alasannya dijelaskan pada tabel di bagian 4.3 dan 5.3. Berkas yang sama tersimpan di repositori sebagai `streaming-replication/docker-compose.module.yaml`, `streaming-replication/env.module.sh`, dan `ignite3/env.module.sh`.
+
+### 13.1 `00_init.sql` (tidak diubah)
+
+```sql
+CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'replicator_password';
+SELECT pg_create_physical_replication_slot('replication_slot');
+```
+
+### 13.2 `docker-compose.yaml` asli modul (PostgreSQL)
+
+```yaml
+# VERSI ASLI DARI MODUL 4 (bagian 4.1.2) - tidak diubah.
+# Cocok untuk Linux dengan docker-compose (v1) dan nama direktori "src".
+# Kelemahan: replica bisa start sebelum primary siap (muncul "connection refused"
+# pada log, lalu retry), dan pg_basebackup dijalankan lagi saat container restart.
+x-postgres-common:
+  &postgres-common
+  image: postgres:18.3-alpine3.23
+  user: postgres
+  restart: always
+  healthcheck:
+    test: 'pg_isready -U zuser --dbname=zdb'
+    interval: 10s
+    timeout: 5s
+    retries: 5
+services:
+  postgres_primary:
+    <<: *postgres-common
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: zuser
+      POSTGRES_DB: zdb
+      POSTGRES_PASSWORD: zpass
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication replicator 0.0.0.0/0 md5"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    command: |
+      postgres
+      -c wal_level=replica
+      -c hot_standby=on
+      -c max_wal_senders=10
+      -c max_replication_slots=10
+      -c hot_standby_feedback=on
+    volumes:
+      - ./00_init.sql:/docker-entrypoint-initdb.d/00_init.sql
+  postgres_replica:
+    <<: *postgres-common
+    ports:
+      - 5433:5432
+    environment:
+      PGUSER: replicator
+      PGPASSWORD: replicator_password
+      PGDATA: /var/lib/postgresql/18/docker
+    command: |
+      bash -c "
+        until pg_basebackup --pgdata=/var/lib/postgresql/18/docker -R --slot=replication_slot --host=postgres_primary --port=5432 -X stream; do
+          echo 'pg_basebackup failed. Retrying in 5 seconds ...'
+          sleep 5
+        done
+        echo 'Backup done, starting replica...'
+        chmod 0700 /var/lib/postgresql/18/docker
+        postgres
+      "
+    depends_on:
+      - postgres_primary
+```
+
+### 13.3 `env.sh` asli modul (PostgreSQL)
+
+```bash
+# VERSI ASLI DARI MODUL 4 (bagian 4.1.2).
+# Ganti <nama-direktori> dengan nama direktori tempat file disimpan.
+# Pada contoh modul, direktorinya "src" sehingga nama container "src-postgres_*-1".
+# Dipakai bersama docker-compose.module.yaml (jalankan: docker-compose -f docker-compose.module.yaml ...).
+alias dcu="sudo docker-compose up -d"
+alias dcd="sudo docker-compose down"
+alias dps="sudo docker ps"
+alias der="sudo docker exec -it <nama-direktori>-postgres_replica-1 bash"
+alias dep="sudo docker exec -it <nama-direktori>-postgres_primary-1 bash"
+alias dlr="sudo docker logs <nama-direktori>-postgres_replica-1"
+alias dlp="sudo docker logs <nama-direktori>-postgres_primary-1"
+```
+
+Cara memakai versi asli (Linux, dengan `docker-compose` v1 dan direktori bernama `src`):
+
+```bash
+cd src
+source env.sh
+dcu          # sudo docker-compose up -d
+dps
+dlr          # log replica
+dep          # shell di primary: psql -U zuser -d zdb
+der          # shell di replica
+dcd
+```
+
+Penjelasan alias menurut modul:
+
+| Perintah | Fungsi |
+|---|---|
+| `docker-compose up` | Mengaktifkan beberapa container sekaligus berdasarkan `docker-compose.yaml` |
+| `docker-compose down` | Menonaktifkan dan menghapus container tersebut |
+| `docker ps` | Melihat daftar container yang berjalan |
+| `docker exec -it` | Menjalankan proses (di sini `bash`) di container yang sedang berjalan |
+| `docker logs` | Menampilkan log container yang sedang berjalan atau sudah berhenti |
+
+### 13.4 `env.sh` asli modul (Apache Ignite)
+
+```bash
+# VERSI ASLI DARI MODUL 4 (bagian 4.2.2) - tidak diubah.
+# Hanya bekerja di Linux (--network=host). Di macOS/Windows gunakan env.sh.
+alias dcu="sudo docker-compose up -d"
+alias dcd="sudo docker-compose down"
+alias dps="sudo docker ps"
+alias dclm="sudo docker run --rm -it --network=host -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 -v ./sql:/opt/ignite/sql apacheignite/ignite:3.1.0 cli"
+alias dcli="sudo docker run --rm -it --network=host -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 apacheignite/ignite:3.1.0 cli"
+```
+
+Perintah CLI asli modul (bagian 4.2.4 dan 4.2.5):
+
+```bash
+# CLI tanpa mount
+docker run --rm -it --network=host -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 apacheignite/ignite:3.1.0 cli
+
+# CLI dengan mount ./sql
+docker run --rm -it --network=host -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 -v ./sql:/opt/ignite/sql apacheignite/ignite:3.1.0 cli
+
+# Inisialisasi cluster (di dalam CLI)
+cluster init --name=ignite3 --metastorage-group=node1,node2,node3
+
+# Alamat IP tiap node
+sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <CONTAINER ID>
+```
+
+> Pada teks modul, beberapa perintah menyebut image `apacheignite/ignite:3.0.0` (bagian 4.2.3, 4.2.4, 4.2.5), sedangkan alias `env.sh` dan keluaran CLI menunjukkan **3.1.0**. Praktikum ini konsisten memakai **3.1.0**.
+
+### 13.5 Ringkasan Perbedaan Kode
+
+| Kode modul | Kode praktikum | Alasan |
+|---|---|---|
+| `docker-compose` (v1) | `docker compose` (v2) | v1 sudah usang; v2 adalah plugin Docker |
+| `sudo ...` | tanpa `sudo` | Tidak diperlukan di Colima/Docker Desktop |
+| `depends_on: - postgres_primary` | `condition: service_healthy` | Menunggu primary benar-benar siap |
+| `bash -c "..."` berisi `pg_basebackup` selalu | dicek `PG_VERSION` dulu | Aman saat container di-restart |
+| `postgres` di akhir skrip | `exec postgres` | Sinyal stop/restart diterima langsung |
+| `$PGDATA` | `$$PGDATA` | Escape Compose agar variabel dibaca di dalam container |
+| alias `der`/`dep` memakai `<nama-direktori>-...-1` | `docker compose exec <service>` | Tidak bergantung pada nama container |
+| `--network=host` (Ignite) | `--network="$(ignite_net)"` | `host` tidak berlaku di macOS/Windows |
+| `-v ./sql:...` | `-v "$PWD/sql:..."` | Path absolut lebih andal |
+
+---
+
+## 14. Lampiran D - Skrip Bantu dan Cara Pakai
+
+Skrip berikut melengkapi modul agar seluruh percobaan bisa diulang otomatis dan hasilnya terdokumentasi. Semua skrip dijalankan dari folder masing-masing, memakai `docker compose` (v2), dan sudah diperiksa sintaksnya (`bash -n`). Berikut kegunaan tiap berkas.
+
+### 14.1 PostgreSQL - `04/streaming-replication/scripts/`
+
+| Skrip | Bagian modul | Fungsi |
+|---|---|---|
+| `00-up.sh` | 4.1.3 | `docker compose up -d --wait`, lalu `docker compose ps` |
+| `01-status.sh` | 4.1.3 - 4.1.4 | Menampilkan `ps`, log replica, `pg_stat_replication`, `pg_replication_slots`, `pg_is_in_recovery()`, dan `pg_stat_wal_receiver` |
+| `02-test-replication.sh` | 4.1.4 | Membuat tabel `testrep`, mengisi 2 baris di primary, membaca di replica, dan menguji bahwa replica menolak tulis |
+| `03-failover.sh` | 4.1.5 | Stop primary, `pg_promote()` di replica, cek `pg_is_in_recovery()`, uji tulis di primary baru |
+| `04-lag-test.sh` | tambahan | Menulis 100.000 baris di primary, mengukur `lag_bytes`, membandingkan jumlah baris di kedua node |
+| `99-cleanup.sh` | 4.1.5 | `docker compose down -v` dan `docker ps` |
+| `run-all.sh` | semua | Menjalankan 00, 01, 02, 03, 99 berurutan dan menyimpan log ke `04/outputs/praktikum/` |
+
+Cara pakai:
+
+```bash
+cd 04/streaming-replication
+chmod +x scripts/*.sh
+
+# Langkah per langkah
+bash scripts/00-up.sh
+bash scripts/01-status.sh
+bash scripts/02-test-replication.sh
+bash scripts/04-lag-test.sh      # opsional
+bash scripts/03-failover.sh
+bash scripts/99-cleanup.sh
+
+# Atau sekali jalan (log otomatis tersimpan)
+bash scripts/run-all.sh
+```
+
+Keluaran yang diharapkan mengikuti Bagian 4.6 - 4.8 dan Lampiran B.
+
+**Catatan `03-failover.sh`:** skrip ini mematikan primary. Jalankan setelah `02-test-replication.sh`, karena memakai tabel `testrep`.
+
+### 14.2 Apache Ignite - `04/ignite3/scripts/`
+
+| Berkas | Bagian modul | Fungsi |
+|---|---|---|
+| `get-sql.sh` | 4.2.2, 4.2.5 | Mengunduh `sql.zip`, meratakan ke `./sql`, membuang berkas sampah macOS |
+| `01-up.sh` | 4.2.3 | Menyalakan 3 node, menampilkan `ps`, IP tiap node, cek 6 port dari host, dan ping IP |
+| `cli-commands.txt` | 4.2.4 - 4.2.5 | Daftar perintah yang diketik **manual** di Ignite CLI (init, load SQL, verifikasi node2/node3, uji tulis dari node3) |
+| `99-cleanup.sh` | 4.2.5 | `docker compose down` dan `docker ps` |
+
+Cara pakai:
+
+```bash
+cd 04/ignite3
+bash scripts/get-sql.sh          # unduh berkas SQL
+bash scripts/01-up.sh            # nyalakan cluster
+source env.sh
+dclm                              # masuk CLI, ikuti scripts/cli-commands.txt
+bash scripts/99-cleanup.sh
+```
+
+Perintah CLI Ignite dibuat sebagai berkas teks (bukan skrip otomatis), karena CLI bersifat interaktif, dan penempelan banyak baris sekaligus terbukti menimbulkan error (lihat bagian 7.9 dan 7.13). Isinya:
+
+```text
+# Perintah yang diketik MANUAL di Ignite CLI (satu per baris, tunggu hasil sebelum baris berikutnya)
+# Masuk CLI:  source env.sh && dclm
+# Jawab "n" pada tawaran koneksi ke localhost:10300, lalu:
+
+connect http://node1:10300
+cluster init --name=ignite3 --metastorage-group=node1,node2,node3
+cluster status
+
+# Jalankan file SQL berurutan (schema.sql dulu):
+sql --file=/opt/ignite/sql/schema.sql
+sql --file=/opt/ignite/sql/current_catalog.sql
+sql --file=/opt/ignite/sql/media_and_genre.sql
+sql --file=/opt/ignite/sql/tracks.sql
+sql --file=/opt/ignite/sql/ee_and_cust.sql
+sql --file=/opt/ignite/sql/invoices.sql
+
+# Cek tabel dan jumlah data (masuk mode SQL dengan: sql)
+sql
+SELECT * FROM system.tables WHERE schema = 'PUBLIC';
+SELECT COUNT(*) FROM Track;
+SELECT COUNT(*) FROM Invoice;
+exit
+
+# Verifikasi replikasi: pindah ke node2 lalu node3 dan ulangi query
+connect http://node2:10300
+sql
+SELECT COUNT(*) FROM Track;
+exit
+connect http://node3:10300
+sql
+SELECT COUNT(*) FROM Track;
+exit
+
+# Uji tulis dari node3, baca dari node1
+connect http://node3:10300
+sql
+INSERT INTO Artist (ArtistId, Name) VALUES (99999, 'Artis Uji Node3');
+exit
+connect http://node1:10300
+sql
+SELECT * FROM Artist WHERE ArtistId = 99999;
+exit
+```
+
+### 14.3 Cek Cepat REST API dan Port
+
+Port yang sama dengan modul (bagian 4.2.3) dapat diperiksa dari host:
+
+```bash
+# Port REST 10300-10302 dan client 10800-10802 harus terbuka setelah "docker compose up -d"
+for p in 10300 10301 10302 10800 10801 10802; do
+  (exec 3<>/dev/tcp/127.0.0.1/$p) 2>/dev/null && echo "port $p: terbuka" || echo "port $p: TERTUTUP"
+done
+```
+
+Skrip `01-up.sh` melakukan pengecekan ini otomatis.
+
+> **Ping antar-IP (modul 4.2.3):** modul menunjukkan `ping 172.18.0.x` berhasil karena dijalankan di Linux, tempat network bridge Docker langsung terjangkau dari host. Pada macOS/Windows (Docker berjalan di dalam VM) IP container **tidak terjangkau** dari host sehingga ping dari host akan gagal. Itu wajar. Sebagai gantinya uji dari dalam network Compose, misalnya: `docker compose exec node1 ping -c 2 node2` (bila `ping` tersedia di image) atau cukup percayakan `cluster status` yang menunjukkan `nodes: 3`.
+
+---
+
+## 15. Referensi dan Sumber
+
+Semua tautan diakses pada **23 Oktober 2026**. Kode `[R..]` dipakai pada tabel pemetaan sumber di bagian akhir.
+
+### 15.1 Bahan Praktikum
+
+- **[R1]** Purnomosidi D. P., B. (2026). *Modul 4 - Konsistensi dan Replikasi pada Sistem Terdistribusi* (Praktikum Sistem Terdistribusi dan Terdesentralisasi). Prodi Informatika, Universitas Teknologi Digital Indonesia. Berkas `modul-04.pdf`, 22 halaman.
+- **[R2]** Eremeykin, P. *How to Setup Single Primary PostgreSQL Replication with Docker Compose*. Medium. https://medium.com/@eremeykin/how-to-setup-single-primary-postgresql-replication-with-docker-compose-98c48f233bbf (materi dasar bagian 4.1 pada modul).
+- **[R3]** Repositori praktikum: https://github.com/usatjalung25-stack/prak-dis-dec (folder `04/`, termasuk log terminal `02-Streaming Replication Menggunakan PostgreSQL.sql`).
+- **[R26]** Purnomosidi D. P., B. (bpdp). *Profil GitHub penulis modul* ("talk less, read more, and code in between"). https://github.com/bpdp
+- **[R27]** Apache Software Foundation. *How to Start an Ignite 3 Cluster in Docker*, contoh `docker-compose.yml` 3 node (`JVM_MAX_MEM`, `configs`, `nodeFinder`) yang dipakai pada `04/ignite3/docker-compose.yml`. https://ignite.apache.org/docs/ignite3/latest/quick-start/start-cluster (sama dengan [R14]; dicantumkan terpisah karena dipakai untuk kode).
+
+### 15.2 PostgreSQL
+
+- **[R4]** PostgreSQL Global Development Group. *PostgreSQL 18 Documentation, Chapter 26.2: Log-Shipping Standby Servers* (streaming replication, `standby.signal`, `primary_conninfo`, replication slot, `pg_promote()`). https://www.postgresql.org/docs/18/warm-standby.html
+- **[R5]** PostgreSQL Global Development Group. *PostgreSQL 18 Documentation: High Availability, Load Balancing, and Replication*. https://www.postgresql.org/docs/18/high-availability.html
+- **[R6]** PostgreSQL Global Development Group. *PostgreSQL 18 Documentation: Hot Standby* (replica read-only, `hot_standby`, `hot_standby_feedback`). https://www.postgresql.org/docs/18/hot-standby.html
+- **[R7]** PostgreSQL Global Development Group. *PostgreSQL 18 Documentation: pg_basebackup*. https://www.postgresql.org/docs/18/app-pgbasebackup.html
+- **[R8]** PostgreSQL Global Development Group. *PostgreSQL 18 Documentation: The Cumulative Statistics System* (`pg_stat_replication`, `pg_stat_wal_receiver`). https://www.postgresql.org/docs/18/monitoring-stats.html
+- **[R9]** PostgreSQL Global Development Group. *PostgreSQL 18 Documentation: System Administration Functions* (`pg_create_physical_replication_slot`, `pg_promote`, `pg_is_in_recovery`, `pg_wal_lsn_diff`). https://www.postgresql.org/docs/18/functions-admin.html
+- **[R10]** PostgreSQL Global Development Group. *PostgreSQL 18 Documentation: The pg_hba.conf File*. https://www.postgresql.org/docs/18/auth-pg-hba-conf.html
+- **[R11]** Docker Official Image `postgres` (variabel `POSTGRES_USER`, `POSTGRES_DB`, `POSTGRES_PASSWORD`, `POSTGRES_HOST_AUTH_METHOD`, `POSTGRES_INITDB_ARGS`, direktori `/docker-entrypoint-initdb.d`). Docker Hub. https://hub.docker.com/_/postgres
+
+### 15.3 Apache Ignite 3
+
+- **[R12]** Apache Software Foundation. *Apache Ignite 3 Documentation*. https://ignite.apache.org/docs/ignite3/latest/index
+- **[R13]** Apache Software Foundation. *Apache Ignite 3 - Explore SQL (Quick Start)*, termasuk `docker-compose.yml` dan `sql.zip`. https://ignite.apache.org/docs/ignite3/latest/quick-start/explore-sql
+  - https://ignite.apache.org/docs/ignite3/latest/quick-start/sql-files/docker-compose.yml
+  - https://ignite.apache.org/docs/ignite3/latest/quick-start/sql-files/sql.zip
+- **[R14]** Apache Software Foundation. *How to Start an Ignite 3 Cluster in Docker* (`cluster init --name=ignite3 --metastorage-group=node1,node2,node3`, `cluster status`, port 10300/10800). https://ignite.apache.org/docs/ignite3/latest/quick-start/start-cluster
+- **[R15]** Apache Software Foundation. *Getting Started With Apache Ignite 3* (penjelasan `--metastorage-group`, anjuran 3, 5, atau 7 node, CLI dan mode SQL). https://ignite.apache.org/docs/ignite3/latest/quick-start/getting-started-guide
+- **[R16]** Apache Ignite 3 source repository, README (menjalankan CLI di dalam Docker dengan `--net ignite3_default` dan `connect http://node1:10300`). https://github.com/apache/ignite-3
+- **[R17]** Ongaro, D., & Ousterhout, J. (2014). *In Search of an Understandable Consensus Algorithm (Extended Version)*. USENIX Annual Technical Conference. https://raft.github.io/raft.pdf (dasar konsensus Raft yang dipakai Ignite 3 untuk replikasi partisi).
+
+### 15.4 Docker, Compose, dan Lingkungan
+
+- **[R18]** Docker Inc. *Install Docker Engine*. https://docs.docker.com/engine/install/ (catatan: modul menuliskan `https://.docs.docker.com/engine/install/` dengan titik berlebih; alamat yang benar adalah tanpa titik tersebut).
+- **[R19]** Docker Inc. *Install Docker Engine on Ubuntu*. https://docs.docker.com/engine/install/ubuntu/
+- **[R20]** Docker Inc. *Install Docker Compose*. https://docs.docker.com/compose/install/
+- **[R21]** Docker Inc. *Compose file reference* (anchor/extension `x-`, `healthcheck`, `depends_on`, `command`, interpolasi `$$`). https://docs.docker.com/reference/compose-file/
+- **[R22]** Docker Inc. *Control startup and shutdown order in Compose* (`depends_on` dengan `condition: service_healthy`). https://docs.docker.com/compose/how-tos/startup-order/
+- **[R23]** Docker Inc. *Docker Desktop WSL 2 backend on Windows*. https://docs.docker.com/desktop/features/wsl/
+- **[R24]** Abiosoft. *Colima: Container runtimes on macOS (and Linux) with minimal setup*. https://github.com/abiosoft/colima
+- **[R25]** Homebrew. *The Missing Package Manager for macOS (or Linux)*. https://brew.sh
+
+### 15.5 Pemetaan Sumber ke Bagian Dokumen
+
+| Bagian README | Sumber utama |
+|---|---|
+| 1. Tujuan, struktur tugas | [R1] |
+| 2. Konsep primary-replica, WAL, asinkron | [R4], [R5], [R6] |
+| 2. Konsep Master-Master, zone, replika, kuorum | [R12], [R15], [R17] |
+| 3. Instalasi Docker (Linux, macOS, Windows) | [R18], [R19], [R20], [R23], [R24], [R25] |
+| 4.2 `00_init.sql` (user replikasi, slot) | [R4], [R9] |
+| 4.3 `docker-compose.yaml` (variabel env, parameter server, `pg_basebackup`) | [R2], [R7], [R10], [R11], [R21], [R22] |
+| 4.4 `env.sh` (alias `docker compose`) | [R20], [R21] |
+| 4.7 Pengujian (`pg_stat_replication`, slot, `pg_is_in_recovery`) | [R8], [R9] |
+| 4.8 Failover `pg_promote()` | [R4], [R9] |
+| 5.1 sampai 5.3 File Ignite dan `env.sh` | [R13], [R16] |
+| 5.5 Inisialisasi cluster | [R14], [R15] |
+| 5.6 sampai 5.8 Eksekusi SQL dan verifikasi node | [R13], [R14] |
+| 6. Perbandingan model replikasi | [R4], [R12], [R17] |
+| 7. Error dan solusi | [R2], [R4], [R14], [R16], [R21], [R22] |
+| 8. Perintah lanjutan | [R8], [R9], [R12], [R15] |
+| 5.1 `docker-compose.yml` Ignite | [R14], [R27] |
+| Lampiran A | [R3] (log terminal asli) |
+| Lampiran B (output pembanding) | [R1], [R26] |
+| Lampiran C (kode asli modul) | [R1], [R2], [R13] |
+| Lampiran D (skrip bantu) | [R4], [R9], [R14], [R20] |
+
+---
+
+*Dokumen ini disusun untuk keperluan praktikum. Seluruh keluaran terminal berasal dari eksekusi nyata pada 23 Oktober 2026, sedangkan penjelasan konsep merujuk pada dokumentasi resmi di atas.*
