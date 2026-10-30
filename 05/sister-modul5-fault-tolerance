@@ -1,0 +1,1072 @@
+Last login: Fri Oct 30 12:11:44 on ttys000
+/Users/danel/.zshrc:27: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:28: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:29: no such file or directory: /opt/homebrew/bin/brew
+danel@1111QD-rs ~ % /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+Homebrew on macOS is only supported on Apple Silicon processors!
+danel@1111QD-rs ~ % brew install python
+Warning: You are using macOS 13.
+We (and Apple) do not provide support for this old version.
+
+Homebrew no longer builds bottles for this configuration.
+Consider MacPorts, which provides binary packages for this macOS version:
+  https://www.macports.org
+Warning: The following taps are not trusted:
+  jostasik/tap
+
+Homebrew is currently ignoring formulae, casks and commands
+from these taps because tap trust is required.
+Untap them with:
+  brew untap jostasik/tap
+Trust specific formulae, casks and commands with:
+  brew trust --formula <user>/<tap>/<formula>
+  brew trust --cask <user>/<tap>/<cask>
+  brew trust --command <user>/<tap>/<command>
+Whole-tap trust is broader and includes all current and future formulae,
+casks and commands from the listed taps. Trust whole taps with:
+  brew trust jostasik/tap
+For more information, see:
+  https://docs.brew.sh/Tap-Trust
+==> Downloading https://raw.githubusercontent.com/Homebrew/homebrew-core/3d7257f
+Already downloaded: /Users/danel/Library/Caches/Homebrew/downloads/ef8be0847b973a9a2cbcb312d0ce898b275f127893211f58e6543947c6c69359--python@3.15.rb
+==> Downloading https://raw.githubusercontent.com/Homebrew/homebrew-core/3d7257f
+######################################################################### 100.0%
+==> Fetching downloads for: python@3.15
+✔︎ API Source python@3.15.rb                         Verified     22.7KB/ 22.7KB
+✔︎ Resource python@3.15--flit-core                   Verified     54.7KB/ 54.7KB
+✔︎ Resource python@3.15--pip                         Verified      1.9MB/  1.9MB
+✔︎ Formula python@3.15 (3.15.2)                      Verified     35.9MB/ 35.9MB
+Error: python: A `brew install python` process has already locked /usr/local/Cellar/python@3.15.
+Please wait for it to finish or terminate it to continue.
+
+This is a Tier 3 configuration:
+  https://docs.brew.sh/Support-Tiers#tier-3
+You can report issues with Tier 3 configurations to Homebrew/* repositories!
+  
+Read the above document before opening any issues or PRs.
+danel@1111QD-rs ~ % brew install --cask docker
+Warning: You are using macOS 13.
+We (and Apple) do not provide support for this old version.
+
+Homebrew no longer builds bottles for this configuration.
+Consider MacPorts, which provides binary packages for this macOS version:
+  https://www.macports.org
+Warning: The following taps are not trusted:
+  jostasik/tap
+
+Homebrew is currently ignoring formulae, casks and commands
+from these taps because tap trust is required.
+Untap them with:
+  brew untap jostasik/tap
+Trust specific formulae, casks and commands with:
+  brew trust --formula <user>/<tap>/<formula>
+  brew trust --cask <user>/<tap>/<cask>
+  brew trust --command <user>/<tap>/<command>
+Whole-tap trust is broader and includes all current and future formulae,
+casks and commands from the listed taps. Trust whole taps with:
+  brew trust jostasik/tap
+For more information, see:
+  https://docs.brew.sh/Tap-Trust
+Error: docker-desktop: docker-desktop: This cask does not run on macOS versions older than Sonoma.
+Error: docker-desktop: docker-desktop: This cask does not run on macOS versions older than Sonoma.
+
+This is a Tier 3 configuration:
+  https://docs.brew.sh/Support-Tiers#tier-3
+You can report issues with Tier 3 configurations to Homebrew/* repositories!
+  
+Read the above document before opening any issues or PRs.
+danel@1111QD-rs ~ % python3 --version
+Python 3.13.9
+danel@1111QD-rs ~ % docker --version
+Docker version 29.9.2, build a82e528901
+danel@1111QD-rs ~ % docker compose version
+Docker Compose version 5.6.1
+danel@1111QD-rs ~ % open -a Docker
+Unable to find application named 'Docker'
+danel@1111QD-rs ~ % xcode-select --install   
+xcode-select: error: command line tools are already installed, use "Software Update" in System Settings to install updates
+danel@1111QD-rs ~ % brew install colima
+Warning: colima 0.10.3 is already installed and up-to-date.
+To reinstall 0.10.3, run:
+  brew reinstall colima
+danel@1111QD-rs ~ % colima start --cpu 2 --memory 4
+INFO[0001] starting colima                              
+INFO[0001] runtime: docker                              
+INFO[0002] starting ...                                  context=vm
+INFO[0037] provisioning ...                              context=docker
+INFO[0041] starting ...                                  context=docker
+INFO[0045] done                                         
+danel@1111QD-rs ~ % docker info
+Client: Docker Engine - Community
+ Version:    29.9.2
+ Context:    colima
+ Debug Mode: false
+ Plugins:
+  compose: Docker Compose (Docker Inc.)
+    Version:  5.6.1
+    Path:     /usr/local/lib/docker/cli-plugins/docker-compose
+
+Server:
+ Containers: 15
+  Running: 3
+  Paused: 0
+  Stopped: 12
+ Images: 34
+ Server Version: 29.5.2
+ Storage Driver: overlayfs
+  driver-type: io.containerd.snapshotter.v1
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 2
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+ CDI spec directories:
+  /etc/cdi
+  /var/run/cdi
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 193637f7ee8ae5f5aa5248f49e7baa3e6164966e
+ runc version: v1.3.5-0-g488fc13e
+ init version: de40ad0
+ Security Options:
+  apparmor
+  seccomp
+   Profile: builtin
+  cgroupns
+ Kernel Version: 6.8.0-117-generic
+ Operating System: Ubuntu 24.04.4 LTS
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 2
+ Total Memory: 3.824GiB
+ Name: colima
+ ID: a0820df8-6deb-415f-b5aa-95d1e488d032
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Experimental: false
+ Insecure Registries:
+  ::1/128
+  127.0.0.0/8
+ Live Restore Enabled: false
+ Firewall Backend: iptables
+  EnableUserlandProxy: true
+  UserlandProxyPath: /usr/bin/docker-proxy
+
+danel@1111QD-rs ~ % docker run --rm hello-world
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+danel@1111QD-rs ~ % open -a Docker
+Unable to find application named 'Docker'
+danel@1111QD-rs ~ % open -a Docker
+until docker info > /dev/null 2>&1; do
+  echo "Menunggu Docker aktif..."
+  sleep 3
+done
+echo "Docker sudah aktif"
+Unable to find application named 'Docker'
+Docker sudah aktif
+danel@1111QD-rs ~ % docker info > /dev/null 2>&1 && echo "Docker AKTIF" || echo "Docker MATI"
+Docker AKTIF
+danel@1111QD-rs ~ % docker run --rm hello-world
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+danel@1111QD-rs ~ % osascript -e 'quit app "Docker"'
+danel@1111QD-rs ~ % pkill -f Docker
+danel@1111QD-rs ~ % osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Docker.app", hidden:true}'
+login item UNKNOWN
+danel@1111QD-rs ~ % cat >> ~/.zshrc <<'EOF'
+alias docker-on='open -a Docker && until docker info >/dev/null 2>&1; do echo "Menunggu Docker..."; sleep 3; done; echo "Docker aktif"'
+alias docker-off='osascript -e "quit app \"Docker\""'
+alias docker-status='docker info >/dev/null 2>&1 && echo "Docker AKTIF" || echo "Docker MATI"'
+EOF
+source ~/.zshrc
+/Users/danel/.zshrc:27: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:28: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:29: no such file or directory: /opt/homebrew/bin/brew
+danel@1111QD-rs ~ % brew install colima docker docker-compose
+Warning: colima 0.10.3 is already installed and up-to-date.
+To reinstall 0.10.3, run:
+  brew reinstall colima
+Warning: docker 29.9.2 is already installed and up-to-date.
+To reinstall 29.9.2, run:
+  brew reinstall docker
+Warning: docker-compose 5.6.1 is already installed and up-to-date.
+To reinstall 5.6.1, run:
+  brew reinstall docker-compose
+danel@1111QD-rs ~ % colima start      
+WARN[0000] already running, ignoring                    
+danel@1111QD-rs ~ % docker info 
+Client: Docker Engine - Community
+ Version:    29.9.2
+ Context:    colima
+ Debug Mode: false
+ Plugins:
+  compose: Docker Compose (Docker Inc.)
+    Version:  5.6.1
+    Path:     /usr/local/lib/docker/cli-plugins/docker-compose
+
+Server:
+ Containers: 15
+  Running: 3
+  Paused: 0
+  Stopped: 12
+ Images: 34
+ Server Version: 29.5.2
+ Storage Driver: overlayfs
+  driver-type: io.containerd.snapshotter.v1
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 2
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+ CDI spec directories:
+  /etc/cdi
+  /var/run/cdi
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 193637f7ee8ae5f5aa5248f49e7baa3e6164966e
+ runc version: v1.3.5-0-g488fc13e
+ init version: de40ad0
+ Security Options:
+  apparmor
+  seccomp
+   Profile: builtin
+  cgroupns
+ Kernel Version: 6.8.0-117-generic
+ Operating System: Ubuntu 24.04.4 LTS
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 2
+ Total Memory: 3.824GiB
+ Name: colima
+ ID: a0820df8-6deb-415f-b5aa-95d1e488d032
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Experimental: false
+ Insecure Registries:
+  ::1/128
+  127.0.0.0/8
+ Live Restore Enabled: false
+ Firewall Backend: iptables
+  EnableUserlandProxy: true
+  UserlandProxyPath: /usr/bin/docker-proxy
+
+danel@1111QD-rs ~ % colima status 
+INFO[0001] colima is running using macOS Virtualization.Framework 
+INFO[0001] arch: x86_64                                 
+INFO[0001] runtime: docker                              
+INFO[0001] mountType: virtiofs                          
+INFO[0001] docker socket: unix:///Users/danel/.colima/default/docker.sock 
+INFO[0001] containerd socket: unix:///Users/danel/.colima/default/containerd.sock 
+danel@1111QD-rs ~ % 
+Last login: Fri Oct 30 12:12:45 on ttys000
+/Users/danel/.zshrc:27: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:28: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:29: no such file or directory: /opt/homebrew/bin/brew
+danel@1111QD-rs ~ % mkdir -p ~/modul5 && cd ~/modul5
+danel@1111QD-rs modul5 % python3 -m venv .venv
+danel@1111QD-rs modul5 % source .venv/bin/activate
+(.venv) danel@1111QD-rs modul5 % pip install --upgrade pip
+Requirement already satisfied: pip in ./.venv/lib/python3.13/site-packages (25.2)
+Collecting pip
+  Downloading pip-26.2.2-py3-none-any.whl.metadata (4.6 kB)
+Downloading pip-26.2.2-py3-none-any.whl (1.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 9.3 MB/s  0:00:00
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 25.2
+    Uninstalling pip-25.2:
+      Successfully uninstalled pip-25.2
+Successfully installed pip-26.2.2
+(.venv) danel@1111QD-rs modul5 % pip install blacksheep blacksheep-cli requests tenacity pybreaker
+Collecting blacksheep
+  Downloading blacksheep-2.6.4-cp313-cp313-macosx_10_13_universal2.whl.metadata (14 kB)
+Collecting blacksheep-cli
+  Downloading blacksheep_cli-0.0.5-py3-none-any.whl.metadata (3.5 kB)
+Collecting requests
+  Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Collecting tenacity
+  Downloading tenacity-9.2.1-py3-none-any.whl.metadata (1.4 kB)
+Collecting pybreaker
+  Downloading pybreaker-1.4.1-py3-none-any.whl.metadata (11 kB)
+Collecting certifi>=2025.4.26 (from blacksheep)
+  Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+Collecting guardpost>=1.0.4 (from blacksheep)
+  Downloading guardpost-1.1.0-py3-none-any.whl.metadata (5.1 kB)
+Collecting rodi~=2.0.8 (from blacksheep)
+  Downloading rodi-2.0.8-py3-none-any.whl.metadata (6.5 kB)
+Collecting essentials<2.0,>=1.1.8 (from blacksheep)
+  Downloading essentials-1.1.9-py2.py3-none-any.whl.metadata (4.2 kB)
+Collecting essentials-openapi<2.0,>=1.2.0 (from blacksheep)
+  Downloading essentials_openapi-1.4.0-py3-none-any.whl.metadata (8.1 kB)
+Collecting itsdangerous~=2.2.0 (from blacksheep)
+  Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting h11<1.0.0,>=0.14.0 (from blacksheep)
+  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting h2<5.0.0,>=4.0.0 (from blacksheep)
+  Downloading h2-4.4.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting httptools>=0.7.1 (from blacksheep)
+  Downloading httptools-0.9.0-cp313-cp313-macosx_11_0_x86_64.whl.metadata (3.5 kB)
+Collecting markupsafe>=3.0.0 (from essentials-openapi<2.0,>=1.2.0->blacksheep)
+  Downloading markupsafe-3.0.4-cp313-cp313-macosx_10_13_x86_64.whl.metadata (2.7 kB)
+Collecting pyyaml>=6 (from essentials-openapi<2.0,>=1.2.0->blacksheep)
+  Downloading pyyaml-6.0.3-cp313-cp313-macosx_10_13_x86_64.whl.metadata (2.4 kB)
+Collecting hyperframe<7,>=6.1 (from h2<5.0.0,>=4.0.0->blacksheep)
+  Downloading hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting hpack<5,>=4.2 (from h2<5.0.0,>=4.0.0->blacksheep)
+  Downloading hpack-4.2.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting click (from blacksheep-cli)
+  Using cached click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting cookiecutter (from blacksheep-cli)
+  Downloading cookiecutter-2.7.1-py3-none-any.whl.metadata (7.3 kB)
+Collecting essentials-configuration[full] (from blacksheep-cli)
+  Downloading essentials_configuration-2.0.5-py3-none-any.whl.metadata (13 kB)
+Collecting pathvalidate (from blacksheep-cli)
+  Downloading pathvalidate-3.3.1-py3-none-any.whl.metadata (12 kB)
+Collecting python-dotenv~=1.0.0 (from blacksheep-cli)
+  Downloading python_dotenv-1.0.1-py3-none-any.whl.metadata (23 kB)
+Collecting questionary (from blacksheep-cli)
+  Downloading questionary-2.1.1-py3-none-any.whl.metadata (5.4 kB)
+Collecting rich-click (from blacksheep-cli)
+  Downloading rich_click-1.9.9-py3-none-any.whl.metadata (7.4 kB)
+Collecting charset_normalizer<4,>=2 (from requests)
+  Downloading charset_normalizer-3.5.2-cp313-cp313-macosx_10_13_universal2.whl.metadata (46 kB)
+Collecting idna<4,>=2.5 (from requests)
+  Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting urllib3<3,>=1.26 (from requests)
+  Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting binaryornot>=0.4.4 (from cookiecutter->blacksheep-cli)
+  Downloading binaryornot-0.6.0-py3-none-any.whl.metadata (2.9 kB)
+Collecting Jinja2<4.0.0,>=2.7 (from cookiecutter->blacksheep-cli)
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting python-slugify>=4.0.0 (from cookiecutter->blacksheep-cli)
+  Downloading python_slugify-9.1.3-py3-none-any.whl.metadata (12 kB)
+Collecting arrow (from cookiecutter->blacksheep-cli)
+  Downloading arrow-1.4.0-py3-none-any.whl.metadata (7.7 kB)
+Collecting rich (from cookiecutter->blacksheep-cli)
+  Using cached rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting text-unidecode>=1.3 (from python-slugify>=4.0.0->cookiecutter->blacksheep-cli)
+  Downloading text_unidecode-1.3-py2.py3-none-any.whl.metadata (2.4 kB)
+Collecting python-dateutil>=2.7.0 (from arrow->cookiecutter->blacksheep-cli)
+  Downloading python_dateutil-3.0.0-py2.py3-none-any.whl.metadata (8.2 kB)
+Collecting tzdata (from arrow->cookiecutter->blacksheep-cli)
+  Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting six>=1.6 (from python-dateutil>=2.7.0->arrow->cookiecutter->blacksheep-cli)
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting deepmerge~=2.0 (from essentials-configuration[full]->blacksheep-cli)
+  Downloading deepmerge-2.1.0-py3-none-any.whl.metadata (3.6 kB)
+INFO: pip is looking at multiple versions of essentials-configuration[full] to determine which version is compatible with other requirements. This could take a while.
+Collecting essentials-configuration[full] (from blacksheep-cli)
+  Downloading essentials_configuration-2.0.4-py3-none-any.whl.metadata (14 kB)
+Collecting deepmerge~=1.1.0 (from essentials-configuration[full]->blacksheep-cli)
+  Downloading deepmerge-1.1.1-py3-none-any.whl.metadata (1.9 kB)
+Collecting prompt_toolkit<4.0,>=2.0 (from questionary->blacksheep-cli)
+  Downloading prompt_toolkit-3.0.53-py3-none-any.whl.metadata (6.4 kB)
+Collecting wcwidth>=0.1.4 (from prompt_toolkit<4.0,>=2.0->questionary->blacksheep-cli)
+  Downloading wcwidth-0.9.4-cp310-abi3-macosx_10_9_x86_64.whl.metadata (23 kB)
+Collecting markdown-it-py>=2.2.0 (from rich->cookiecutter->blacksheep-cli)
+  Using cached markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich->cookiecutter->blacksheep-cli)
+  Using cached pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich->cookiecutter->blacksheep-cli)
+  Using cached mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading blacksheep-2.6.4-cp313-cp313-macosx_10_13_universal2.whl (2.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.7/2.7 MB 1.4 MB/s  0:00:01
+Downloading essentials-1.1.9-py2.py3-none-any.whl (16 kB)
+Downloading essentials_openapi-1.4.0-py3-none-any.whl (57 kB)
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading h2-4.4.1-py3-none-any.whl (62 kB)
+Downloading hpack-4.2.0-py3-none-any.whl (34 kB)
+Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
+Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Downloading rodi-2.0.8-py3-none-any.whl (12 kB)
+Downloading blacksheep_cli-0.0.5-py3-none-any.whl (14 kB)
+Downloading python_dotenv-1.0.1-py3-none-any.whl (19 kB)
+Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+Downloading charset_normalizer-3.5.2-cp313-cp313-macosx_10_13_universal2.whl (366 kB)
+Downloading idna-3.20-py3-none-any.whl (69 kB)
+Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+Downloading tenacity-9.2.1-py3-none-any.whl (32 kB)
+Downloading pybreaker-1.4.1-py3-none-any.whl (12 kB)
+Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+Downloading guardpost-1.1.0-py3-none-any.whl (22 kB)
+Downloading httptools-0.9.0-cp313-cp313-macosx_11_0_x86_64.whl (113 kB)
+Downloading markupsafe-3.0.4-cp313-cp313-macosx_10_13_x86_64.whl (11 kB)
+Downloading pyyaml-6.0.3-cp313-cp313-macosx_10_13_x86_64.whl (181 kB)
+Using cached click-8.5.0-py3-none-any.whl (125 kB)
+Downloading cookiecutter-2.7.1-py3-none-any.whl (41 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading binaryornot-0.6.0-py3-none-any.whl (14 kB)
+Downloading python_slugify-9.1.3-py3-none-any.whl (16 kB)
+Downloading text_unidecode-1.3-py2.py3-none-any.whl (78 kB)
+Downloading arrow-1.4.0-py3-none-any.whl (68 kB)
+Downloading python_dateutil-3.0.0-py2.py3-none-any.whl (94 kB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading essentials_configuration-2.0.4-py3-none-any.whl (16 kB)
+Downloading deepmerge-1.1.1-py3-none-any.whl (8.6 kB)
+Downloading pathvalidate-3.3.1-py3-none-any.whl (24 kB)
+Downloading questionary-2.1.1-py3-none-any.whl (36 kB)
+Downloading prompt_toolkit-3.0.53-py3-none-any.whl (392 kB)
+Downloading wcwidth-0.9.4-cp310-abi3-macosx_10_9_x86_64.whl (612 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 613.0/613.0 kB 6.5 MB/s  0:00:00
+Using cached rich-15.0.0-py3-none-any.whl (310 kB)
+Using cached pygments-2.21.0-py3-none-any.whl (1.3 MB)
+Using cached markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Using cached mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Downloading rich_click-1.9.9-py3-none-any.whl (71 kB)
+Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)
+Installing collected packages: text-unidecode, essentials, deepmerge, wcwidth, urllib3, tzdata, tenacity, six, rodi, pyyaml, python-slugify, python-dotenv, pygments, pybreaker, pathvalidate, mdurl, markupsafe, itsdangerous, idna, hyperframe, httptools, hpack, h11, click, charset_normalizer, certifi, binaryornot, requests, python-dateutil, prompt_toolkit, markdown-it-py, Jinja2, h2, guardpost, essentials-openapi, essentials-configuration, rich, questionary, blacksheep, arrow, rich-click, cookiecutter, blacksheep-cli
+Successfully installed Jinja2-3.1.6 arrow-1.4.0 binaryornot-0.6.0 blacksheep-2.6.4 blacksheep-cli-0.0.5 certifi-2026.10.23 charset_normalizer-3.5.2 click-8.5.0 cookiecutter-2.7.1 deepmerge-1.1.1 essentials-1.1.9 essentials-configuration-2.0.4 essentials-openapi-1.4.0 guardpost-1.1.0 h11-0.16.0 h2-4.4.1 hpack-4.2.0 httptools-0.9.0 hyperframe-6.1.0 idna-3.20 itsdangerous-2.2.0 markdown-it-py-4.2.0 markupsafe-3.0.4 mdurl-0.1.2 pathvalidate-3.3.1 prompt_toolkit-3.0.53 pybreaker-1.4.1 pygments-2.21.0 python-dateutil-3.0.0 python-dotenv-1.0.1 python-slugify-9.1.3 pyyaml-6.0.3 questionary-2.1.1 requests-2.34.2 rich-15.0.0 rich-click-1.9.9 rodi-2.0.8 six-1.17.0 tenacity-9.2.1 text-unidecode-1.3 tzdata-2026.6 urllib3-2.8.0 wcwidth-0.9.4
+(.venv) danel@1111QD-rs modul5 % blacksheep create
+✨ Project name: blacksheep_lb
+🚀 Project template: mvc
+📜 Use OpenAPI Documentation? Yes
+🔧 Library to read settings essentials-configuration
+🔩 App settings format TOML
+────────────────────────────────────────────────────────────────────────────────
+🏗️  Project created in blacksheep_lb
+────────────────────────────────────────────────────────────────────────────────
+-- What's next:
+        cd blacksheep_lb
+        pip install -r requirements.txt
+        python dev.py
+(.venv) danel@1111QD-rs modul5 % cd blacksheep_lb
+(.venv) danel@1111QD-rs blacksheep_lb % pip install -r requirements.txt
+Requirement already satisfied: blacksheep>=2.3.0 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (2.6.4)
+Requirement already satisfied: Jinja2~=3.1.6 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from -r requirements.txt (line 2)) (3.1.6)
+Collecting uvicorn~=0.34.0 (from -r requirements.txt (line 3))
+  Downloading uvicorn-0.34.3-py3-none-any.whl.metadata (6.5 kB)
+Collecting uvloop (from -r requirements.txt (line 4))
+  Downloading uvloop-0.23.0-cp313-cp313-macosx_10_13_x86_64.whl.metadata (5.1 kB)
+Collecting MarkupSafe==3.0.2 (from -r requirements.txt (line 6))
+  Downloading MarkupSafe-3.0.2-cp313-cp313-macosx_10_13_universal2.whl.metadata (4.0 kB)
+Collecting pydantic (from -r requirements.txt (line 7))
+  Downloading pydantic-2.14.2-py3-none-any.whl.metadata (137 kB)
+Requirement already satisfied: essentials-configuration[full] in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from -r requirements.txt (line 5)) (2.0.4)
+Requirement already satisfied: click>=7.0 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from uvicorn~=0.34.0->-r requirements.txt (line 3)) (8.5.0)
+Requirement already satisfied: h11>=0.8 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from uvicorn~=0.34.0->-r requirements.txt (line 3)) (0.16.0)
+Requirement already satisfied: certifi>=2025.4.26 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (2026.10.23)
+Requirement already satisfied: guardpost>=1.0.4 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (1.1.0)
+Requirement already satisfied: rodi~=2.0.8 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (2.0.8)
+Requirement already satisfied: essentials<2.0,>=1.1.8 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (1.1.9)
+Requirement already satisfied: essentials-openapi<2.0,>=1.2.0 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (1.4.0)
+Requirement already satisfied: itsdangerous~=2.2.0 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (2.2.0)
+Requirement already satisfied: h2<5.0.0,>=4.0.0 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (4.4.1)
+Requirement already satisfied: httptools>=0.7.1 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (0.9.0)
+Requirement already satisfied: pyyaml>=6 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from essentials-openapi<2.0,>=1.2.0->blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (6.0.3)
+Requirement already satisfied: hyperframe<7,>=6.1 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from h2<5.0.0,>=4.0.0->blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (6.1.0)
+Requirement already satisfied: hpack<5,>=4.2 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from h2<5.0.0,>=4.0.0->blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1)) (4.2.0)
+Requirement already satisfied: deepmerge~=1.1.0 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from essentials-configuration[full]->-r requirements.txt (line 5)) (1.1.1)
+Requirement already satisfied: python-dotenv~=1.0.0 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from essentials-configuration[full]->-r requirements.txt (line 5)) (1.0.1)
+Requirement already satisfied: rich-click in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from essentials-configuration[full]->-r requirements.txt (line 5)) (1.9.9)
+Collecting annotated-types>=0.6.0 (from pydantic->-r requirements.txt (line 7))
+  Using cached annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.50.2 (from pydantic->-r requirements.txt (line 7))
+  Downloading pydantic_core-2.50.2-cp313-cp313-macosx_10_12_x86_64.whl.metadata (6.5 kB)
+Collecting typing-extensions>=4.16.0 (from pydantic->-r requirements.txt (line 7))
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting typing-inspection>=0.4.4 (from pydantic->-r requirements.txt (line 7))
+  Using cached typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting cryptography<47.0.0,>=45.0.2 (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading cryptography-46.0.7-cp311-abi3-macosx_10_9_universal2.whl.metadata (5.7 kB)
+Collecting PyJWT<2.16.0,>=2.10.1 (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading pyjwt-2.15.1-py3-none-any.whl.metadata (3.5 kB)
+Collecting websockets~=15.0.1 (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading websockets-15.0.1-cp313-cp313-macosx_10_13_x86_64.whl.metadata (6.8 kB)
+Collecting defusedxml>=0.7.1 (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+Collecting cffi>=2.0.0 (from cryptography<47.0.0,>=45.0.2->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading cffi-2.1.1-cp313-cp313-macosx_10_15_x86_64.whl.metadata (2.5 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography<47.0.0,>=45.0.2->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading pycparser-3.12-py3-none-any.whl.metadata (9.7 kB)
+Requirement already satisfied: rich>=12 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from rich-click->essentials-configuration[full]->-r requirements.txt (line 5)) (15.0.0)
+Requirement already satisfied: markdown-it-py>=2.2.0 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from rich>=12->rich-click->essentials-configuration[full]->-r requirements.txt (line 5)) (4.2.0)
+Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from rich>=12->rich-click->essentials-configuration[full]->-r requirements.txt (line 5)) (2.21.0)
+Requirement already satisfied: mdurl~=0.1 in /Users/danel/modul5/.venv/lib/python3.13/site-packages (from markdown-it-py>=2.2.0->rich>=12->rich-click->essentials-configuration[full]->-r requirements.txt (line 5)) (0.1.2)
+Downloading MarkupSafe-3.0.2-cp313-cp313-macosx_10_13_universal2.whl (14 kB)
+Downloading uvicorn-0.34.3-py3-none-any.whl (62 kB)
+Downloading uvloop-0.23.0-cp313-cp313-macosx_10_13_x86_64.whl (779 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 779.1/779.1 kB 3.9 MB/s  0:00:00
+Downloading pydantic-2.14.2-py3-none-any.whl (490 kB)
+Downloading pydantic_core-2.50.2-cp313-cp313-macosx_10_12_x86_64.whl (2.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 7.0 MB/s  0:00:00
+Using cached annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Downloading cryptography-46.0.7-cp311-abi3-macosx_10_9_universal2.whl (7.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.2/7.2 MB 10.0 MB/s  0:00:00
+Downloading pyjwt-2.15.1-py3-none-any.whl (33 kB)
+Downloading websockets-15.0.1-cp313-cp313-macosx_10_13_x86_64.whl (173 kB)
+Downloading cffi-2.1.1-cp313-cp313-macosx_10_15_x86_64.whl (184 kB)
+Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Downloading pycparser-3.12-py3-none-any.whl (62 kB)
+Installing collected packages: websockets, uvloop, uvicorn, typing-extensions, PyJWT, pycparser, MarkupSafe, defusedxml, annotated-types, typing-inspection, pydantic-core, cffi, pydantic, cryptography
+  Attempting uninstall: MarkupSafe
+    Found existing installation: MarkupSafe 3.0.4
+    Uninstalling MarkupSafe-3.0.4:
+      Successfully uninstalled MarkupSafe-3.0.4
+Successfully installed MarkupSafe-3.0.2 PyJWT-2.15.1 annotated-types-0.8.0 cffi-2.1.1 cryptography-46.0.7 defusedxml-0.7.1 pycparser-3.12 pydantic-2.14.2 pydantic-core-2.50.2 typing-extensions-4.16.0 typing-inspection-0.4.4 uvicorn-0.34.3 uvloop-0.23.0 websockets-15.0.1
+(.venv) danel@1111QD-rs blacksheep_lb % python dev.py
+Running for local development ──────────────────────────────────────────────────
+Visit http://localhost:44777/
+
+INFO:     Started server process [13335]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://localhost:44777 (Press CTRL+C to quit)
+INFO:     ::1:49624 - "GET / HTTP/1.1" 200 OK
+INFO:     ::1:49624 - "GET /styles/public.css HTTP/1.1" 200 OK
+INFO:     ::1:49625 - "GET /vendor/jquery-easing/jquery.easing.js HTTP/1.1" 200 OK
+INFO:     ::1:49624 - "GET /vendor/bootstrap/js/bootstrap.bundle.min.js HTTP/1.1" 200 OK
+INFO:     ::1:49626 - "GET /vendor/jquery/jquery.min.js HTTP/1.1" 200 OK
+INFO:     ::1:49627 - "GET /scripts/freelancer.js HTTP/1.1" 200 OK
+INFO:     ::1:49628 - "GET /vendor/fontawesome-free/css/all.min.css HTTP/1.1" 200 OK
+INFO:     ::1:49629 - "GET /images/blacksheep.png HTTP/1.1" 200 OK
+INFO:     ::1:49624 - "GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 OK
+INFO:     ::1:49624 - "GET /vendor/fontawesome-free/webfonts/fa-brands-400.woff2 HTTP/1.1" 200 OK
+INFO:     ::1:49624 - "GET /vendor/fontawesome-free/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 OK
+^CINFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [13335]
+(.venv) danel@1111QD-rs blacksheep_lb % cd ..
+(.venv) danel@1111QD-rs modul5 % cat > blacksheep_lb/Dockerfile <<'EOF'
+FROM python:3.12-slim
+WORKDIR /home
+COPY . /home
+RUN python -m venv venv \
+    && . venv/bin/activate \
+    && pip install --upgrade pip \
+    && pip install -r requirements.txt
+ENV APP_ENV=prod BG_COLOR="#1abc9c" APP_ROUTE_PREFIX=""
+EXPOSE 80
+CMD ["sh", "-c", ". venv/bin/activate && uvicorn \"app.main:app\" --host 0.0.0.0 --port 80 --log-level info"]
+EOF
+(.venv) danel@1111QD-rs modul5 % >....                                          
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
+EOF
+
+cat > nginx/nginx.conf <<'EOF'
+events {
+  worker_connections 4096;
+}
+
+http {
+  # Definisi grup, lihat di docker-compose.yml
+  upstream backend {
+    server bs_app:80;
+  }
+  server {
+    listen 80;
+    location / {
+      # sesuaikan dengan nama upstream di atas
+      proxy_pass http://backend;
+    }
+  }
+}
+EOF
+(.venv) danel@1111QD-rs modul5 % cat > docker-compose.yml <<'EOF'
+services:
+  # aplikasi yang akan di-scale
+  # ada pada direktori blacksheep_lb
+  bs_app:
+    build: ./blacksheep_lb
+
+  # aktifkan nginx dengan menggunakan nginx/Dockerfile
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - bs_app
+EOF
+(.venv) danel@1111QD-rs modul5 % cat > env.sh <<'EOF'
+alias dcu="docker compose up --build -d --scale bs_app=2"
+alias dcd="docker compose down"
+alias dps="docker ps --format '{{.Image}} {{.Names}}'"
+alias dcln="docker logs nginx"
+EOF
+
+source env.sh
+(.venv) danel@1111QD-rs modul5 % dcu
+WARN[0000] buildx Docker CLI plugin not found: falling back to the classic builder. BuildKit-only build features (multi-arch, secrets, ssh, additional contexts, ...) will not be available 
+Sending build context to Docker daemon  1.756MB
+Step 1/8 : FROM python:3.12-slim
+3.12-slim: Pulling from library/python
+acca7542dfc7: Pull complete 
+6fc242d221a6: Pull complete 
+f574edac59d9: Pull complete 
+3eb771151506: Pull complete 
+bccc6082da9b: Download complete 
+5c4e36918e20: Download complete 
+Digest: sha256:aa943ce411423c7582288f18707ff66eddcbaeb510502d747a72aeb34f30d159
+Status: Downloaded newer image for python:3.12-slim
+ ---> aa943ce41142
+Step 2/8 : WORKDIR /home
+ ---> Running in 6a2e46e017e6
+ ---> Removed intermediate container 6a2e46e017e6
+ ---> d68ab88c265a
+Step 3/8 : COPY . /home
+ ---> 232d666d1565
+Step 4/8 : RUN python -m venv venv     && . venv/bin/activate     && pip install --upgrade pip     && pip install -r requirements.txt
+ ---> Running in 1b27d3bf76b9
+Requirement already satisfied: pip in ./venv/lib/python3.12/site-packages (25.0.1)
+Collecting pip
+  Downloading pip-26.2.2-py3-none-any.whl.metadata (4.6 kB)
+Downloading pip-26.2.2-py3-none-any.whl (1.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 9.0 MB/s eta 0:00:00
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 25.0.1
+    Uninstalling pip-25.0.1:
+      Successfully uninstalled pip-25.0.1
+Successfully installed pip-26.2.2
+Collecting blacksheep>=2.3.0 (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading blacksheep-2.6.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (14 kB)
+Collecting Jinja2~=3.1.6 (from -r requirements.txt (line 2))
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting uvicorn~=0.34.0 (from -r requirements.txt (line 3))
+  Downloading uvicorn-0.34.3-py3-none-any.whl.metadata (6.5 kB)
+Collecting uvloop (from -r requirements.txt (line 4))
+  Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.1 kB)
+Collecting MarkupSafe==3.0.2 (from -r requirements.txt (line 6))
+  Downloading MarkupSafe-3.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
+Collecting pydantic (from -r requirements.txt (line 7))
+  Downloading pydantic-2.14.2-py3-none-any.whl.metadata (137 kB)
+Collecting essentials-configuration[full] (from -r requirements.txt (line 5))
+  Downloading essentials_configuration-2.0.5-py3-none-any.whl.metadata (13 kB)
+Collecting click>=7.0 (from uvicorn~=0.34.0->-r requirements.txt (line 3))
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting h11>=0.8 (from uvicorn~=0.34.0->-r requirements.txt (line 3))
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting certifi>=2025.4.26 (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+Collecting guardpost>=1.0.4 (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading guardpost-1.1.0-py3-none-any.whl.metadata (5.1 kB)
+Collecting rodi~=2.0.8 (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading rodi-2.0.8-py3-none-any.whl.metadata (6.5 kB)
+Collecting essentials<2.0,>=1.1.8 (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading essentials-1.1.9-py2.py3-none-any.whl.metadata (4.2 kB)
+Collecting essentials-openapi<2.0,>=1.2.0 (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading essentials_openapi-1.4.0-py3-none-any.whl.metadata (8.1 kB)
+Collecting itsdangerous~=2.2.0 (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting h2<5.0.0,>=4.0.0 (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading h2-4.4.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting httptools>=0.7.1 (from blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+Collecting pyyaml>=6 (from essentials-openapi<2.0,>=1.2.0->blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting hyperframe<7,>=6.1 (from h2<5.0.0,>=4.0.0->blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting hpack<5,>=4.2 (from h2<5.0.0,>=4.0.0->blacksheep>=2.3.0->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading hpack-4.2.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting deepmerge~=2.0 (from essentials-configuration[full]->-r requirements.txt (line 5))
+  Downloading deepmerge-2.1.0-py3-none-any.whl.metadata (3.6 kB)
+Collecting python-dotenv~=1.2.1 (from essentials-configuration[full]->-r requirements.txt (line 5))
+  Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+Collecting rich-click (from essentials-configuration[full]->-r requirements.txt (line 5))
+  Downloading rich_click-1.9.9-py3-none-any.whl.metadata (7.4 kB)
+Collecting annotated-types>=0.6.0 (from pydantic->-r requirements.txt (line 7))
+  Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.50.2 (from pydantic->-r requirements.txt (line 7))
+  Downloading pydantic_core-2.50.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.5 kB)
+Collecting typing-extensions>=4.16.0 (from pydantic->-r requirements.txt (line 7))
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting typing-inspection>=0.4.4 (from pydantic->-r requirements.txt (line 7))
+  Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting cryptography<47.0.0,>=45.0.2 (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading cryptography-46.0.7-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+Collecting PyJWT<2.16.0,>=2.10.1 (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading pyjwt-2.15.1-py3-none-any.whl.metadata (3.5 kB)
+Collecting websockets~=15.0.1 (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading websockets-15.0.1-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+Collecting defusedxml>=0.7.1 (from blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+Collecting cffi>=2.0.0 (from cryptography<47.0.0,>=45.0.2->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography<47.0.0,>=45.0.2->blacksheep[full]>=2.3.0->-r requirements.txt (line 1))
+  Downloading pycparser-3.12-py3-none-any.whl.metadata (9.7 kB)
+Collecting rich>=12 (from rich-click->essentials-configuration[full]->-r requirements.txt (line 5))
+  Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=12->rich-click->essentials-configuration[full]->-r requirements.txt (line 5))
+  Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich>=12->rich-click->essentials-configuration[full]->-r requirements.txt (line 5))
+  Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=12->rich-click->essentials-configuration[full]->-r requirements.txt (line 5))
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading MarkupSafe-3.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading uvicorn-0.34.3-py3-none-any.whl (62 kB)
+Downloading blacksheep-2.6.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (5.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 9.8 MB/s  0:00:00
+Downloading essentials-1.1.9-py2.py3-none-any.whl (16 kB)
+Downloading essentials_openapi-1.4.0-py3-none-any.whl (57 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading h2-4.4.1-py3-none-any.whl (62 kB)
+Downloading hpack-4.2.0-py3-none-any.whl (34 kB)
+Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
+Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Downloading rodi-2.0.8-py3-none-any.whl (12 kB)
+Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 10.2 MB/s  0:00:00
+Downloading essentials_configuration-2.0.5-py3-none-any.whl (15 kB)
+Downloading deepmerge-2.1.0-py3-none-any.whl (14 kB)
+Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+Downloading pydantic-2.14.2-py3-none-any.whl (490 kB)
+Downloading pydantic_core-2.50.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 3.5 MB/s  0:00:00
+Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Downloading cryptography-46.0.7-cp311-abi3-manylinux_2_34_x86_64.whl (4.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 9.7 MB/s  0:00:00
+Downloading pyjwt-2.15.1-py3-none-any.whl (33 kB)
+Downloading websockets-15.0.1-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (182 kB)
+Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+Downloading guardpost-1.1.0-py3-none-any.whl (22 kB)
+Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (552 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 552.8/552.8 kB 8.4 MB/s  0:00:00
+Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 8.8 MB/s  0:00:00
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Downloading pycparser-3.12-py3-none-any.whl (62 kB)
+Downloading rich_click-1.9.9-py3-none-any.whl (71 kB)
+Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 9.5 MB/s  0:00:00
+Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Installing collected packages: essentials, websockets, uvloop, typing-extensions, rodi, pyyaml, python-dotenv, PyJWT, pygments, pycparser, mdurl, MarkupSafe, itsdangerous, hyperframe, httptools, hpack, h11, defusedxml, deepmerge, click, certifi, annotated-types, uvicorn, typing-inspection, pydantic-core, markdown-it-py, Jinja2, h2, guardpost, essentials-openapi, essentials-configuration, cffi, rich, pydantic, cryptography, blacksheep, rich-click
+
+Successfully installed Jinja2-3.1.6 MarkupSafe-3.0.2 PyJWT-2.15.1 annotated-types-0.8.0 blacksheep-2.6.4 certifi-2026.10.23 cffi-2.1.1 click-8.5.0 cryptography-46.0.7 deepmerge-2.1.0 defusedxml-0.7.1 essentials-1.1.9 essentials-configuration-2.0.5 essentials-openapi-1.4.0 guardpost-1.1.0 h11-0.16.0 h2-4.4.1 hpack-4.2.0 httptools-0.9.0 hyperframe-6.1.0 itsdangerous-2.2.0 markdown-it-py-4.2.0 mdurl-0.1.2 pycparser-3.12 pydantic-2.14.2 pydantic-core-2.50.2 pygments-2.21.0 python-dotenv-1.2.4 pyyaml-6.0.3 rich-15.0.0 rich-click-1.9.9 rodi-2.0.8 typing-extensions-4.16.0 typing-inspection-0.4.4 uvicorn-0.34.3 uvloop-0.23.0 websockets-15.0.1
+ ---> Removed intermediate container 1b27d3bf76b9
+ ---> 3234f9c5da0d
+Step 5/8 : ENV APP_ENV=prod BG_COLOR="#1abc9c" APP_ROUTE_PREFIX=""
+ ---> Running in 7345731707c4
+ ---> Removed intermediate container 7345731707c4
+ ---> b836c0352f7e
+Step 6/8 : EXPOSE 80
+ ---> Running in 258680e2fcf9
+ ---> Removed intermediate container 258680e2fcf9
+ ---> 3c49dbc3ef73
+Step 7/8 : CMD ["sh", "-c", ". venv/bin/activate && uvicorn \"app.main:app\" --host 0.0.0.0 --port 80 --log-level info"]
+ ---> Running in db83da3752a7
+ ---> Removed intermediate container db83da3752a7
+ ---> a9418db8cfd7
+Step 8/8 : LABEL com.docker.compose.image.builder=classic
+ ---> Running in 30949388efaa
+ ---> Removed intermediate container 30949388efaa
+ ---> b59ed27cdb57
+Successfully built b59ed27cdb57
+Successfully tagged modul5-bs_app:latest
+[+] up 1/1
+ ✔ Image modul5-bs_app Built                                              100.9s
+Sending build context to Docker daemon     386B
+Step 1/4 : FROM nginx
+ ---> 7be37bf763b4
+Step 2/4 : RUN rm /etc/nginx/conf.d/default.conf
+ ---> Using cache
+ ---> 95b1881d2809
+Step 3/4 : COPY nginx.conf /etc/nginx/nginx.conf
+ ---> 3613b0ca2eef
+Step 4/4 : LABEL com.docker.compose.image.builder=classic
+ ---> Running in 8e76ebe74b85
+ ---> Removed intermediate container 8e76ebe74b85
+ ---> 99a541f86cef
+Successfully built 99a541f86cef
+Successfully tagged modul5-nginx:latest
+[+] up 6/7
+ ✔ Image modul5-bs_app       Built                                        100.9s
+ ✔ Image modul5-nginx        Built                                          6.1s
+ ✔ Network modul5_default    Created                                        0.2s
+ ✔ Container modul5-bs_app-1 Created                                        0.3s
+ ✔ Container modul5-bs_app-2 Created                                        0.3s
+ ⠋ Container nginx           Creating                                       0.1s
+ ✘ service:nginx:1           Error response from daemon: Conflict. The...   0.0s
+Error response from daemon: Conflict. The container name "/nginx" is already in use by container "0d3c692faf1573084218785116a341b2b15d3ea28b9e4851c40e4d14431e3ac5". You have to remove (or rename) that container to be able to reuse that name.
+(.venv) danel@1111QD-rs modul5 % docker compose up --build -d --scale bs_app=2
+WARN[0000] buildx Docker CLI plugin not found: falling back to the classic builder. BuildKit-only build features (multi-arch, secrets, ssh, additional contexts, ...) will not be available 
+Sending build context to Docker daemon  1.756MB
+Step 1/8 : FROM python:3.12-slim
+ ---> aa943ce41142
+Step 2/8 : WORKDIR /home
+ ---> Using cache
+ ---> d68ab88c265a
+Step 3/8 : COPY . /home
+ ---> Using cache
+ ---> 232d666d1565
+Step 4/8 : RUN python -m venv venv     && . venv/bin/activate     && pip install --upgrade pip     && pip install -r requirements.txt
+ ---> Using cache
+ ---> 3234f9c5da0d
+Step 5/8 : ENV APP_ENV=prod BG_COLOR="#1abc9c" APP_ROUTE_PREFIX=""
+ ---> Using cache
+ ---> b836c0352f7e
+Step 6/8 : EXPOSE 80
+ ---> Using cache
+ ---> 3c49dbc3ef73
+Step 7/8 : CMD ["sh", "-c", ". venv/bin/activate && uvicorn \"app.main:app\" --host 0.0.0.0 --port 80 --log-level info"]
+ ---> Using cache
+ ---> a9418db8cfd7
+Step 8/8 : LABEL com.docker.compose.image.builder=classic
+ ---> Using cache
+ ---> b59ed27cdb57
+Successfully built b59ed27cdb57
+Successfully tagged modul5-bs_app:latest
+[+] up 1/1
+ ✔ Image modul5-bs_app Built                                                0.9s
+Sending build context to Docker daemon     386B
+Step 1/4 : FROM nginx
+ ---> 7be37bf763b4
+Step 2/4 : RUN rm /etc/nginx/conf.d/default.conf
+ ---> Using cache
+ ---> 95b1881d2809
+Step 3/4 : COPY nginx.conf /etc/nginx/nginx.conf
+ ---> Using cache
+ ---> 3613b0ca2eef
+Step 4/4 : LABEL com.docker.compose.image.builder=classic
+ ---> Using cache
+ ---> 99a541f86cef
+Successfully built 99a541f86cef
+Successfully tagged modul5-nginx:latest
+[+] up 3/4
+ ✔ Image modul5-bs_app Built                                                0.9s
+ ✔ Image modul5-nginx  Built                                                0.4s
+ ⠋ Container nginx     Creating                                             0.1s
+ ✘ service:nginx:1     Error response from daemon: Conflict. The contain... 0.0s
+Error response from daemon: Conflict. The container name "/nginx" is already in use by container "0d3c692faf1573084218785116a341b2b15d3ea28b9e4851c40e4d14431e3ac5". You have to remove (or rename) that container to be able to reuse that name.
+(.venv) danel@1111QD-rs modul5 % dps
+(.venv) danel@1111QD-rs modul5 % open http://localhost
+(.venv) danel@1111QD-rs modul5 % open http://localhost
+(.venv) danel@1111QD-rs modul5 % for i in 1 2 3 4 5 6; do curl -s -o /dev/null -w "%{http_code}\n" http://localhost/; done
+000
+000
+000
+000
+000
+000
+(.venv) danel@1111QD-rs modul5 % docker logs modul5-bs_app-1 | grep "GET / "
+echo "-----"
+docker logs modul5-bs_app-2 | grep "GET / "
+-----
+(.venv) danel@1111QD-rs modul5 % docker stop modul5-bs_app-1
+for i in 1 2 3 4; do curl -s -o /dev/null -w "%{http_code}\n" http://localhost/; done
+docker start modul5-bs_app-1
+modul5-bs_app-1
+000
+000
+000
+000
+modul5-bs_app-1
+(.venv) danel@1111QD-rs modul5 % dcd
+[+] down 3/3
+ ✔ Container modul5-bs_app-1 Removed                                       10.3s
+ ✔ Container modul5-bs_app-2 Removed                                        0.1s
+ ✔ Network modul5_default    Removed                                        0.2s
+(.venv) danel@1111QD-rs modul5 % >....                                          
+
+
+def check_server(host: str, port: int, timeout: float = 3.0) -> bool:
+    """Heartbeat sederhana: coba koneksi TCP ke host:port."""
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except (OSError, socket.timeout):
+        return False
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Pemakaian: python check-server.py <host> <port>")
+        sys.exit(2)
+
+    host, port = sys.argv[1], int(sys.argv[2])
+    if check_server(host, port):
+        print("Server up")
+    else:
+        print("Server down")
+        sys.exit(1)
+EOF
+(.venv) danel@1111QD-rs modul5 % python heartbeat/check-server.py localhost 44777
+Server down
+(.venv) danel@1111QD-rs modul5 % python heartbeat/check-server.py localhost 44777
+Server down
+(.venv) danel@1111QD-rs modul5 % >....                                          
+
+URL = "http://localhost:44777"
+
+
+@retry(
+    stop=stop_after_attempt(5),                 # maksimal 5 percobaan
+    wait=wait_fixed(2),                         # jeda 2 detik antar percobaan
+    retry=retry_if_exception_type(requests.exceptions.RequestException),
+)
+def access_url(url: str) -> requests.Response:
+    print(f"Attempting to access {url}...")
+    response = requests.get(url, timeout=3)
+    response.raise_for_status()
+    return response
+
+
+if __name__ == "__main__":
+    try:
+        access_url(URL)
+        print(f"Successfully accessed {URL}")
+    except RetryError as e:
+        print(f"Failed to access URL after multiple retries: {e}")
+EOF
+(.venv) danel@1111QD-rs modul5 % python failure-detection/check-retry.py
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Failed to access URL after multiple retries: RetryError[<Future at 0x109641480 state=finished raised ConnectionError>]
+(.venv) danel@1111QD-rs modul5 % python failure-detection/check-retry.py
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Failed to access URL after multiple retries: RetryError[<Future at 0x107ce5480 state=finished raised ConnectionError>]
+(.venv) danel@1111QD-rs modul5 % >....                                          
+    wait=wait_fixed(1),
+    retry=retry_if_exception_type(requests.exceptions.RequestException),
+    reraise=True,
+)
+@breaker
+def access_url(url: str) -> requests.Response:
+    print(f"Attempting to access {url}...")
+    response = requests.get(url, timeout=3)
+    response.raise_for_status()
+    return response
+
+
+if __name__ == "__main__":
+    try:
+        access_url(URL)
+        print(f"Successfully accessed {URL}")
+    except pybreaker.CircuitBreakerError:
+        print("Circuit breaker OPEN: permintaan ditolak sementara, layanan diberi waktu pulih.")
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to access {URL}: {e}")
+    print(f"Status circuit breaker sekarang: {breaker.current_state}")
+EOF
+(.venv) danel@1111QD-rs modul5 % python failure-detection/check-circuit-breaker.py
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Circuit breaker OPEN: permintaan ditolak sementara, layanan diberi waktu pulih.
+Status circuit breaker sekarang: open
+(.venv) danel@1111QD-rs modul5 % python failure-detection/check-circuit-breaker.py
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Attempting to access http://localhost:44777...
+Circuit breaker OPEN: permintaan ditolak sementara, layanan diberi waktu pulih.
+Status circuit breaker sekarang: open
+(.venv) danel@1111QD-rs modul5 % ls -R -I '.venv|__pycache__' . | head -50
+ls: .venv|__pycache__: No such file or directory
+.:
+blacksheep_lb
+docker-compose.yml
+env.sh
+failure-detection
+heartbeat
+nginx
+
+./blacksheep_lb:
+Dockerfile
+README.md
+app
+dev.py
+domain
+pyproject.toml
+requirements.txt
+settings.dev.toml
+settings.toml
+tests
+
+./blacksheep_lb/app:
+__init__.py
+__pycache__
+auth.py
+binders.py
+controllers
+docs
+errors.py
+main.py
+services.py
+settings.py
+static
+templating.py
+views
+
+./blacksheep_lb/app/__pycache__:
+__init__.cpython-313.pyc
+auth.cpython-313.pyc
+binders.cpython-313.pyc
+errors.cpython-313.pyc
+main.cpython-313.pyc
+services.cpython-313.pyc
+settings.cpython-313.pyc
+templating.cpython-313.pyc
+
+./blacksheep_lb/app/controllers:
+__init__.py
+__pycache__
+examples.py
+home.py
+(.venv) danel@1111QD-rs modul5 % 
