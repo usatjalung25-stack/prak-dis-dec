@@ -1,0 +1,20 @@
+Last login: Fri Oct 30 12:14:20 on ttys002
+/Users/danel/.zshrc:27: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:28: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:29: no such file or directory: /opt/homebrew/bin/brew
+danel@1111QD-rs ~ % cd ~/modul5 && source .venv/bin/activate
+cd blacksheep_lb && python dev.py
+Running for local development ──────────────────────────────────────────────────
+Visit http://localhost:44777/
+
+INFO:     Started server process [14233]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://localhost:44777 (Press CTRL+C to quit)
+INFO:     ::1:49788 - "GET / HTTP/1.1" 200 OK
+^CINFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [14233]
+(.venv) danel@1111QD-rs blacksheep_lb % 
+
