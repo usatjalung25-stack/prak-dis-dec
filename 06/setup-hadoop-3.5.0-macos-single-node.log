@@ -1,0 +1,292 @@
+Last login: Thu Nov  5 09:30:16 on ttys001
+/Users/danel/.zshrc:27: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:28: no such file or directory: /opt/homebrew/bin/brew
+/Users/danel/.zshrc:29: no such file or directory: /opt/homebrew/bin/brew
+danel@1111QD-rs ~ % sudo systemsetup -setremotelogin on
+Password:
+setremotelogin: remote login is already On.
+danel@1111QD-rs ~ % nc -z localhost 22 && echo "SSHD AKTIF"
+Connection to localhost port 22 [tcp/ssh] succeeded!
+SSHD AKTIF
+danel@1111QD-rs ~ % rm -f ~/master/data-engineering/apache-hadoop/hadoop-3.5.0*.tar.gz
+danel@1111QD-rs ~ % mkdir -p ~/master/data-engineering/apache-hadoop
+danel@1111QD-rs ~ % cd ~/master/data-engineering/apache-hadoop
+danel@1111QD-rs apache-hadoop % if [ "$(uname -m)" = "arm64" ]; then FILE=hadoop-3.5.0-aarch64.tar.gz; else FILE=hadoop-3.5.0.tar.gz; fi
+curl -fL -O "https://dlcdn.apache.org/hadoop/common/hadoop-3.5.0/$FILE" \
+ || curl -fL -O "https://archive.apache.org/dist/hadoop/common/hadoop-3.5.0/$FILE"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  554M  100  554M    0     0  1968k      0  0:04:48  0:04:48 --:--:-- 3380k
+danel@1111QD-rs apache-hadoop % ls -lh                                         
+total 1135320
+-rw-r--r--  1 danel  staff   554M Nov  5 13:30 hadoop-3.5.0.tar.gz
+danel@1111QD-rs apache-hadoop % gzip -t hadoop-3.5.0*.tar.gz && echo "FILE VALID"
+FILE VALID
+danel@1111QD-rs apache-hadoop % mkdir -p ~/software/storage
+danel@1111QD-rs apache-hadoop % cd ~/software/storage
+danel@1111QD-rs storage % rm -f hadoop
+danel@1111QD-rs storage % tar -xzf ~/master/data-engineering/apache-hadoop/hadoop-3.5.0*.tar.gz
+danel@1111QD-rs storage % ln -s hadoop-3.5.0 hadoop
+danel@1111QD-rs storage % mkdir -p ~/env/bash/storage
+cat > ~/env/bash/storage/hadoop.sh << 'EOF'
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+export HADOOP_HOME="$HOME/software/storage/hadoop"
+export PATH="$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH"
+export PDSH_RCMD_TYPE=ssh
+EOF
+
+danel@1111QD-rs storage % grep -qxF 'source ~/env/bash/storage/hadoop.sh' ~/.zshrc || echo 'source ~/env/bash/storage/hadoop.sh' >> ~/.zshrc
+danel@1111QD-rs storage % source ~/env/bash/storage/hadoop.sh
+danel@1111QD-rs storage % hadoop version
+Hadoop 3.5.0
+Source code repository https://github.com/apache/hadoop.git -r dbcc7cd797100e6b32cd84f85b53a5193a5f9af0
+Compiled by cnauroth on 2026-03-24T16:56Z
+Compiled on platform linux-x86_64
+Compiled with protoc 3.25.5
+From source with checksum 64582ed0a62a169c39a19c734a8f33b5
+This command was run using /Users/danel/software/storage/hadoop-3.5.0/share/hadoop/common/hadoop-common-3.5.0.jar
+danel@1111QD-rs storage % pdsh -q -w localhost
+-- DSH-specific options --
+Separate stderr/stdout	Yes
+Path prepended to cmd	none
+Appended to cmd         none
+Command:		none
+Full program pathname	/usr/local/bin/pdsh
+Remote program path	/usr/local/bin/pdsh
+
+-- Generic options --
+Local username		danel
+Local uid     		501
+Remote username		danel
+Rcmd type		ssh
+one ^C will kill pdsh   No
+Connect timeout (secs)	10
+Command timeout (secs)	0
+Fanout			32
+Display hostname labels	Yes
+Debugging       	No
+
+-- Target nodes --
+localhost
+danel@1111QD-rs storage % mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys
+danel@1111QD-rs storage % grep -qF "$(cat ~/.ssh/id_rsa.pub)" ~/.ssh/authorized_keys || cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+danel@1111QD-rs storage % chmod 700 ~/.ssh
+danel@1111QD-rs storage % chmod 600 ~/.ssh/authorized_keys
+danel@1111QD-rs storage % for h in localhost 0.0.0.0 $(hostname); do
+  ssh -o StrictHostKeyChecking=accept-new -o BatchMode=yes $h 'echo SSH OK'
+done
+SSH OK
+Warning: Permanently added '0.0.0.0' (ED25519) to the list of known hosts.
+SSH OK
+SSH OK
+danel@1111QD-rs storage % >....                                                 
+    </property>
+    <property>
+        <name>yarn.nodemanager.env-whitelist</name>
+        <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>4096</value>
+    </property>
+    <property>
+        <name>yarn.scheduler.minimum-allocation-mb</name>
+        <value>2048</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.vmem-pmem-ratio</name>
+        <value>2.1</value>
+    </property>
+</configuration>
+EOF
+
+hadoop conftest
+/Users/danel/software/storage/hadoop/etc/hadoop/yarn-site.xml: valid
+/Users/danel/software/storage/hadoop/etc/hadoop/hdfs-site.xml: valid
+/Users/danel/software/storage/hadoop/etc/hadoop/hadoop-policy.xml: valid
+/Users/danel/software/storage/hadoop/etc/hadoop/kms-site.xml: valid
+/Users/danel/software/storage/hadoop/etc/hadoop/core-site.xml: valid
+/Users/danel/software/storage/hadoop/etc/hadoop/hdfs-rbf-site.xml: valid
+/Users/danel/software/storage/hadoop/etc/hadoop/kms-acls.xml: valid
+/Users/danel/software/storage/hadoop/etc/hadoop/capacity-scheduler.xml: valid
+/Users/danel/software/storage/hadoop/etc/hadoop/mapred-site.xml: valid
+/Users/danel/software/storage/hadoop/etc/hadoop/httpfs-site.xml: valid
+OK
+danel@1111QD-rs hadoop % java -version
+openjdk version "17.0.21" 2026-10-20
+OpenJDK Runtime Environment Temurin-17.0.21+9 (build 17.0.21+9)
+OpenJDK 64-Bit Server VM Temurin-17.0.21+9 (build 17.0.21+9, mixed mode)
+danel@1111QD-rs hadoop % hdfs namenode -format
+2026-11-05 13:53:37,413 INFO namenode.NameNode: STARTUP_MSG: 
+/************************************************************
+STARTUP_MSG: Starting NameNode
+STARTUP_MSG:   host = 1111QD-rs.local/127.0.0.1
+STARTUP_MSG:   args = [-format]
+STARTUP_MSG:   version = 3.5.0
+STARTUP_MSG:   classpath = /Users/danel/software/storage/hadoop/etc/hadoop:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jetty-servlet-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/curator-client-5.2.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/bcprov-jdk18on-1.82.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-lang3-3.18.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jakarta.xml.bind-api-2.3.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/kerby-pkix-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/reload4j-1.2.22.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/netty-transport-native-epoll-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-annotations-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/slf4j-api-1.7.36.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jackson-databind-2.18.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jackson-annotations-2.18.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/dnsjava-3.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/analyticsaccelerator-s3-1.3.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-compress-1.26.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jersey-server-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-aws-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/kerby-asn1-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-auth-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/zookeeper-jute-3.8.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/woodstox-core-5.4.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/txw2-2.3.9.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jakarta.servlet.jsp-api-2.3.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/curator-framework-5.2.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-cos-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/httpcore-4.4.13.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-logging-1.3.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/kerby-config-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/kerb-util-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jetty-http-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/netty-codec-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jspecify-1.0.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-collections4-4.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/netty-transport-native-unix-common-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-net-3.9.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/javax.servlet-api-3.1.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-io-2.16.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/azure-keyvault-core-1.0.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/zookeeper-3.8.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jetty-xml-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hk2-locator-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/gson-2.9.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jersey-common-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jakarta.ws.rs-api-2.1.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-shaded-guava-1.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/aopalliance-repackaged-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/netty-resolver-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/stax2-api-4.2.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/wildfly-openssl-2.2.5.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jetty-security-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/HdrHistogram-2.1.12.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-shaded-protobuf_3_25-1.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/failureaccess-1.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jakarta.activation-1.2.2.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jetty-util-ajax-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/netty-common-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jakarta.activation-api-1.2.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/snappy-java-1.1.10.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/netty-buffer-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-azure-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/metrics-core-3.2.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-azure-datalake-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/kerb-core-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/netty-transport-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-tos-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/guava-33.4.8-jre.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/osgi-resource-locator-1.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/j2objc-annotations-3.0.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-math3-3.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jakarta.inject-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hk2-utils-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/netty-transport-classes-epoll-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jul-to-slf4j-1.7.36.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jakarta.servlet-api-4.0.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jetty-webapp-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jersey-client-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/kerby-util-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-codec-1.15.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/azure-storage-7.0.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/nimbus-jose-jwt-10.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hk2-api-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/istack-commons-runtime-3.0.12.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jakarta.annotation-api-1.3.5.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/audience-annotations-0.12.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/curator-recipes-5.2.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jersey-container-servlet-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-text-1.14.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-gcp-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/kerb-crypto-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/avro-1.11.5.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jsch-0.1.55.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-cli-1.9.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jetty-io-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/re2j-1.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-configuration2-2.10.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jaxb-runtime-2.3.9.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jersey-container-servlet-core-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/httpclient-4.5.13.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/hadoop-huaweicloud-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jackson-core-2.18.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/javassist-3.30.2-GA.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jsr305-3.0.2.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/netty-handler-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jersey-hk2-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jetty-util-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jetty-server-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/commons-daemon-1.0.13.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/lib/jakarta.validation-api-2.0.2.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/hadoop-nfs-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/hadoop-common-3.5.0-tests.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/hadoop-common-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/hadoop-registry-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/common/hadoop-kms-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jetty-servlet-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/curator-client-5.2.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-lang3-3.18.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-resolver-dns-native-macos-4.1.130.Final-osx-x86_64.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jakarta.xml.bind-api-2.3.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/kerby-pkix-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/reload4j-1.2.22.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-native-epoll-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-native-epoll-4.1.130.Final-linux-riscv64.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/hadoop-annotations-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-http2-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jackson-databind-2.18.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jackson-annotations-2.18.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-udt-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/dnsjava-3.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-memcache-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-compress-1.26.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jersey-server-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/kerby-asn1-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/hadoop-auth-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-resolver-dns-classes-macos-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/zookeeper-jute-3.8.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/woodstox-core-5.4.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/txw2-2.3.9.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jakarta.servlet.jsp-api-2.3.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/curator-framework-5.2.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/httpcore-4.4.13.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-logging-1.3.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/kerby-config-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/kerb-util-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-native-kqueue-4.1.130.Final-osx-x86_64.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jetty-http-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jspecify-1.0.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-collections4-4.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-native-unix-common-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-net-3.9.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-classes-kqueue-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/javax.servlet-api-3.1.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-io-2.16.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/zookeeper-3.8.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jetty-xml-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/hk2-locator-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/gson-2.9.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jersey-common-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-resolver-dns-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jakarta.ws.rs-api-2.1.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/hadoop-shaded-guava-1.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/aopalliance-repackaged-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-resolver-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/stax2-api-4.2.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jetty-security-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-sctp-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/hadoop-shaded-protobuf_3_25-1.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/failureaccess-1.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jakarta.activation-1.2.2.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-haproxy-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jetty-util-ajax-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-common-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/json-simple-1.1.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jakarta.activation-api-1.2.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/snappy-java-1.1.10.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-buffer-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/metrics-core-3.2.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-handler-ssl-ocsp-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-native-epoll-4.1.130.Final-linux-aarch_64.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/kerb-core-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-handler-proxy-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/guava-33.4.8-jre.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/osgi-resource-locator-1.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-xml-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/j2objc-annotations-3.0.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-math3-3.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jakarta.inject-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-socks-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/hk2-utils-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-classes-epoll-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jakarta.servlet-api-4.0.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jetty-webapp-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jersey-client-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/kerby-util-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-codec-1.15.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-mqtt-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/nimbus-jose-jwt-10.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/hk2-api-2.6.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-native-epoll-4.1.130.Final-linux-x86_64.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-rxtx-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-http-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jettison-1.5.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/istack-commons-runtime-3.0.12.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jakarta.annotation-api-1.3.5.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/audience-annotations-0.12.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/curator-recipes-5.2.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jersey-container-servlet-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-text-1.14.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/kerb-crypto-2.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/avro-1.11.5.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jsch-0.1.55.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-cli-1.9.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jetty-io-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-stomp-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/re2j-1.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-configuration2-2.10.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jaxb-runtime-2.3.9.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-smtp-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jersey-container-servlet-core-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/httpclient-4.5.13.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jackson-core-2.18.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/leveldbjni-all-1.8.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-all-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/javassist-3.30.2-GA.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jsr305-3.0.2.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-handler-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/HikariCP-4.0.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jersey-hk2-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-resolver-dns-native-macos-4.1.130.Final-osx-aarch_64.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-transport-native-kqueue-4.1.130.Final-osx-aarch_64.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jetty-util-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jetty-server-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/commons-daemon-1.0.13.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/jakarta.validation-api-2.0.2.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-dns-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/lib/netty-codec-redis-4.1.130.Final.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-3.5.0-tests.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-client-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-rbf-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-native-client-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-nfs-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-httpfs-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-client-3.5.0-tests.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-rbf-3.5.0-tests.jar:/Users/danel/software/storage/hadoop/share/hadoop/hdfs/hadoop-hdfs-native-client-3.5.0-tests.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/lib/javax.inject-1.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-common-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-shuffle-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-core-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-uploader-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-app-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-nativetask-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-3.5.0-tests.jar:/Users/danel/software/storage/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-plugins-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jersey-media-jaxb-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/javax.websocket-api-1.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jetty-plus-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jersey-media-json-jettison-2.46.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/commons-csv-1.9.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jetty-jndi-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/aopalliance-1.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/javax-websocket-server-impl-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/org.eclipse.persistence.core-2.7.14.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/caffeine-2.9.3.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jackson-module-jaxb-annotations-2.18.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/javax.annotation-api-1.3.2.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/bcpkix-jdk18on-1.82.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/snakeyaml-2.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/codemodel-2.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/javax-websocket-client-impl-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/org.eclipse.persistence.moxy-2.7.14.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/bcutil-jdk18on-1.82.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/objenesis-2.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jline-3.9.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jakarta.json-api-1.1.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/guice-5.1.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jetty-client-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/ehcache-3.8.2.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/guice-servlet-5.1.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/fst-2.50.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/javax.json-1.1.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/mssql-jdbc-6.2.1.jre7.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/websocket-server-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/asm-tree-9.7.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jcodings-1.0.13.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jsonschema2pojo-core-1.0.2.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jackson-jaxrs-json-provider-2.18.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/failsafe-2.4.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/javax.websocket-client-api-1.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/websocket-api-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/websocket-servlet-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/org.eclipse.persistence.asm-9.6.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jetty-annotations-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/commons-lang-2.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jna-5.2.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/cache-api-1.1.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/websocket-client-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/jackson-jaxrs-base-2.18.6.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/asm-commons-9.7.1.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/websocket-common-9.4.58.v20250814.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/lib/swagger-annotations-1.5.4.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-applications-mawo-core-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-services-core-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-router-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-resourcemanager-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-common-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-services-api-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-client-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-common-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-web-proxy-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-nodemanager-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-tests-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-api-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-registry-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-sharedcachemanager-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-globalpolicygenerator-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-timeline-pluginstorage-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-applications-distributedshell-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-applications-unmanaged-am-launcher-3.5.0.jar:/Users/danel/software/storage/hadoop/share/hadoop/yarn/hadoop-yarn-server-applicationhistoryservice-3.5.0.jar
+STARTUP_MSG:   build = https://github.com/apache/hadoop.git -r dbcc7cd797100e6b32cd84f85b53a5193a5f9af0; compiled by 'cnauroth' on 2026-03-24T16:56Z
+STARTUP_MSG:   java = 17.0.21
+************************************************************/
+2026-11-05 13:53:37,504 INFO namenode.NameNode: registered UNIX signal handlers for [TERM, HUP, INT]
+2026-11-05 13:53:37,986 INFO namenode.NameNode: createNameNode [-format]
+2026-11-05 13:53:38,497 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+2026-11-05 13:53:39,074 INFO namenode.NameNode: Formatting using clusterid: CID-21165098-2e9d-4212-a6fa-5f089220e48c
+2026-11-05 13:53:39,170 INFO namenode.FSEditLog: Edit logging is async:true
+2026-11-05 13:53:39,234 INFO namenode.FSNamesystem: KeyProvider: null
+2026-11-05 13:53:39,280 INFO namenode.FSNamesystem: FSNLock is fair: true.
+2026-11-05 13:53:39,281 INFO namenode.FSNamesystem: Detailed lock hold time metrics of FSNLock is disabled.
+2026-11-05 13:53:39,368 INFO namenode.FSNamesystem: fsOwner                = danel (auth:SIMPLE)
+2026-11-05 13:53:39,369 INFO namenode.FSNamesystem: supergroup             = supergroup
+2026-11-05 13:53:39,369 INFO namenode.FSNamesystem: isPermissionEnabled    = true
+2026-11-05 13:53:39,369 INFO namenode.FSNamesystem: isStoragePolicyEnabled = true
+2026-11-05 13:53:39,369 INFO namenode.FSNamesystem: HA Enabled: false
+2026-11-05 13:53:39,456 INFO common.Util: dfs.datanode.fileio.profiling.sampling.percentage set to 0. Disabling file IO profiling
+2026-11-05 13:53:39,740 INFO blockmanagement.DatanodeManager: Slow peers collection thread shutdown
+2026-11-05 13:53:39,763 INFO blockmanagement.DatanodeManager: dfs.block.invalidate.limit : configured=1000, counted=60, effected=1000
+2026-11-05 13:53:39,763 INFO blockmanagement.DatanodeManager: dfs.namenode.datanode.registration.ip-hostname-check=true
+2026-11-05 13:53:39,775 INFO blockmanagement.BlockManager: dfs.namenode.startup.delay.block.deletion.sec is set to 000:00:00:00.000
+2026-11-05 13:53:39,776 INFO blockmanagement.BlockManager: The block deletion will start around 2026 Nov 05 13:53:39
+2026-11-05 13:53:39,779 INFO util.GSet: Computing capacity for map BlocksMap
+2026-11-05 13:53:39,779 INFO util.GSet: VM type       = 64-bit
+2026-11-05 13:53:39,785 INFO util.GSet: 2.0% max memory 2 GB = 41.0 MB
+2026-11-05 13:53:39,787 INFO util.GSet: capacity      = 2^22 = 4194304 entries
+2026-11-05 13:53:39,813 INFO blockmanagement.BlockManager: Storage policy satisfier is disabled
+2026-11-05 13:53:39,813 INFO blockmanagement.BlockManager: dfs.block.access.token.enable = false
+2026-11-05 13:53:39,823 INFO blockmanagement.BlockManagerSafeMode: Using 1000 as SafeModeMonitor Interval
+2026-11-05 13:53:39,824 INFO blockmanagement.BlockManagerSafeMode: dfs.namenode.safemode.threshold-pct = 0.999
+2026-11-05 13:53:39,824 INFO blockmanagement.BlockManagerSafeMode: dfs.namenode.safemode.min.datanodes = 0
+2026-11-05 13:53:39,824 INFO blockmanagement.BlockManagerSafeMode: dfs.namenode.safemode.extension = 30000
+2026-11-05 13:53:39,825 INFO blockmanagement.BlockManager: defaultReplication         = 1
+2026-11-05 13:53:39,825 INFO blockmanagement.BlockManager: maxReplication             = 512
+2026-11-05 13:53:39,825 INFO blockmanagement.BlockManager: minReplication             = 1
+2026-11-05 13:53:39,825 INFO blockmanagement.BlockManager: maxReplicationStreams      = 2
+2026-11-05 13:53:39,825 INFO blockmanagement.BlockManager: redundancyRecheckInterval  = 3000ms
+2026-11-05 13:53:39,825 INFO blockmanagement.BlockManager: encryptDataTransfer        = false
+2026-11-05 13:53:39,826 INFO blockmanagement.BlockManager: maxNumBlocksToLog          = 1000
+2026-11-05 13:53:39,933 INFO namenode.FSDirectory: GLOBAL serial map: bits=29 maxEntries=536870911
+2026-11-05 13:53:39,933 INFO namenode.FSDirectory: USER serial map: bits=24 maxEntries=16777215
+2026-11-05 13:53:39,933 INFO namenode.FSDirectory: GROUP serial map: bits=24 maxEntries=16777215
+2026-11-05 13:53:39,933 INFO namenode.FSDirectory: XATTR serial map: bits=24 maxEntries=16777215
+2026-11-05 13:53:39,954 INFO util.GSet: Computing capacity for map INodeMap
+2026-11-05 13:53:39,954 INFO util.GSet: VM type       = 64-bit
+2026-11-05 13:53:39,955 INFO util.GSet: 1.0% max memory 2 GB = 20.5 MB
+2026-11-05 13:53:39,955 INFO util.GSet: capacity      = 2^21 = 2097152 entries
+2026-11-05 13:53:39,971 INFO namenode.FSDirectory: ACLs enabled? true
+2026-11-05 13:53:39,971 INFO namenode.FSDirectory: POSIX ACL inheritance enabled? true
+2026-11-05 13:53:39,972 INFO namenode.FSDirectory: XAttrs enabled? true
+2026-11-05 13:53:39,972 INFO namenode.NameNode: Caching file names occurring more than 10 times
+2026-11-05 13:53:39,989 INFO snapshot.SnapshotManager: Loaded config captureOpenFiles: false, skipCaptureAccessTimeOnlyChange: false, snapshotDiffAllowSnapRootDescendant: true, maxSnapshotFSLimit: 65536, maxSnapshotLimit: 65536
+2026-11-05 13:53:39,989 INFO snapshot.SnapshotManager: dfs.namenode.snapshot.deletion.ordered = false
+2026-11-05 13:53:39,992 INFO snapshot.SnapshotManager: SkipList is disabled
+2026-11-05 13:53:39,999 INFO util.GSet: Computing capacity for map cachedBlocks
+2026-11-05 13:53:39,999 INFO util.GSet: VM type       = 64-bit
+2026-11-05 13:53:39,999 INFO util.GSet: 0.25% max memory 2 GB = 5.1 MB
+2026-11-05 13:53:39,999 INFO util.GSet: capacity      = 2^19 = 524288 entries
+2026-11-05 13:53:40,031 INFO metrics.TopMetrics: NNTop conf: dfs.namenode.top.window.num.buckets = 10
+2026-11-05 13:53:40,032 INFO metrics.TopMetrics: NNTop conf: dfs.namenode.top.num.users = 10
+2026-11-05 13:53:40,032 INFO metrics.TopMetrics: NNTop conf: dfs.namenode.top.windows.minutes = 1,5,25
+2026-11-05 13:53:40,039 INFO namenode.FSNamesystem: Retry cache on namenode is enabled
+2026-11-05 13:53:40,046 INFO namenode.FSNamesystem: Retry cache will use 0.03 of total heap and retry cache entry expiry time is 600000 millis
+2026-11-05 13:53:40,051 INFO util.GSet: Computing capacity for map NameNodeRetryCache
+2026-11-05 13:53:40,051 INFO util.GSet: VM type       = 64-bit
+2026-11-05 13:53:40,051 INFO util.GSet: 0.029999999329447746% max memory 2 GB = 629.1 KB
+2026-11-05 13:53:40,052 INFO util.GSet: capacity      = 2^16 = 65536 entries
+2026-11-05 13:53:40,093 INFO namenode.FSImage: Allocated new BlockPoolId: BP-1305930754-127.0.0.1-1793861620079
+2026-11-05 13:53:40,145 INFO common.Storage: Storage directory /tmp/hadoop-danel/dfs/name has been successfully formatted.
+2026-11-05 13:53:40,201 INFO namenode.FSImageFormatProtobuf: Saving image file /tmp/hadoop-danel/dfs/name/current/fsimage.ckpt_0000000000000000000 using no compression
+2026-11-05 13:53:40,398 INFO namenode.FSImageFormatProtobuf: Image file /tmp/hadoop-danel/dfs/name/current/fsimage.ckpt_0000000000000000000 of size 400 bytes saved in 0 seconds .
+2026-11-05 13:53:40,412 INFO common.Storage: setMostRecentCheckpointInfo txid is 0, time is 1793861620412
+2026-11-05 13:53:40,435 INFO namenode.NNStorageRetentionManager: Going to retain 1 images with txid >= 0
+2026-11-05 13:53:40,453 INFO blockmanagement.DatanodeManager: Slow peers collection thread shutdown
+2026-11-05 13:53:40,485 INFO namenode.FSNamesystem: Stopping services started for active state
+2026-11-05 13:53:40,485 INFO namenode.FSNamesystem: Stopping services started for standby state
+2026-11-05 13:53:40,491 INFO namenode.FSImage: FSImageSaver clean checkpoint: txid=0 when meet shutdown.
+2026-11-05 13:53:40,496 INFO namenode.NameNode: SHUTDOWN_MSG: 
+/************************************************************
+SHUTDOWN_MSG: Shutting down NameNode at 1111QD-rs.local/127.0.0.1
+************************************************************/
+danel@1111QD-rs hadoop % echo "export JAVA_HOME=$(/usr/libexec/java_home -v 17)" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh
+tail -n 2 $HADOOP_HOME/etc/hadoop/hadoop-env.sh
+# export HADOOP_REGISTRYDNS_SECURE_EXTRA_OPTS="-jvm server"
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home
+danel@1111QD-rs hadoop % start-dfs.sh
+Starting namenodes on [localhost]
+Starting datanodes
+Starting secondary namenodes [1111QD-rs.local]
+2026-11-05 13:55:44,435 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+danel@1111QD-rs hadoop % jps
+34931 DataNode
+35268 Jps
+34824 NameNode
+35085 SecondaryNameNode
+danel@1111QD-rs hadoop % open http://localhost:9870
+danel@1111QD-rs hadoop % hdfs dfs -ls /
+2026-11-05 23:57:45,985 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+danel@1111QD-rs hadoop % hdfs dfs -mkdir -p /user/danel
+2026-11-05 23:58:08,283 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+danel@1111QD-rs hadoop % hdfs dfs -ls /user
+2026-11-05 23:58:26,700 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Found 1 items
+drwxr-xr-x   - danel supergroup          0 2026-11-05 23:58 /user/danel
+danel@1111QD-rs hadoop % hdfs dfs -mkdir -p /user/danel/datasets
+2026-11-05 23:59:45,465 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+danel@1111QD-rs hadoop % mkdir -p ~/datasets && cd ~/datasets
+danel@1111QD-rs datasets % curl -fL -o iris.csv    https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  3858  100  3858    0     0   9634      0 --:--:-- --:--:-- --:--:--  9620
+danel@1111QD-rs datasets % curl -fL -o tips.csv    https://raw.githubusercontent.com/mwaskom/seaborn-data/master/tips.csv
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  9729  100  9729    0     0  33122      0 --:--:-- --:--:-- --:--:-- 33204
+danel@1111QD-rs datasets % curl -fL -o titanic.csv https://raw.githubusercontent.com/mwaskom/seaborn-data/master/titanic.csv
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 57018  100 57018    0     0   475k      0 --:--:-- --:--:-- --:--:--  480k
+danel@1111QD-rs datasets % hdfs dfs -put -f ~/datasets/*.csv /user/danel/datasets/
+2026-11-06 00:00:42,051 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+danel@1111QD-rs datasets % hdfs dfs -ls /user/danel/datasets
+2026-11-06 00:01:00,214 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Found 3 items
+-rw-r--r--   1 danel supergroup       3858 2026-11-06 00:00 /user/danel/datasets/iris.csv
+-rw-r--r--   1 danel supergroup       9729 2026-11-06 00:00 /user/danel/datasets/tips.csv
+-rw-r--r--   1 danel supergroup      57018 2026-11-06 00:00 /user/danel/datasets/titanic.csv
+danel@1111QD-rs datasets % hdfs dfs -ls -h /user/danel/datasets
+2026-11-06 00:03:47,728 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Found 3 items
+-rw-r--r--   1 danel supergroup      3.8 K 2026-11-06 00:00 /user/danel/datasets/iris.csv
+-rw-r--r--   1 danel supergroup      9.5 K 2026-11-06 00:00 /user/danel/datasets/tips.csv
+-rw-r--r--   1 danel supergroup     55.7 K 2026-11-06 00:00 /user/danel/datasets/titanic.csv
+danel@1111QD-rs datasets % hdfs dfs -cat /user/danel/datasets/iris.csv | head -n 5
+2026-11-06 00:04:00,591 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+sepal_length,sepal_width,petal_length,petal_width,species
+5.1,3.5,1.4,0.2,setosa
+4.9,3.0,1.4,0.2,setosa
+4.7,3.2,1.3,0.2,setosa
+4.6,3.1,1.5,0.2,setosa
+danel@1111QD-rs datasets % hdfs dfs -cat /user/danel/datasets/tips.csv | head -n 5
+2026-11-06 00:04:13,444 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+"total_bill","tip","sex","smoker","day","time","size"
+16.99,1.01,"Female","No","Sun","Dinner",2
+10.34,1.66,"Male","No","Sun","Dinner",3
+21.01,3.5,"Male","No","Sun","Dinner",3
+23.68,3.31,"Male","No","Sun","Dinner",2
+cat: Unable to write to output stream.
+danel@1111QD-rs datasets % hdfs dfs -cat /user/danel/datasets/titanic.csv | head -n 5
+2026-11-06 00:04:28,865 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+survived,pclass,sex,age,sibsp,parch,fare,embarked,class,who,adult_male,deck,embark_town,alive,alone
+0,3,male,22.0,1,0,7.25,S,Third,man,True,,Southampton,no,False
+1,1,female,38.0,1,0,71.2833,C,First,woman,False,C,Cherbourg,yes,False
+1,3,female,26.0,0,0,7.925,S,Third,woman,False,,Southampton,yes,True
+1,1,female,35.0,1,0,53.1,S,First,woman,False,C,Southampton,yes,False
+cat: Unable to write to output stream.
+danel@1111QD-rs datasets % hdfs dfs -du -h /user/danel/datasets
+2026-11-06 00:04:46,456 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+3.8 K   3.8 K   /user/danel/datasets/iris.csv
+9.5 K   9.5 K   /user/danel/datasets/tips.csv
+55.7 K  55.7 K  /user/danel/datasets/titanic.csv
+danel@1111QD-rs datasets % hdfs dfs -count /user/danel/datasets
+2026-11-06 00:04:57,146 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+           1            3              70605 /user/danel/datasets
+danel@1111QD-rs datasets % open http://localhost:9870/explorer.html#/user/danel/datasets
+danel@1111QD-rs datasets % 
