@@ -11,10 +11,10 @@
 ![Platform](https://img.shields.io/badge/Platform-macOS-lightgrey?logo=apple)
 ![Mode](https://img.shields.io/badge/Mode-Single%20Node%20(Pseudo--Distributed)-green)
 
-</div>
 | Nama | NIM | Program Studi |
 |:----:|:---:|:-------------:|
-| Usat Jalung | 255410017 | Informatika |
+| Usat Jalung | 255410017 | Informatika | 
+</div>
 
 ---
 
