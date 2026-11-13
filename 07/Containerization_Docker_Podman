@@ -1,0 +1,329 @@
+Last login: Fri Nov 13 18:13:55 on ttys001
+danel@1111QD-rs ~ % deactivate 2>/dev/null
+danel@1111QD-rs ~ % mkdir -p $HOME/src
+danel@1111QD-rs ~ % cd $HOME/src
+[ -d flask ] || git clone https://github.com/pallets/flask
+danel@1111QD-rs src % cd flask && git checkout 3.1.3 && cd ..
+HEAD sekarang berada di 22d92470 release version 3.1.3
+danel@1111QD-rs src % rm -rf flask-app
+danel@1111QD-rs src % cp -R ~/src/flask/examples/tutorial flask-app
+danel@1111QD-rs src % cd flask-app
+danel@1111QD-rs flask-app % ls -la
+total 32
+drwxr-xr-x  8 danel  staff   256 Nov 13 18:14 .
+drwxr-xr-x  4 danel  staff   128 Nov 13 18:14 ..
+-rw-r--r--  1 danel  staff   119 Nov 13 18:14 .gitignore
+-rw-r--r--  1 danel  staff  1475 Nov 13 18:14 LICENSE.txt
+-rw-r--r--  1 danel  staff  1273 Nov 13 18:14 README.rst
+drwxr-xr-x  9 danel  staff   288 Nov 13 18:14 flaskr
+-rw-r--r--  1 danel  staff   771 Nov 13 18:14 pyproject.toml
+drwxr-xr-x  8 danel  staff   256 Nov 13 18:14 tests
+danel@1111QD-rs flask-app % uv python install 3.14.4
+Python 3.14.4 is already installed
+danel@1111QD-rs flask-app % uv venv --python 3.14.4
+Using CPython 3.14.4
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+danel@1111QD-rs flask-app % echo "3.14.4" > .python-version
+danel@1111QD-rs flask-app % source .venv/bin/activate
+(flask-app) danel@1111QD-rs flask-app % python --version
+Python 3.14.4
+(flask-app) danel@1111QD-rs flask-app % uv pip install -e .
+Resolved 8 packages in 460ms
+      Built flaskr @ file:///Users/danel/src/flask-app                          Prepared 8 packages in 640ms
+Installed 8 packages in 19ms
+ + blinker==1.9.0
+ + click==8.5.1
+ + flask==3.1.3
+ + flaskr==1.0.0 (from file:///Users/danel/src/flask-app)
+ + itsdangerous==2.2.0
+ + jinja2==3.1.6
+ + markupsafe==3.0.4
+ + werkzeug==3.1.9
+(flask-app) danel@1111QD-rs flask-app % flask --app flaskr init-db
+Initialized the database.
+(flask-app) danel@1111QD-rs flask-app % flask --app flaskr run --port 5002
+ * Serving Flask app 'flaskr'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5002
+Press CTRL+C to quit
+127.0.0.1 - - [13/Nov/2026 18:16:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 18:16:04] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 18:16:05] "GET /auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 18:16:05] "GET /static/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [13/Nov/2026 18:16:10] "POST /auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 18:16:10] "GET /static/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [13/Nov/2026 18:16:13] "GET /auth/register HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 18:16:13] "GET /static/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [13/Nov/2026 18:16:14] "GET /auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 18:16:14] "GET /static/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [13/Nov/2026 18:16:20] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 18:16:20] "GET /static/style.css HTTP/1.1" 304 -
+^C%                                                                             (flask-app) danel@1111QD-rs flask-app % cd $HOME/src/flask-app
+(flask-app) danel@1111QD-rs flask-app % source .venv/bin/activate
+(flask-app) danel@1111QD-rs flask-app % printf '%s\n' \
+'FROM python:3.14' \
+'' \
+'RUN mkdir /app' \
+'WORKDIR /app' \
+'ADD . /app/' \
+'RUN pip install -e .' \
+'RUN flask --app flaskr init-db' \
+'' \
+'EXPOSE 5000' \
+'CMD ["flask", "--app", "flaskr", "run", "--host=0.0.0.0", "--port=5000"]' \
+> Dockerfile
+(flask-app) danel@1111QD-rs flask-app % printf '%s\n' '.venv' '__pycache__' '*.pyc' 'instance' > .dockerignore
+(flask-app) danel@1111QD-rs flask-app % cat Dockerfile
+FROM python:3.14
+
+RUN mkdir /app
+WORKDIR /app
+ADD . /app/
+RUN pip install -e .
+RUN flask --app flaskr init-db
+
+EXPOSE 5000
+CMD ["flask", "--app", "flaskr", "run", "--host=0.0.0.0", "--port=5000"]
+(flask-app) danel@1111QD-rs flask-app % colima start --cpus 2 --memory 4
+INFO[0001] starting colima                              
+INFO[0001] runtime: docker                              
+INFO[0001] starting ...                                  context=vm
+INFO[0024] provisioning ...                              context=docker
+INFO[0029] starting ...                                  context=docker
+INFO[0032] done                                         
+(flask-app) danel@1111QD-rs flask-app % docker build -f Dockerfile -t flaskr:1.0.0 .
+[+] Building 14.9s (11/11) FINISHED                               docker:colima
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 235B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.14             0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 73B                                           0.0s
+ => [1/6] FROM docker.io/library/python:3.14@sha256:a7097ae62ea4cf4fec036  0.1s
+ => => resolve docker.io/library/python:3.14@sha256:a7097ae62ea4cf4fec036  0.1s
+ => [internal] load build context                                          0.1s
+ => => transferring context: 41.80kB                                       0.0s
+ => CACHED [2/6] RUN mkdir /app                                            0.0s
+ => CACHED [3/6] WORKDIR /app                                              0.0s
+ => [4/6] ADD . /app/                                                      0.1s
+ => [5/6] RUN pip install -e .                                            10.7s
+ => [6/6] RUN flask --app flaskr init-db                                   0.9s 
+ => exporting to image                                                     2.5s 
+ => => exporting layers                                                    1.6s 
+ => => exporting manifest sha256:e34202c655d88b9043971f758367d6dc8183da47  0.0s 
+ => => exporting config sha256:b227a50f1950b5604fc60975ab4e4329351ef2d682  0.0s 
+ => => exporting attestation manifest sha256:d0e92ae862ac3fd1a54d1037e3a9  0.0s 
+ => => exporting manifest list sha256:75141cf6ade58db20ec4fde3edd59993d98  0.0s
+ => => naming to docker.io/library/flaskr:1.0.0                            0.0s
+ => => unpacking to docker.io/library/flaskr:1.0.0                         0.7s
+(flask-app) danel@1111QD-rs flask-app % docker image ls
+                                                            i Info →   U  In Use
+IMAGE                        ID             DISK USAGE   CONTENT SIZE   EXTRA
+apacheignite/ignite:3.1.0    c0f43bde84be        939MB          389MB        
+flaskr:1.0.0                 75141cf6ade5       1.64GB          423MB        
+hello-world:latest           11a3eb1597e8       25.9kB         9.49kB        
+modul5-bs_app:latest         7a5e2c157103        391MB          105MB        
+modul5-nginx:latest          99a541f86cef        240MB         63.9MB        
+nginx-bs_app:latest          6850660330bf        501MB          123MB        
+nginx:latest                 7be37bf763b4        243MB         66.8MB        
+postgres:17-alpine           eee6c6e1b089        424MB          118MB        
+python:3.12-slim             aa943ce41142        180MB         45.5MB        
+python:3.13.1-slim           031ebf3cde9f        184MB         46.7MB        
+python:3.14                  a7097ae62ea4       1.63GB          434MB        
+python:3.14-slim             cd89c30eda26        181MB         45.8MB        
+python:3.14-slim-bookworm    516b51cb9db2        186MB         47.3MB        
+python:3.14.4-slim           2ca02f32b4d9        179MB         45.5MB        
+workspace-05-bs_app:latest   998dd5928ebb        501MB          123MB        
+workspace-05-nginx:latest    33d4197b46c3        240MB         63.9MB        
+(flask-app) danel@1111QD-rs flask-app % docker run -p 5001:5000 flaskr:1.0.0
+ * Serving Flask app 'flaskr'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.17.0.2:5000
+Press CTRL+C to quit
+172.17.0.1 - - [13/Nov/2026 11:18:56] "GET / HTTP/1.1" 200 -
+172.17.0.1 - - [13/Nov/2026 11:18:56] "GET /static/style.css HTTP/1.1" 200 -
+172.17.0.1 - - [13/Nov/2026 11:18:59] "GET /auth/login HTTP/1.1" 200 -
+172.17.0.1 - - [13/Nov/2026 11:18:59] "GET /static/style.css HTTP/1.1" 304 -
+172.17.0.1 - - [13/Nov/2026 11:19:02] "POST /auth/login HTTP/1.1" 200 -
+172.17.0.1 - - [13/Nov/2026 11:19:02] "GET /static/style.css HTTP/1.1" 304 -
+172.17.0.1 - - [13/Nov/2026 11:19:04] "GET /auth/register HTTP/1.1" 200 -
+172.17.0.1 - - [13/Nov/2026 11:19:04] "GET /static/style.css HTTP/1.1" 304 -
+172.17.0.1 - - [13/Nov/2026 11:19:09] "GET / HTTP/1.1" 200 -
+172.17.0.1 - - [13/Nov/2026 11:19:09] "GET /static/style.css HTTP/1.1" 304 -
+^C%                                                                             (flask-app) danel@1111QD-rs flask-app % docker rm -f $(docker ps -aq) 2>/dev/null
+d6fee853e142
+(flask-app) danel@1111QD-rs flask-app % colima stop
+INFO[0000] stopping colima                              
+INFO[0000] stopping ...                                  context=docker
+INFO[0001] stopping ...                                  context=vm
+INFO[0003] done                                         
+(flask-app) danel@1111QD-rs flask-app % colima delete -f
+INFO[0000] deleting colima                              
+INFO[0001] done                                         
+(flask-app) danel@1111QD-rs flask-app % df -h /System/Volumes/Data
+Filesystem     Size   Used  Avail Capacity iused    ifree %iused  Mounted on
+/dev/disk1s1  113Gi   68Gi  5.7Gi    93%  816166 59351280    1%   /System/Volumes/Data
+(flask-app) danel@1111QD-rs flask-app % export PATH="/opt/podman/bin:$PATH"
+(flask-app) danel@1111QD-rs flask-app % v
+zsh: command not found: v
+(flask-app) danel@1111QD-rs flask-app % cd $HOME/src/flask-app
+(flask-app) danel@1111QD-rs flask-app % source .venv/bin/activate
+(flask-app) danel@1111QD-rs flask-app % podman --version
+podman version 5.8.6
+(flask-app) danel@1111QD-rs flask-app % podman machine stop 2>/dev/null
+Machine "podman-machine-default" stopped successfully
+(flask-app) danel@1111QD-rs flask-app % podman machine rm -f 2>/dev/null
+(flask-app) danel@1111QD-rs flask-app % podman system connection rm podman-machine-default 2>/dev/null
+(flask-app) danel@1111QD-rs flask-app % podman system connection rm podman-machine-default-root 2>/dev/null
+(flask-app) danel@1111QD-rs flask-app % rm -rf ~/.local/share/containers/podman/machine ~/.config/containers/podman/machine 
+(flask-app) danel@1111QD-rs flask-app % podman machine init --cpus 2 --memory 2048 --disk-size 20
+Looking up Podman Machine image at quay.io/podman/machine-os:5.8 to create VM
+Getting image source signatures
+Copying blob 85f6845337e7 done   | 
+Copying config 44136fa355 done   | 
+Writing manifest to image destination
+85f6845337e76b191e02ef259bae03437df72ae4246efd36a7603eb0f1d70a62
+Extracting compressed file: podman-machine-default-amd64.raw: done  
+Machine init complete
+To start your machine run:
+
+	podman machine start
+
+(flask-app) danel@1111QD-rs flask-app % podman machine start
+Starting machine "podman-machine-default"
+
+This machine is currently configured in rootless mode. If your containers
+require root permissions (e.g. ports < 1024), or if you run into compatibility
+issues with non-podman clients, you can switch using the following command:
+
+	podman machine set --rootful
+
+API forwarding listening on: /var/folders/66/fcgr2gjd1l5518ykmycd945r0000gn/T/podman/podman-machine-default-api.sock
+
+The system helper service is not installed; the default Docker API socket
+address can't be used by podman. If you would like to install it, run the following commands:
+
+        sudo /opt/podman/bin/podman-mac-helper install
+        podman machine stop; podman machine start
+
+You can still connect Docker API clients by setting DOCKER_HOST using the
+following command in your terminal session:
+
+        export DOCKER_HOST='unix:///var/folders/66/fcgr2gjd1l5518ykmycd945r0000gn/T/podman/podman-machine-default-api.sock'
+
+Machine "podman-machine-default" started successfully
+(flask-app) danel@1111QD-rs flask-app % podman info | head -n 5
+Client:
+  APIVersion: 5.8.6
+  BuildOrigin: pkginstaller
+  Built: 1786654954
+  BuiltTime: Fri Aug 14 04:02:34 2026
+(flask-app) danel@1111QD-rs flask-app % podman pull python:3.14
+Resolved "python" as an alias (/etc/containers/registries.conf.d/000-shortnames.conf)
+Trying to pull docker.io/library/python:3.14...
+Getting image source signatures
+Copying blob sha256:30a939f32c3666529658895da478296143998cbf9bbb6ede9e0ea68655ef8804
+Copying blob sha256:a6dd1c05fbba4f9028078a11f143cbb625d2408921eb8207bfa1dd1ad301276f
+Copying blob sha256:696c1fe91c64662be9b13aa92628d62d6685ab94c0b55d185258a8f762133deb
+Copying blob sha256:411d2dc8717dbb4bb0d3cfa27e6e0275fca455c5220029d7a14dc7a75fbe8665
+Copying blob sha256:7d9ddf92c2fd754219dc2783bdc40c04c9283f48a48741a7b00590eac48a1ac9
+Copying blob sha256:e8a88afca2bd37d4058d4b33d9d4d29b0557f8b811bb8c106942b5b51e1e4aad
+Copying blob sha256:bd2decaa66042884c6b07d78fdb33ff346fe35b29f7ec34cc18eca1548a6477d
+Copying config sha256:78689ccd8331c65bc36e09037448cf821790ed39b1073b3f7e2affe966471989
+Writing manifest to image destination
+78689ccd8331c65bc36e09037448cf821790ed39b1073b3f7e2affe966471989
+(flask-app) danel@1111QD-rs flask-app % podman machine list
+NAME                     VM TYPE     CREATED        LAST UP            CPUS        MEMORY      DISK SIZE
+podman-machine-default*  applehv     5 minutes ago  Currently running  2           2GiB        20GiB
+(flask-app) danel@1111QD-rs flask-app % podman build -f Dockerfile -t flaskr:1.0.0 .
+STEP 1/8: FROM python:3.14
+STEP 2/8: RUN mkdir /app
+--> fb7081b51bcc
+STEP 3/8: WORKDIR /app
+--> ef7b2a2b42fe
+STEP 4/8: ADD . /app/
+--> 4656cd658529
+STEP 5/8: RUN pip install -e .
+Obtaining file:///app
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Collecting flask (from flaskr==1.0.0)
+  Downloading flask-3.1.3-py3-none-any.whl.metadata (3.2 kB)
+Collecting blinker>=1.9.0 (from flask->flaskr==1.0.0)
+  Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+Collecting click>=8.1.3 (from flask->flaskr==1.0.0)
+  Downloading click-8.5.1-py3-none-any.whl.metadata (2.6 kB)
+Collecting itsdangerous>=2.2.0 (from flask->flaskr==1.0.0)
+  Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting jinja2>=3.1.2 (from flask->flaskr==1.0.0)
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting markupsafe>=2.1.1 (from flask->flaskr==1.0.0)
+  Downloading markupsafe-3.0.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Collecting werkzeug>=3.1.0 (from flask->flaskr==1.0.0)
+  Downloading werkzeug-3.1.9-py3-none-any.whl.metadata (4.1 kB)
+Downloading flask-3.1.3-py3-none-any.whl (103 kB)
+Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Downloading click-8.5.1-py3-none-any.whl (126 kB)
+Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading markupsafe-3.0.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (23 kB)
+Downloading werkzeug-3.1.9-py3-none-any.whl (228 kB)
+Building wheels for collected packages: flaskr
+  Building editable for flaskr (pyproject.toml): started
+  Building editable for flaskr (pyproject.toml): finished with status 'done'
+  Created wheel for flaskr: filename=flaskr-1.0.0-py2.py3-none-any.whl size=2594 sha256=5173702933ff219b8139231280ff871d76ab28d81fa5493154c04746c4706ac5
+  Stored in directory: /tmp/pip-ephem-wheel-cache-1v74n8ny/wheels/b8/36/9c/914153c626bda53913fc1c371da41560e7caf866363da7bf04
+Successfully built flaskr
+Installing collected packages: markupsafe, itsdangerous, click, blinker, werkzeug, jinja2, flask, flaskr
+
+Successfully installed blinker-1.9.0 click-8.5.1 flask-3.1.3 flaskr-1.0.0 itsdangerous-2.2.0 jinja2-3.1.6 markupsafe-3.0.4 werkzeug-3.1.9
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 26.2.2 -> 26.3
+[notice] To update, run: pip install --upgrade pip
+--> 58fb9d99b468
+STEP 6/8: RUN flask --app flaskr init-db
+Initialized the database.
+--> 49ee0b5cf8a7
+STEP 7/8: EXPOSE 5000
+--> 474e7ba06b2b
+STEP 8/8: CMD ["flask", "--app", "flaskr", "run", "--host=0.0.0.0", "--port=5000"]
+COMMIT flaskr:1.0.0
+--> 5d4ea3d2e3e5
+Successfully tagged localhost/flaskr:1.0.0
+5d4ea3d2e3e5ff6e96b598386c57340db78a1ae0d2e2786a6f05dfbbc3ff23b1
+(flask-app) danel@1111QD-rs flask-app % podman image ls
+REPOSITORY                TAG         IMAGE ID      CREATED         SIZE
+localhost/flaskr          1.0.0       5d4ea3d2e3e5  12 seconds ago  1.16 GB
+docker.io/library/python  3.14        78689ccd8331  8 days ago      1.14 GB
+(flask-app) danel@1111QD-rs flask-app % podman run -p 5001:5000 flaskr:1.0.0
+ * Serving Flask app 'flaskr'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.88.0.2:5000
+Press CTRL+C to quit
+10.88.0.2 - - [13/Nov/2026 11:28:22] "GET / HTTP/1.1" 200 -
+10.88.0.2 - - [13/Nov/2026 11:28:22] "GET /static/style.css HTTP/1.1" 200 -
+10.88.0.2 - - [13/Nov/2026 11:28:38] "GET /auth/login HTTP/1.1" 200 -
+10.88.0.2 - - [13/Nov/2026 11:28:38] "GET /static/style.css HTTP/1.1" 304 -
+10.88.0.2 - - [13/Nov/2026 11:28:46] "POST /auth/login HTTP/1.1" 200 -
+10.88.0.2 - - [13/Nov/2026 11:28:46] "GET /static/style.css HTTP/1.1" 304 -
+10.88.0.2 - - [13/Nov/2026 11:28:50] "GET /auth/register HTTP/1.1" 200 -
+10.88.0.2 - - [13/Nov/2026 11:28:50] "GET /static/style.css HTTP/1.1" 304 -
+10.88.0.2 - - [13/Nov/2026 11:28:55] "GET / HTTP/1.1" 200 -
+10.88.0.2 - - [13/Nov/2026 11:28:55] "GET /static/style.css HTTP/1.1" 304 -
+^C%                                                                                (flask-app) danel@1111QD-rs flask-app % podman machine stop
+Machine "podman-machine-default" stopped successfully
+(flask-app) danel@1111QD-rs flask-app % 
