@@ -151,4 +151,19 @@ INFO:     Application shutdown complete.
 INFO:     Finished server process [41210]
 INFO:     Stopping reloader process [41208]
 (modul8) danel@1111QD-rs contoh % 
+(modul8) danel@1111QD-rs contoh % uvicorn service:app --reload
+INFO:     Will watch for changes in these directories: ['/Users/danel/modul8/contoh']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [45014] using WatchFiles
+INFO:     Started server process [45016]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:51887 - "GET /sdm/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51887 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+^CINFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [45016]
+INFO:     Stopping reloader process [45014]
+(modul8) danel@1111QD-rs contoh % 
 
