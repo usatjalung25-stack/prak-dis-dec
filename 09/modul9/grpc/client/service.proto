@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package perpustakaan;
+
+message BukuRequest {
+  int32 id = 1;
+}
+
+message BukuResponse {
+  int32 id = 1;
+  string kode = 2;
+  string judul = 3;
+  int32 tahun_terbit = 4;
+  double harga_sewa = 5;
+  bool tersedia = 6;
+}
+
+service BukuService {
+  rpc GetBuku (BukuRequest) returns (BukuResponse);
+}

@@ -1,0 +1,361 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red56\green185\blue199;\red57\green192\blue38;
+\red116\green116\blue116;\red207\green125\blue255;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\csgray\c0;\cssrgb\c25546\c77007\c82023;\cssrgb\c25706\c77963\c19557;
+\csgenericrgb\c45371\c45371\c45371;\cssrgb\c85422\c59131\c100000;\csgray\c100000;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0 Last login: Fri Nov 27 00:09:46 on ttys000\
+usat@MacBook-Pro-usat ~ % deactivate 2>/dev/null\
+usat@MacBook-Pro-usat ~ % cd ~\
+usat@MacBook-Pro-usat ~ % rm -rf ~/src\
+\
+usat@MacBook-Pro-usat ~ % rm -f ~/.python-version\
+usat@MacBook-Pro-usat ~ % uv --version\
+uv 0.13.10 (e3e7c1eac 2026-11-24 x86_64-apple-darwin)\
+usat@MacBook-Pro-usat ~ % source $HOME/.local/bin/env\
+usat@MacBook-Pro-usat ~ % uv python install 3.13\
+Python 3.13 is already installed\
+usat@MacBook-Pro-usat ~ % uv python list --only-installed\
+cpython-3.13.18-macos-x86_64-none    \cf3 .local/bin/python3.13\cf2  -> \cf3 .local/share/uv/python/cpython-3.13-macos-x86_64-none/bin/python3.13\cf2 \
+cpython-3.13.18-macos-x86_64-none    \cf3 .local/share/uv/python/cpython-3.13-macos-x86_64-none/bin/python3.13\cf2 \
+cpython-3.12.16-macos-x86_64-none    \cf3 .local/bin/python3.12\cf2  -> \cf3 .local/share/uv/python/cpython-3.12-macos-x86_64-none/bin/python3.12\cf2 \
+cpython-3.12.16-macos-x86_64-none    \cf3 .local/share/uv/python/cpython-3.12-macos-x86_64-none/bin/python3.12\cf2 \
+cpython-3.9.6-macos-x86_64-none      \cf3 /usr/bin/python3\cf2 \
+usat@MacBook-Pro-usat ~ % cd ~\
+usat@MacBook-Pro-usat ~ % mkdir -p src/graphql/client src/graphql/server src/grpc/client src/grpc/server\
+usat@MacBook-Pro-usat ~ % cd `\
+bquote> \
+usat@MacBook-Pro-usat ~ % cd ~\
+usat@MacBook-Pro-usat ~ % cat > src/graphql/server/requirements.txt <<'EOF'\
+heredoc> strawberry-graphql[cli]\
+sqlmodel\
+EOF\
+usat@MacBook-Pro-usat ~ % cat > src/graphql/client/requirements.txt <<'EOF'\
+heredoc> gql[aiohttp]\
+EOF\
+usat@MacBook-Pro-usat ~ % cat > src/grpc/server/requirements.txt <<'EOF'\
+heredoc> grpcio\
+grpcio-tools\
+sqlmodel\
+EOF\
+\
+usat@MacBook-Pro-usat ~ % cat > src/grpc/client/requirements.txt <<'EOF'\
+heredoc> grpcio\
+grpcio-tools\
+EOF\
+usat@MacBook-Pro-usat ~ % cd ~/src/graphql/server\
+usat@MacBook-Pro-usat server % uv python pin 3.13 --managed-python\
+Pinned `\cf3 .python-version\cf2 ` to `\cf4 3.13\cf2 `\
+usat@MacBook-Pro-usat server % uv venv\
+Using CPython \cf3 3.13.18\cf2 \
+Creating virtual environment at: \cf3 .venv\cf2 \
+Activate with: \cf4 source .venv/bin/activate\cf2 \
+usat@MacBook-Pro-usat server % source .venv/bin/activate\
+(server) usat@MacBook-Pro-usat server % uv pip install --only-binary :all: -r requirements.txt\
+\cf5 Resolved 
+\f1\b 30 packages
+\f0\b0 \cf2  \cf5 in 438ms\cf2 \
+\cf5 Installed 
+\f1\b 30 packages
+\f0\b0 \cf2  \cf5 in 128ms\cf2 \
+ \cf4 +\cf2  
+\f1\b annotated-doc
+\f0\b0 \cf5 ==0.0.7\cf2 \
+ \cf4 +\cf2  
+\f1\b annotated-types
+\f0\b0 \cf5 ==0.8.0\cf2 \
+ \cf4 +\cf2  
+\f1\b anyio
+\f0\b0 \cf5 ==4.16.0\cf2 \
+ \cf4 +\cf2  
+\f1\b click
+\f0\b0 \cf5 ==8.5.1\cf2 \
+ \cf4 +\cf2  
+\f1\b cross-web
+\f0\b0 \cf5 ==0.9.0\cf2 \
+ \cf4 +\cf2  
+\f1\b graphql-core
+\f0\b0 \cf5 ==3.3.2\cf2 \
+ \cf4 +\cf2  
+\f1\b h11
+\f0\b0 \cf5 ==0.16.0\cf2 \
+ \cf4 +\cf2  
+\f1\b idna
+\f0\b0 \cf5 ==3.20\cf2 \
+ \cf4 +\cf2  
+\f1\b libcst
+\f0\b0 \cf5 ==1.8.6\cf2 \
+ \cf4 +\cf2  
+\f1\b markdown-it-py
+\f0\b0 \cf5 ==4.3.0\cf2 \
+ \cf4 +\cf2  
+\f1\b mdurl
+\f0\b0 \cf5 ==0.1.2\cf2 \
+ \cf4 +\cf2  
+\f1\b packaging
+\f0\b0 \cf5 ==26.4\cf2 \
+ \cf4 +\cf2  
+\f1\b pydantic
+\f0\b0 \cf5 ==2.14.4\cf2 \
+ \cf4 +\cf2  
+\f1\b pydantic-core
+\f0\b0 \cf5 ==2.50.5\cf2 \
+ \cf4 +\cf2  
+\f1\b pygments
+\f0\b0 \cf5 ==2.21.0\cf2 \
+ \cf4 +\cf2  
+\f1\b python-dateutil
+\f0\b0 \cf5 ==4.0.0\cf2 \
+ \cf4 +\cf2  
+\f1\b python-multipart
+\f0\b0 \cf5 ==0.0.34\cf2 \
+ \cf4 +\cf2  
+\f1\b pyyaml-ft
+\f0\b0 \cf5 ==8.0.0\cf2 \
+ \cf4 +\cf2  
+\f1\b rich
+\f0\b0 \cf5 ==15.0.0\cf2 \
+ \cf4 +\cf2  
+\f1\b shellingham
+\f0\b0 \cf5 ==1.5.4\cf2 \
+ \cf4 +\cf2  
+\f1\b sqlalchemy
+\f0\b0 \cf5 ==2.1.9\cf2 \
+ \cf4 +\cf2  
+\f1\b sqlmodel
+\f0\b0 \cf5 ==0.0.50\cf2 \
+ \cf4 +\cf2  
+\f1\b starlette
+\f0\b0 \cf5 ==1.10.0\cf2 \
+ \cf4 +\cf2  
+\f1\b strawberry-graphql
+\f0\b0 \cf5 ==0.324.0\cf2 \
+ \cf4 +\cf2  
+\f1\b typer
+\f0\b0 \cf5 ==0.29.3\cf2 \
+ \cf4 +\cf2  
+\f1\b typing-extensions
+\f0\b0 \cf5 ==4.16.0\cf2 \
+ \cf4 +\cf2  
+\f1\b typing-inspection
+\f0\b0 \cf5 ==0.4.5\cf2 \
+ \cf4 +\cf2  
+\f1\b tzdata
+\f0\b0 \cf5 ==2026.6\cf2 \
+ \cf4 +\cf2  
+\f1\b uvicorn
+\f0\b0 \cf5 ==0.54.0\cf2 \
+ \cf4 +\cf2  
+\f1\b websockets
+\f0\b0 \cf5 ==16.1.1\cf2 \
+(server) usat@MacBook-Pro-usat server % deactivate\
+usat@MacBook-Pro-usat server % cd ~/src/graphql/client\
+usat@MacBook-Pro-usat client % uv python pin 3.13 --managed-python\
+Pinned `\cf3 .python-version\cf2 ` to `\cf4 3.13\cf2 `\
+usat@MacBook-Pro-usat client % uv venv\
+Using CPython \cf3 3.13.18\cf2 \
+Creating virtual environment at: \cf3 .venv\cf2 \
+Activate with: \cf4 source .venv/bin/activate\cf2 \
+usat@MacBook-Pro-usat client % source .venv/bin/activate\
+(client) usat@MacBook-Pro-usat client % uv pip install --only-binary :all: -r requirements.txt\
+\cf5 Resolved 
+\f1\b 14 packages
+\f0\b0 \cf2  \cf5 in 217ms\cf2 \
+\cf5 Installed 
+\f1\b 14 packages
+\f0\b0 \cf2  \cf5 in 34ms\cf2 \
+ \cf4 +\cf2  
+\f1\b aiohappyeyeballs
+\f0\b0 \cf5 ==2.7.1\cf2 \
+ \cf4 +\cf2  
+\f1\b aiohttp
+\f0\b0 \cf5 ==3.14.5\cf2 \
+ \cf4 +\cf2  
+\f1\b aiosignal
+\f0\b0 \cf5 ==1.4.0\cf2 \
+ \cf4 +\cf2  
+\f1\b anyio
+\f0\b0 \cf5 ==4.16.0\cf2 \
+ \cf4 +\cf2  
+\f1\b attrs
+\f0\b0 \cf5 ==26.1.0\cf2 \
+ \cf4 +\cf2  
+\f1\b frozenlist
+\f0\b0 \cf5 ==1.8.0\cf2 \
+ \cf4 +\cf2  
+\f1\b gql
+\f0\b0 \cf5 ==4.4.0\cf2 \
+ \cf4 +\cf2  
+\f1\b graphql-core
+\f0\b0 \cf5 ==3.3.2\cf2 \
+ \cf4 +\cf2  
+\f1\b idna
+\f0\b0 \cf5 ==3.20\cf2 \
+ \cf4 +\cf2  
+\f1\b multidict
+\f0\b0 \cf5 ==7.2.1\cf2 \
+ \cf4 +\cf2  
+\f1\b propcache
+\f0\b0 \cf5 ==0.5.4\cf2 \
+ \cf4 +\cf2  
+\f1\b tenacity
+\f0\b0 \cf5 ==9.2.1\cf2 \
+ \cf4 +\cf2  
+\f1\b typing-extensions
+\f0\b0 \cf5 ==4.16.0\cf2 \
+ \cf4 +\cf2  
+\f1\b yarl
+\f0\b0 \cf5 ==1.25.1\cf2 \
+(client) usat@MacBook-Pro-usat client % deactivate\
+usat@MacBook-Pro-usat client % cd ~/src/grpc/server\
+usat@MacBook-Pro-usat server % uv python pin 3.13 --managed-python\
+Pinned `\cf3 .python-version\cf2 ` to `\cf4 3.13\cf2 `\
+usat@MacBook-Pro-usat server % uv venv\
+Using CPython \cf3 3.13.18\cf2 \
+Creating virtual environment at: \cf3 .venv\cf2 \
+Activate with: \cf4 source .venv/bin/activate\cf2 \
+usat@MacBook-Pro-usat server % source .venv/bin/activate\
+(server) usat@MacBook-Pro-usat server % uv pip install --only-binary :all: -r requirements.txt\
+\cf5 Resolved 
+\f1\b 11 packages
+\f0\b0 \cf2  \cf5 in 218ms\cf2 \
+\cf5 Installed 
+\f1\b 11 packages
+\f0\b0 \cf2  \cf5 in 43ms\cf2 \
+ \cf4 +\cf2  
+\f1\b annotated-types
+\f0\b0 \cf5 ==0.8.0\cf2 \
+ \cf4 +\cf2  
+\f1\b grpcio
+\f0\b0 \cf5 ==1.85.4\cf2 \
+ \cf4 +\cf2  
+\f1\b grpcio-tools
+\f0\b0 \cf5 ==1.85.4\cf2 \
+ \cf4 +\cf2  
+\f1\b protobuf
+\f0\b0 \cf5 ==7.36.2\cf2 \
+ \cf4 +\cf2  
+\f1\b pydantic
+\f0\b0 \cf5 ==2.14.4\cf2 \
+ \cf4 +\cf2  
+\f1\b pydantic-core
+\f0\b0 \cf5 ==2.50.5\cf2 \
+ \cf4 +\cf2  
+\f1\b setuptools
+\f0\b0 \cf5 ==84.2.1\cf2 \
+ \cf4 +\cf2  
+\f1\b sqlalchemy
+\f0\b0 \cf5 ==2.1.9\cf2 \
+ \cf4 +\cf2  
+\f1\b sqlmodel
+\f0\b0 \cf5 ==0.0.50\cf2 \
+ \cf4 +\cf2  
+\f1\b typing-extensions
+\f0\b0 \cf5 ==4.16.0\cf2 \
+ \cf4 +\cf2  
+\f1\b typing-inspection
+\f0\b0 \cf5 ==0.4.5\cf2 \
+(server) usat@MacBook-Pro-usat server % deactivate\
+usat@MacBook-Pro-usat server % cd ~/src/grpc/client\
+usat@MacBook-Pro-usat client % uv python pin 3.13 --managed-python\
+Pinned `\cf3 .python-version\cf2 ` to `\cf4 3.13\cf2 `\
+usat@MacBook-Pro-usat client % uv venv\
+Using CPython \cf3 3.13.18\cf2 \
+Creating virtual environment at: \cf3 .venv\cf2 \
+Activate with: \cf4 source .venv/bin/activate\cf2 \
+usat@MacBook-Pro-usat client % source .venv/bin/activate\
+(client) usat@MacBook-Pro-usat client % uv pip install --only-binary :all: -r requirements.txt\
+\cf5 Resolved 
+\f1\b 5 packages
+\f0\b0 \cf2  \cf5 in 11ms\cf2 \
+\cf5 Installed 
+\f1\b 5 packages
+\f0\b0 \cf2  \cf5 in 22ms\cf2 \
+ \cf4 +\cf2  
+\f1\b grpcio
+\f0\b0 \cf5 ==1.85.4\cf2 \
+ \cf4 +\cf2  
+\f1\b grpcio-tools
+\f0\b0 \cf5 ==1.85.4\cf2 \
+ \cf4 +\cf2  
+\f1\b protobuf
+\f0\b0 \cf5 ==7.36.2\cf2 \
+ \cf4 +\cf2  
+\f1\b setuptools
+\f0\b0 \cf5 ==84.2.1\cf2 \
+ \cf4 +\cf2  
+\f1\b typing-extensions
+\f0\b0 \cf5 ==4.16.0\cf2 \
+(client) usat@MacBook-Pro-usat client % deactivate\
+usat@MacBook-Pro-usat client % cd ~/src/graphql/server\
+usat@MacBook-Pro-usat server % cat > requirements.txt <<'EOF'\
+heredoc> strawberry-graphql\
+uvicorn\
+sqlmodel\
+EOF\
+usat@MacBook-Pro-usat server % source .venv/bin/activate\
+(server) usat@MacBook-Pro-usat server % uv pip install --only-binary :all: -r requirements.txt\
+\cf5 Checked 
+\f1\b 3 packages
+\f0\b0 \cf2  \cf5 in 35ms\cf2 \
+(server) usat@MacBook-Pro-usat server % deactivate\
+usat@MacBook-Pro-usat server % cp /LOKASI/FILE/departemen-sdm.db ~/src/graphql/server/\
+cp: /LOKASI/FILE/departemen-sdm.db: No such file or directory\
+usat@MacBook-Pro-usat server % cp /LOKASI/FILE/departemen-sdm.db ~/src/grpc/server/\
+cp: /LOKASI/FILE/departemen-sdm.db: No such file or directory\
+usat@MacBook-Pro-usat server % cd ~/src/graphql/server\
+usat@MacBook-Pro-usat server % source .venv/bin/activate\
+(server) usat@MacBook-Pro-usat server % python - <<'EOF'\
+heredoc> import sqlite3\
+con = sqlite3.connect("departemen-sdm.db")\
+con.execute("DROP TABLE IF EXISTS sdm")\
+con.execute("CREATE TABLE sdm (id INTEGER PRIMARY KEY, npp VARCHAR NOT NULL, nama VARCHAR NOT NULL)")\
+con.executemany("INSERT INTO sdm (npp, nama) VALUES (?, ?)",\
+    [("112233", "Karyawan 1"), ("223344", "Karyawan 2"), ("334455", "Karyawan 3")])\
+con.commit()\
+print(con.execute("SELECT * FROM sdm").fetchall())\
+EOF\
+[(1, '112233', 'Karyawan 1'), (2, '223344', 'Karyawan 2'), (3, '334455', 'Karyawan 3')]\
+(server) usat@MacBook-Pro-usat server % deactivate\
+usat@MacBook-Pro-usat server % cp ~/src/graphql/server/departemen-sdm.db ~/src/grpc/server/\
+usat@MacBook-Pro-usat server % cd ~/src/graphql/server\
+usat@MacBook-Pro-usat server % cat > graphql-server.py <<'EOF'\
+heredoc> import typing\
+import strawberry\
+from sqlmodel import Field, Session, SQLModel, create_engine, select\
+\
+\
+@strawberry.type\
+class Sdm(SQLModel, table=True):\
+    id: int | None = Field(default=None, primary_key=True)\
+    npp: str\
+    nama: str\
+\
+\
+engine = create_engine("sqlite:///departemen-sdm.db")\
+\
+def get_sdms():\
+    # SQLModel select statement\
+    with Session(engine) as session:\
+        statement = select(Sdm)\
+        results = session.exec(statement).all()\
+    return results\
+\
+\
+@strawberry.type\
+class Query:\
+    sdms: typing.List[Sdm] = strawberry.field(resolver=get_sdms)\
+\
+\
+schema = strawberry.Schema(query=Query)\
+EOF\
+usat@MacBook-Pro-usat server % source .venv/bin/activate\
+(server) usat@MacBook-Pro-usat server % strawberry dev graphql-server\
+Running strawberry on \cf6 \ul \ulc6 http://0.0.0.0:8000/graphql\cf2 \ulnone  \uc0\u55356 \u57171 \
+^C
+\f1\b \cf7 \cb2 %
+\f0\b0 \cf2 \cb1                                                                                                                   (server) usat@MacBook-Pro-usat server % \
+}

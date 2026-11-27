@@ -1,0 +1,92 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgray\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0 Last login: Fri Nov 27 00:15:27 on ttys000\
+usat@MacBook-Pro-usat ~ % cd ~/src/graphql/client\
+usat@MacBook-Pro-usat client % cat > graphql-client.py <<'EOF'\
+heredoc> >....                                                                  \
+        """\
+        query getSdms \{\
+          sdms \{\
+            id\
+            npp\
+            nama\
+          \}\
+        \}\
+        """\
+    )\
+\
+    # Using `async with` on the client will start a connection on the transport\
+    # and provide a `session` variable to execute queries on this connection\
+    async with client as session:\
+\
+        # Execute the query\
+        result = await session.execute(query)\
+        print(result)\
+\
+\
+asyncio.run(main())\
+EOF\
+\
+usat@MacBook-Pro-usat client % source .venv/bin/activate\
+(client) usat@MacBook-Pro-usat client % python graphql-client.py\
+\{'sdms': [\{'id': 1, 'npp': '112233', 'nama': 'Karyawan 1'\}, \{'id': 2, 'npp': '223344', 'nama': 'Karyawan 2'\}, \{'id': 3, 'npp': '334455', 'nama': 'Karyawan 3'\}]\}\
+(client) usat@MacBook-Pro-usat client % cd ~/src/grpc/server\
+(client) usat@MacBook-Pro-usat server % cat > service.proto <<'EOF'\
+heredoc> syntax = "proto3";\
+\
+package mydb;\
+\
+message SdmRequest \{\
+  int32 id = 1;\
+\}\
+\
+message SdmResponse \{\
+  int32 id = 1;\
+  string npp = 2;\
+  string nama = 3;\
+\}\
+\
+service SdmService \{\
+  rpc GetSdm (SdmRequest) returns (SdmResponse);\
+\}\
+EOF\
+(client) usat@MacBook-Pro-usat server % source .venv/bin/activate\
+(server) usat@MacBook-Pro-usat server % python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. service.proto\
+(server) usat@MacBook-Pro-usat server % ls -la service_pb2*\
+-rw-r--r--  1 usat  staff  1644 Nov 27 00:41 service_pb2.py\
+-rw-r--r--  1 usat  staff  3315 Nov 27 00:41 service_pb2_grpc.py\
+(server) usat@MacBook-Pro-usat server % cp service.proto service_pb2.py service_pb2_grpc.py ../client/\
+(server) usat@MacBook-Pro-usat server % cd ~/src/grpc/server\
+(server) usat@MacBook-Pro-usat server % cat > server.py <<'EOF'\
+heredoc> >....                                                                  \
+            return service_pb2.SdmResponse(\
+                id = sdm_result.id,\
+                npp = sdm_result.npp,\
+                nama = sdm_result.nama,\
+            )\
+\
+def serve():\
+    # Initialize the server\
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))\
+    service_pb2_grpc.add_SdmServiceServicer_to_server(SdmServiceServicer(), server)\
+\
+    # Listen on port 50051\
+    server.add_insecure_port('[::]:50051')\
+    print("Server started. Listening on port 50051...")\
+\
+    server.start()\
+    server.wait_for_termination()\
+\
+if __name__ == '__main__':\
+    serve()\
+EOF\
+\
+(server) usat@MacBook-Pro-usat server % source .venv/bin/activate\
+(server) usat@MacBook-Pro-usat server % python server.py\
+Server started. Listening on port 50051...\
+^CTraceback (most recent call last):}
