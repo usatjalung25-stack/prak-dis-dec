@@ -1,10 +1,5 @@
 # Praktik Modul 9 — Arsitektur Microservices: GraphQL & gRPC
 
-> **Mata kuliah:** Sistem Terdistribusi dan Terdesentralisasi
-> **Nama / NIM / Kelas:** Usat Jalung / 255410017 / IF-1
-> **Prodi:** Informatika, Fakultas Teknologi Informasi, Universitas Teknologi Digital Indonesia
-> **Lokasi:** `09/terminal-peratik/`
-
 ---
 
 ## Daftar Isi
